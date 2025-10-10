@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:sahifaty/screens/pie_chart_assessment_screen/pie_chart_assessment_screen.dart';
 import 'package:sahifaty/screens/splash_screen/splash_screen.dart';
 
 
@@ -8,7 +9,7 @@ void main() {
   runApp(
     const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: PieChartAssessmentScreen(),
     ),
   );
 }
@@ -48,7 +49,7 @@ class MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreen()
+      home: PieChartAssessmentScreen()
     );
   }
 }
