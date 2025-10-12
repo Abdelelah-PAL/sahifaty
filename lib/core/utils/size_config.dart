@@ -52,8 +52,8 @@ class SizeConfig {
 
   static Widget customSizedBox(double? width, double? height, Widget? child) {
     return SizedBox(
-      width: width,
-      height: height,
+      width: width !=  null? getProperVerticalSpace(width) : 0,
+      height: height !=  null? getProperVerticalSpace(height) : 0,
       child: child,
     );
   }
