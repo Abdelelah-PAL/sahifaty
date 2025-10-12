@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sahifaty/screens/assessment_screen/assessment_screen.dart';
-import 'package:sahifaty/screens/widgets/custom_text.dart';
 import '../../core/constants/assets.dart';
 import '../../core/utils/size_config.dart';
 import '../../core/constants/colors.dart';
+import '../assessment_screen/assessment_screen.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/custom_text.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -52,22 +53,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             SizeConfig.customSizedBox(null, 20, null),
             Image.asset(Assets.quran),
             SizeConfig.customSizedBox(null, 10, null),
-            SizedBox(
-              width: 106,
-              height: 36,
-              child: FloatingActionButton.extended(
+            CustomButton(
                 onPressed: () => Get.to(const AssessmentScreen()),
-                backgroundColor: AppColors.buttonColor,
-                label: const CustomText(
-                    text: 'إبدأ التقييم',
-                    withBackground: false,
-                    fontSize: 16,
-                    color: Color(0xFFFFFFFF)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-            ),
+                text: 'إبدأ التقييم',
+                width: 106,
+                height: 36),
           ]),
     );
   }

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:sahifaty/screens/welcome_screen/welcome_screen.dart';
+import 'package:sahifaty/core/constants/colors.dart';
+
+import 'screens/welcome_screen/welcome_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +21,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: WelcomeScreen(),
+      theme: ThemeData(
+        scaffoldBackgroundColor: AppColors.backgroundColor
+      ),
+      home: const WelcomeScreen(),
     );
   }
 }
