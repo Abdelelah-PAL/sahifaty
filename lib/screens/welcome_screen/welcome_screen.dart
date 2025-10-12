@@ -52,7 +52,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
             SizeConfig.customSizedBox(null, 20, null),
             Image.asset(Assets.quran),
-            SizeConfig.customSizedBox(null, 10, null),
             CustomButton(
                 onPressed: () => Get.to(const AssessmentScreen()),
                 text: 'إبدأ التقييم',

@@ -13,4 +13,5 @@ class GeneralController {
     {'text': 'صعب', 'color': AppColors.hardColor},
     {'text': 'غير مصنف', 'color': AppColors.uncategorizedColor},
   ];
+
 }
