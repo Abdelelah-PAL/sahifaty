@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sahifaty/controllers/general_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import 'custom_text.dart';
@@ -21,106 +22,149 @@ class CustomDropdown extends StatefulWidget {
 
 class _CustomDropdownState extends State<CustomDropdown>
     with SingleTickerProviderStateMixin {
-  String? selectedValue;
-  late AnimationController _controller;
-  late Animation<Offset> _positionAnimation;
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
+  OverlayEntry? _sideOverlayEntry;
+  int? _tappedIndex;
+
+  late AnimationController _controller;
 
   List<String> get dropdownOptions => widget.third == 1
-      ? [
-    'الجزء الأول',
-    'الجزء الثاني',
-    'الجزء الثالث',
-    'الجزء الرابع',
-    'الجزء الخامس',
-    'الجزء السادس',
-    'الجزء السابع',
-    'الجزء الثامن',
-    'الجزء التاسع',
-    'الجزء العاشر',
-  ]
+      ? GeneralController().firstThird
       : widget.third == 2
-      ? [
-    'الجزء الحادي عشر',
-    'الجزء الثاني عشر',
-    'الجزء الثالث عشر',
-    'الجزء الرابع عشر',
-    'الجزء الخامس عشر',
-    'الجزء السادس عشر',
-    'الجزء السابع عشر',
-    'الجزء الثامن عشر',
-    'الجزء التاسع عشر',
-    'الجزء العشرون',
-  ]
-      : [
-    'الجزء الحادي والعشرين',
-    'الجزء الثاني والعشرين',
-    'الجزء الثالث والعشرين',
-    'الجزء الرابع والعشرين',
-    'الجزء الخامس والعشرين',
-    'الجزء السادس والعشرين',
-    'الجزء السابع والعشرين',
-    'الجزء الثامن والعشرين',
-    'الجزء التاسع والعشرين',
-    'الجزء الثلاثون',
-  ];
+      ? GeneralController().secondThird
+      : GeneralController().thirdThird;
 
-  String get hintText => widget.third == 1
-      ? "الثلث الأول"
-      : widget.third == 2
-      ? "الثلث الثاني"
-      : "الثلث الثالث";
+  final Map<String, List<String>> surasByPart = {
+    "الجزء الأول": ["الفاتحة", "البقرة"],
+    "الجزء الثاني": ["البقرة", "آل عمران"],
+    "الجزء الثالث": ["آل عمران", "النساء"],
+    "الجزء الرابع": ["النساء", "المائدة"],
+    "الجزء الخامس": ["المائدة", "الأنعام"],
+  };
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 400));
-    _positionAnimation =
-        Tween<Offset>(begin: Offset.zero, end: const Offset(0.25, 0))
-            .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
   }
 
   void _showOverlay() {
     if (_overlayEntry != null) return;
 
     final renderBox = context.findRenderObject() as RenderBox;
-    final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
 
     _overlayEntry = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          // Full-screen GestureDetector to detect taps outside
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                // Close overlay AND return button to original position
+                _removeOverlay();
+                _controller.reverse();
+                widget.onToggle(); // notify parent
+              },
+              behavior: HitTestBehavior.translucent,
+            ),
+          ),
+          Positioned(
+            top: offset.dy + size.height + 4,
+            left: offset.dx + (_controller.value * 80),
+            width: size.width,
+            child: Material(
+              borderRadius: BorderRadius.circular(8),
+              elevation: 6,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxHeight: 260),
+                child: ListView.separated(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: dropdownOptions.length,
+                  separatorBuilder: (_, __) =>
+                  const Divider(color: Colors.grey, height: 1),
+                  itemBuilder: (context, index) {
+                    final option = dropdownOptions[index];
+                    return InkWell(
+                      onTap: () => _showSideOverlay(option, index, offset, size),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 12),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: CustomText(
+                            text: option,
+                            fontSize: 14,
+                            withBackground: false,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+
+    // Slide the button **only when overlay is shown**
+    _controller.forward();
+  }
+
+
+  void _showSideOverlay(
+      String option, int index, Offset parentOffset, Size buttonSize) {
+    _removeSideOverlay();
+    if (!surasByPart.containsKey(option)) return;
+
+    _tappedIndex = index;
+    final double itemHeight = 40;
+    final double topPosition =
+        parentOffset.dy + buttonSize.height + (index * itemHeight);
+
+    _sideOverlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: offset.dy,
-        left: offset.dx - 80, // shift to the left of the button
+        top: topPosition,
+        left: parentOffset.dx - 180 + (_controller.value * 100),
         width: 160,
         child: Material(
           borderRadius: BorderRadius.circular(8),
           elevation: 6,
+          color: Colors.white,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 300),
-            child: ListView.separated(
-              shrinkWrap: true,
+            constraints: const BoxConstraints(maxHeight: 200),
+            child: ListView.builder(
               padding: EdgeInsets.zero,
-              itemCount: dropdownOptions.length,
-              separatorBuilder: (_, __) =>
-              const Divider(color: Colors.grey, height: 1),
-              itemBuilder: (_, index) {
-                final option = dropdownOptions[index];
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              itemCount: surasByPart[option]!.length,
+              itemBuilder: (_, i) {
+                final sura = surasByPart[option]![i];
                 return InkWell(
                   onTap: () {
-                    setState(() => selectedValue = option);
+                    _removeSideOverlay();
                     _removeOverlay();
-                    widget.onToggle();
                   },
                   child: Padding(
-                    padding:
-                    const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 12),
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: CustomText(
-                        text: option,
-                        fontSize: 14,
+                        text: sura,
+                        fontSize: 13,
                         withBackground: false,
                         color: Colors.black87,
                       ),
@@ -134,22 +178,37 @@ class _CustomDropdownState extends State<CustomDropdown>
       ),
     );
 
-    Overlay.of(context).insert(_overlayEntry!);
+    Overlay.of(context).insert(_sideOverlayEntry!);
+  }
+
+  void _removeSideOverlay() {
+    _sideOverlayEntry?.remove();
+    _sideOverlayEntry = null;
+    _tappedIndex = null;
   }
 
   void _removeOverlay() {
+    _removeSideOverlay();
     _overlayEntry?.remove();
     _overlayEntry = null;
+  }
+
+  void _toggleAnimation() {
+    if (_controller.status == AnimationStatus.completed) {
+      _controller.reverse();
+    } else {
+      _controller.forward();
+    }
   }
 
   @override
   void didUpdateWidget(CustomDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isOpen) {
-      _controller.forward();
+      _toggleAnimation();
       WidgetsBinding.instance.addPostFrameCallback((_) => _showOverlay());
     } else {
-      _controller.reverse();
+      _toggleAnimation();
       _removeOverlay();
     }
   }
@@ -163,35 +222,44 @@ class _CustomDropdownState extends State<CustomDropdown>
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-      link: _layerLink,
-      child: SlideTransition(
-        position: _positionAnimation,
-        child: GestureDetector(
-          onTap: widget.onToggle,
-          child: Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: SizeConfig.getProportionalWidth(12),
-              vertical: SizeConfig.getProportionalWidth(4),
-            ),
-            decoration: BoxDecoration(
-              color: AppColors.buttonColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: Colors.grey),
-            ),
-            child: Center(
-              child: CustomText(
-                text: hintText,
-                fontSize: 14,
-                color: Colors.white,
-                withBackground: false,
-                textAlign: TextAlign.center,
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.translate(
+          offset: Offset(widget.isOpen ? _controller.value * 80 : 0, 0),
+          child: CompositedTransformTarget(
+            link: _layerLink,
+            child: GestureDetector(
+              onTap: widget.onToggle,
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(
+                  horizontal: SizeConfig.getProportionalWidth(12),
+                  vertical: SizeConfig.getProportionalWidth(4),
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.buttonColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Center(
+                  child: CustomText(
+                    text: widget.third == 1
+                        ? "الثلث الأول"
+                        : widget.third == 2
+                        ? "الثلث الثاني"
+                        : "الثلث الثالث",
+                    fontSize: 14,
+                    color: Colors.white,
+                    withBackground: false,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
