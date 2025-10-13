@@ -32,8 +32,8 @@ class _CustomDropdownState extends State<CustomDropdown>
   List<String> get dropdownOptions => widget.third == 1
       ? GeneralController().firstThird
       : widget.third == 2
-      ? GeneralController().secondThird
-      : GeneralController().thirdThird;
+          ? GeneralController().secondThird
+          : GeneralController().thirdThird;
 
   final Map<String, List<String>> surasByPart = {
     "الجزء الأول": ["الفاتحة", "البقرة"],
@@ -89,11 +89,12 @@ class _CustomDropdownState extends State<CustomDropdown>
                   physics: const BouncingScrollPhysics(),
                   itemCount: dropdownOptions.length,
                   separatorBuilder: (_, __) =>
-                  const Divider(color: Colors.grey, height: 1),
+                      const Divider(color: Colors.grey, height: 1),
                   itemBuilder: (context, index) {
                     final option = dropdownOptions[index];
                     return InkWell(
-                      onTap: () => _showSideOverlay(option, index, offset, size),
+                      onTap: () =>
+                          _showSideOverlay(option, index, offset, size),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 12),
@@ -123,14 +124,13 @@ class _CustomDropdownState extends State<CustomDropdown>
     _controller.forward();
   }
 
-
   void _showSideOverlay(
       String option, int index, Offset parentOffset, Size buttonSize) {
     _removeSideOverlay();
     if (!surasByPart.containsKey(option)) return;
 
     _tappedIndex = index;
-    final double itemHeight = 40;
+    const double itemHeight = 40;
     final double topPosition =
         parentOffset.dy + buttonSize.height + (index * itemHeight);
 
@@ -247,8 +247,8 @@ class _CustomDropdownState extends State<CustomDropdown>
                     text: widget.third == 1
                         ? "الثلث الأول"
                         : widget.third == 2
-                        ? "الثلث الثاني"
-                        : "الثلث الثالث",
+                            ? "الثلث الثاني"
+                            : "الثلث الثالث",
                     fontSize: 14,
                     color: Colors.white,
                     withBackground: false,
