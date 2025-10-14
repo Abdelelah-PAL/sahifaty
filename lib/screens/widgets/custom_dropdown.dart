@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sahifaty/controllers/general_controller.dart';
+import 'package:sahifaty/screens/quran_view/surah_page.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import 'custom_text.dart';
@@ -156,6 +158,7 @@ class _CustomDropdownState extends State<CustomDropdown>
                   onTap: () {
                     _removeSideOverlay();
                     _removeOverlay();
+                    Get.to(const SurahPage(surahNumber: 1));
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

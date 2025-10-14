@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sahifaty/core/constants/fonts.dart';
 
 class CustomText extends StatelessWidget {
   const CustomText(
@@ -42,7 +43,7 @@ class CustomText extends StatelessWidget {
           fontSize: fontSize ?? 18,
           height: textHeight ?? 1,
           color: color ?? const Color(0xFF000000),
-          fontWeight: fontWeight ?? FontWeight.normal,
+          fontWeight: fontWeight ?? AppFonts.normal,
           // fontFamily: 'YourArabicFont',
         ),
       ),

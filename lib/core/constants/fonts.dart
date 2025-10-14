@@ -1,11 +1,18 @@
 
 
 
+import 'dart:ui';
+
 class AppFonts {
   static String titleFont = 'salsa';
-  // static String getPrimaryFont(BuildContext context) {
-  //   String language = Provider.of<SettingsProvider>(context).language;
-  //
-  //   return language == "en" ? 'salsa' : 'MyriadArabic';
-  // }
+
+
+  //FontWeights
+  static FontWeight thin = FontWeight.w100;
+  static FontWeight extraLight = FontWeight.w200;
+  static FontWeight light = FontWeight.w300;
+  static FontWeight normal = FontWeight.w400;
+  static FontWeight medium = FontWeight.w500;
+  static FontWeight semiBold = FontWeight.w600;
+  static FontWeight bold = FontWeight.w700;
 }

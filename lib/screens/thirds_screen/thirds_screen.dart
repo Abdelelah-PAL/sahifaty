@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sahifaty/screens/thirds_screen/menu_item.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../widgets/3d_pie_chart.dart';
@@ -33,11 +34,33 @@ class _ThirdsScreenState extends State<ThirdsScreen> {
         backgroundColor: AppColors.backgroundColor,
         leading: const CustomBackButton(),
         actions: [
-          IconButton(
+          PopupMenuButton<String>(
             icon: const Icon(Icons.menu),
-            onPressed: () {},
+            onSelected: (value) {
+              // if (value == 'bookmarks') {
+              //   // handle bookmarks
+              // } else if (value == 'settings') {
+              //   // handle settings
+              // }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'bookmarks',
+                child: MenuItem(text: "أيقونات الأثلاث"),
+              ),
+              const PopupMenuItem(
+                value: 'settings',
+                child: MenuItem(text: "أيقونات الأجزاء"),
+              ),
+              const PopupMenuItem(
+                value: 'about',
+                child: MenuItem(text: "أيقونات التقييم"),
+              ),
+            ],
+
           ),
         ],
+
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -66,21 +89,18 @@ class _ThirdsScreenState extends State<ThirdsScreen> {
                 uncategorizedValue: 8,
               ),
               SizedBox(height: SizeConfig.getProportionalHeight(20)),
-
               CustomDropdown(
                 third: 1,
                 isOpen: openIndex == 1,
                 onToggle: () => toggle(1),
               ),
               SizedBox(height: SizeConfig.getProportionalHeight(25)),
-
               CustomDropdown(
                 third: 2,
                 isOpen: openIndex == 2,
                 onToggle: () => toggle(2),
               ),
               SizedBox(height: SizeConfig.getProportionalHeight(25)),
-
               CustomDropdown(
                 third: 3,
                 isOpen: openIndex == 3,
