@@ -10,8 +10,8 @@ import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 
-class PostAssessmentScreen extends StatelessWidget {
-  const PostAssessmentScreen({super.key});
+class CelebrationScreen extends StatelessWidget {
+  const CelebrationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

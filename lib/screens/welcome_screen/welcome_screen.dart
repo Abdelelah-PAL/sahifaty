@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../../core/constants/assets.dart';
 import '../../core/utils/size_config.dart';
 import '../../core/constants/colors.dart';
-import '../assessment_screen/assessment_screen.dart';
+import '../questions_screen/questions_screen.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 
@@ -53,7 +53,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             SizeConfig.customSizedBox(null, 20, null),
             Image.asset(Assets.quran),
             CustomButton(
-                onPressed: () => Get.to(const AssessmentScreen()),
+                onPressed: () => Get.to(const QuestionsScreen()),
                 text: 'إبدأ التقييم',
                 width: 106,
                 height: 36),

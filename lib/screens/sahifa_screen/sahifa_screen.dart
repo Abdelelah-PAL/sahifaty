@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
-import '../post_assesment_screen/post_assessment_screen.dart';
+import '../celebration_screen/celebration_screen.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 
-class PieChartAssessmentScreen extends StatelessWidget {
-  const PieChartAssessmentScreen({super.key});
+class SahifaScreen extends StatelessWidget {
+  const SahifaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +103,7 @@ class PieChartAssessmentScreen extends StatelessWidget {
                 ),
                 SizedBox(height: SizeConfig.getProportionalHeight(70)),
                 CustomButton(
-                  onPressed: () => {Get.to(const PostAssessmentScreen())},
+                  onPressed: () => {Get.to(const CelebrationScreen())},
                   text: 'اذهب إلى صحيفتي',
                   width: 155,
                   height: 35,

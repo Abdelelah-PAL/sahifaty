@@ -16,4 +16,5 @@ class AppColors {
   static const Color easyColor = Color(0xFF78D0FF);
   static const Color hardColor = Color(0xFFFF0000);
   static const Color uncategorizedColor = Color(0xFFC6C7C9);
+  static const Color dropDownButtonColor = Color(0xFFE5E6EB);
 }

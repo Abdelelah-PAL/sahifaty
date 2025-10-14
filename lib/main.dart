@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:provider/provider.dart';
 import 'package:sahifaty/core/constants/colors.dart';
+import 'package:sahifaty/providers/general_provider.dart';
 
 import 'screens/welcome_screen/welcome_screen.dart';
 
@@ -13,8 +15,14 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const MyApp());
-}
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => GeneralProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
