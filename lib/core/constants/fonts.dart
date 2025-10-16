@@ -4,8 +4,8 @@
 import 'dart:ui';
 
 class AppFonts {
-  static String titleFont = 'salsa';
-
+  static String primaryFont = 'roboto';
+  static String versesFont = 'Amiri';
 
   //FontWeights
   static FontWeight thin = FontWeight.w100;

@@ -44,7 +44,7 @@ class CustomText extends StatelessWidget {
           height: textHeight ?? 1,
           color: color ?? const Color(0xFF000000),
           fontWeight: fontWeight ?? AppFonts.normal,
-          // fontFamily: 'YourArabicFont',
+          fontFamily: 'roboto',
         ),
       ),
     );

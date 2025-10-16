@@ -158,7 +158,7 @@ class _CustomDropdownState extends State<CustomDropdown>
                   onTap: () {
                     _removeSideOverlay();
                     _removeOverlay();
-                    Get.to(const SurahPage(surahNumber: 1));
+                    Get.to( SurahPage());
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pie_chart_3d/pie_chart_3d.dart';
 import 'package:sahifaty/screens/widgets/3d_pie_chart.dart';
-import '../../controllers/general_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../thirds_screen/thirds_screen.dart';
