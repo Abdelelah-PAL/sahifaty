@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sahifaty/controllers/general_controller.dart';
-import 'package:sahifaty/screens/quran_view/surah_page.dart';
+import 'package:sahifaty/screens/quran_view/index_page.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import 'custom_text.dart';
 
-class CustomDropdown extends StatefulWidget {
-  const CustomDropdown({
+class CustomThirdsDropdown extends StatefulWidget {
+  const CustomThirdsDropdown({
     super.key,
     required this.third,
     required this.isOpen,
@@ -19,10 +19,10 @@ class CustomDropdown extends StatefulWidget {
   final VoidCallback onToggle;
 
   @override
-  State<CustomDropdown> createState() => _CustomDropdownState();
+  State<CustomThirdsDropdown> createState() => _CustomThirdsDropdownState();
 }
 
-class _CustomDropdownState extends State<CustomDropdown>
+class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     with SingleTickerProviderStateMixin {
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
@@ -37,7 +37,7 @@ class _CustomDropdownState extends State<CustomDropdown>
           ? GeneralController().secondThird
           : GeneralController().thirdThird;
 
-  final Map<String, List<String>> surasByPart = {
+  final Map<String, List<String>> indexesByPart = {
     "الجزء الأول": ["الفاتحة", "البقرة"],
     "الجزء الثاني": ["البقرة", "آل عمران"],
     "الجزء الثالث": ["آل عمران", "النساء"],
@@ -52,7 +52,9 @@ class _CustomDropdownState extends State<CustomDropdown>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
+
   }
+
 
   void _showOverlay() {
     if (_overlayEntry != null) return;
@@ -129,7 +131,7 @@ class _CustomDropdownState extends State<CustomDropdown>
   void _showSideOverlay(
       String option, int index, Offset parentOffset, Size buttonSize) {
     _removeSideOverlay();
-    if (!surasByPart.containsKey(option)) return;
+    if (!indexesByPart.containsKey(option)) return;
 
     _tappedIndex = index;
     const double itemHeight = 40;
@@ -151,14 +153,15 @@ class _CustomDropdownState extends State<CustomDropdown>
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
-              itemCount: surasByPart[option]!.length,
+              itemCount: indexesByPart[option]!.length,
               itemBuilder: (_, i) {
-                final sura = surasByPart[option]![i];
+                final sura = indexesByPart[option]![i];
                 return InkWell(
                   onTap: () {
                     _removeSideOverlay();
                     _removeOverlay();
-                    Get.to( SurahPage());
+                    _controller.value = 0.0;
+                    Get.to( IndexPage());
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -191,9 +194,12 @@ class _CustomDropdownState extends State<CustomDropdown>
   }
 
   void _removeOverlay() {
-    _removeSideOverlay();
     _overlayEntry?.remove();
     _overlayEntry = null;
+
+    if (mounted && _controller.isAnimating) {
+      _controller.value = 0;
+    }
   }
 
   void _toggleAnimation() {
@@ -205,7 +211,7 @@ class _CustomDropdownState extends State<CustomDropdown>
   }
 
   @override
-  void didUpdateWidget(CustomDropdown oldWidget) {
+  void didUpdateWidget(CustomThirdsDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isOpen) {
       _toggleAnimation();

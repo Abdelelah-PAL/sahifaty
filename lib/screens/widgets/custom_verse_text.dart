@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 
-class CustomAyatText extends StatelessWidget {
+class CustomVerseText extends StatelessWidget {
   final String text;
   final int category;
   final Color backgroundColor;
 
-  const CustomAyatText({
+  const CustomVerseText({
     super.key,
     required this.text,
     required this.category,
@@ -24,13 +24,12 @@ class CustomAyatText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 4),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(6),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Checkbox(
@@ -41,16 +40,13 @@ class CustomAyatText extends StatelessWidget {
             checkColor: backgroundColor,
           ),
           Flexible(
-            fit: FlexFit.loose,
             child: Text(
               text,
-              softWrap: true,
-              overflow: TextOverflow.visible,
               textDirection: TextDirection.rtl,
               textAlign: TextAlign.start,
               style:  TextStyle(
                 fontSize: 14,
-                height: 1.2,
+                height: 2,
                 color: AppColors.whiteFontColor,
                 fontWeight: FontWeight.bold,
                 fontFamily: AppFonts.versesFont,
