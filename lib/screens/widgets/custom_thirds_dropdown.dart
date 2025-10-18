@@ -219,6 +219,7 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     } else {
       _toggleAnimation();
       _removeOverlay();
+      _removeSideOverlay();
     }
   }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sahifaty/screens/widgets/3d_pie_chart.dart';
+import 'package:sahifaty/screens/main_screen/main_screen.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
-import '../thirds_screen/thirds_screen.dart';
+import '../widgets/3d_pie_chart.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
@@ -44,7 +44,7 @@ class CelebrationScreen extends StatelessWidget {
               height: SizeConfig.getProportionalHeight(100),
             ),
             CustomButton(
-                onPressed: () => {Get.to(const ThirdsScreen())},
+                onPressed: () => {Get.to(const MainScreen())},
                 text: 'ابدأ بتحسين مستواك',
                 width: 170,
                 height: 35),

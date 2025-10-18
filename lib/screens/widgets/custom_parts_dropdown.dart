@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
+import '../quran_view/index_page.dart';
 import 'custom_text.dart';
 
 class CustomPartsDropdown extends StatefulWidget {
@@ -56,15 +58,21 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
     "الجزء السابع والعشرون": ["الأحزاب", "يس", "الصافات"],
     "الجزء الثامن والعشرون": ["يس", "الصافات", "الزمر"],
     "الجزء التاسع والعشرون": ["الصافات", "الزمر", "فصلت"],
-    "الجزء الثلاثون": ["فصلت", "الجن", "الناس"]
+    "الجزء الثلاثون": ["فصلت", "الجن", "الناس"],
   };
-
 
   List<String> get indexesForPart {
     final keys = indexesByPart.keys.toList();
-    if (widget.part < 0 || widget.part >= keys.length) return [];
-    return indexesByPart[keys[widget.part]] ?? [];
+    if (widget.part <= 0 || widget.part > keys.length) return [];
+    return indexesByPart[keys[widget.part - 1]] ?? [];
   }
+
+  String get currentPartName {
+    final keys = indexesByPart.keys.toList();
+    if (widget.part <= 0 || widget.part > keys.length) return '';
+    return keys[widget.part - 1];
+  }
+
   @override
   void initState() {
     super.initState();
@@ -109,6 +117,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
                     final item = indexesForPart[index];
                     return InkWell(
                       onTap: () {
+                        Get.to( const IndexPage2());
                         _removeOverlay();
                         widget.onToggle(); // optional callback
                       },
@@ -142,25 +151,31 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
   void _removeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;
-    if (mounted && _controller.isAnimating) {
-      _controller.value = 0;
+    if (mounted) {
+      _controller.reset();
     }
   }
 
   @override
   void didUpdateWidget(covariant CustomPartsDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.isOpen) {
-      _showOverlay();
-    } else {
-      _removeOverlay();
-    }
+
+    // Avoid triggering overlay changes during build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      if (widget.isOpen && _overlayEntry == null) {
+        _showOverlay();
+      } else if (!widget.isOpen && _overlayEntry != null) {
+        _removeOverlay();
+      }
+    });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
     _removeOverlay();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -183,7 +198,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
           ),
           child: Center(
             child: CustomText(
-              text: indexesByPart.keys.elementAt(widget.part - 1),
+              text: currentPartName,
               fontSize: 14,
               color: Colors.white,
               withBackground: false,

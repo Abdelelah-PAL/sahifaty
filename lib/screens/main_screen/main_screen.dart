@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/providers/general_provider.dart';
-import 'package:sahifaty/screens/thirds_screen/widgets/menu_item.dart';
-import 'package:sahifaty/screens/widgets/custom_parts_dropdown.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
+import '../../providers/general_provider.dart';
 import '../widgets/3d_pie_chart.dart';
 import '../widgets/custom_back_button.dart';
+import '../widgets/custom_parts_dropdown.dart';
 import '../widgets/custom_thirds_dropdown.dart';
 import '../widgets/custom_text.dart';
+import 'widgets/menu_item.dart';
 
-class ThirdsScreen extends StatefulWidget {
-  const ThirdsScreen({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<ThirdsScreen> createState() => _ThirdsScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _ThirdsScreenState extends State<ThirdsScreen> {
+class _MainScreenState extends State<MainScreen> {
   int? openIndex;
 
   void toggle(int index) {
@@ -46,36 +46,36 @@ class _ThirdsScreenState extends State<ThirdsScreen> {
                   value: '1',
                   child: MenuItem(
                     text: "أيقونات الأثلاث",
-                    value: generalProvider.thirdsMenuItem,
                     onChanged: (v) {
                       if (v) {
                         generalProvider.toggleThirdsMenuItem();
                       }
                     },
+                    index: 1,
                   ),
                 ),
                 PopupMenuItem(
                   value: '2',
                   child: MenuItem(
                     text: "أيقونات الأجزاء",
-                    value: generalProvider.partsMenuItem,
                     onChanged: (v) {
                       if (v) {
                         generalProvider.togglePartsMenuItem();
                       }
                     },
+                    index: 2,
                   ),
                 ),
                 PopupMenuItem(
                   value: '3',
                   child: MenuItem(
                     text: "أيقونات التقييم",
-                    value: generalProvider.assessmentMenuItem,
                     onChanged: (v) {
                       if (v) {
                         generalProvider.toggleAssessmentMenuItem();
                       }
                     },
+                    index: 3,
                   ),
                 ),
               ];

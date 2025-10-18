@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import '../core/constants/colors.dart';
 
 class GeneralController {
@@ -50,4 +52,48 @@ class GeneralController {
     'الجزء التاسع والعشرين',
     'الجزء الثلاثون',
   ];
+
+  String toArabicDigits(int n) => n.toString()
+      .replaceAll('0','٠').replaceAll('1','١').replaceAll('2','٢').replaceAll('3','٣')
+      .replaceAll('4','٤').replaceAll('5','٥').replaceAll('6','٦')
+      .replaceAll('7','٧').replaceAll('8','٨').replaceAll('9','٩');
+
+  String ayahMarker(int n) => '\u2067\u06DD${toArabicDigits(n)}\u2069';
+
+  Color getColorFromCategory(int category) {
+    switch (category) {
+      case 1:
+        return AppColors.strongColor;
+      case 2:
+        return AppColors.revisionColor;
+      case 3:
+        return AppColors.desireColor;
+      case 4:
+        return AppColors.easyColor;
+      case 5:
+        return AppColors.hardColor;
+      default:
+        return AppColors.uncategorizedColor;
+    }
+  }
+
+  String toArabicNumber(int number) {
+    const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return number
+        .toString()
+        .split('')
+        .map((d) => arabicDigits[int.parse(d)])
+        .join('');
+  }
+
+  Color getColorForOption(String? text) {
+    if (text == null) return AppColors.uncategorizedColor;
+    return dropdownOptions
+        .firstWhere(
+          (opt) => opt['text'] == text,
+      orElse: () => {'color': AppColors.uncategorizedColor},
+    )['color'];
+  }
+
+
 }
