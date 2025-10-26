@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/screens/widgets/custom_button.dart';
 import '../../controllers/users_controller.dart';
+import '../../core/constants/assets.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/users_provider.dart';
@@ -36,6 +38,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
+
     UsersProvider authenticationProvider =
         Provider.of<UsersProvider>(context);
 
@@ -54,14 +58,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: Column(
                   children: [
-                    // SizeConfig.customSizedBox(
-                    //     179, 179, Image.asset(Assets.pureLogo)),
+                     SizeConfig.customSizedBox(
+                         1.5, 3, Image.asset(Assets.quran)),
                     Padding(
                         padding: EdgeInsets.only(
                             top: SizeConfig.getProportionalHeight(10),
                             bottom: SizeConfig.getProportionalHeight(13)),
                         child: const CustomText(
-                          text: "create_an_account",
+                          text: "إنشاء حساب",
                           fontSize: 24,
                           fontWeight: FontWeight.normal,
                           color: AppColors.blackFontColor,
@@ -94,64 +98,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderColor:
                           _authController.confirmPasswordTextFieldBorderColor,
                     ),
-                    SizeConfig.customSizedBox(null, 50, null),
-                    CustomAuthBtn(
-                      text: 'التسجيل',
-                      onTap: () async {
-                        _authController.checkEmptyFields(false);
-                        if (!_authController.noneIsEmpty) {
-                          setState(() {
-                            _authController.changeTextFieldsColors(false);
-                          });
-                          return;
-                        }
-                        _authController.checkMatchedPassword();
-                        if (!_authController.isMatched) {
-                          setState(() {
-                            _authController.changeTextFieldsColors(false);
-                          });
-                          return;
-                        }
-                        _authController.checkValidPassword();
-                        if (!_authController.passwordIsValid) {
-                          setState(() {
-                            _authController.changeTextFieldsColors(false);
-                          });
-                          return;
-                        }
-                        if (_authController.isMatched &&
-                            _authController.passwordIsValid) {
-                          var user = await UsersProvider()
-                              .signUpWithEmailAndPassword(
-                                  _authController.signUpEmailController.text
-                                      .trim(),
-                                  _authController.signUpPasswordController.text,
-                                  authenticationProvider);
-                          // UserDetails userDetails = UserDetails(
-                          //   userId: user!.uid,
-                          //   userTypeId: null,
-                          //   email: user.email!,
-                          //   username: null,
-                          //   subscriber: false,
-                          // );
-                          // UsersProvider().addUserDetails(userDetails);
-                          setState(() {
-                            _authController.changeTextFieldsColors(false);
-                          });
-                          Get.to(() => const LoginScreen(
-                                firstScreen: false,
-                              ));
-                        }
-                        UsersProvider().resetLoading();
-                        setState(() {
-                          UsersController().clearTextFields();
-                        });
-                      },
-                    ),
-                    SizeConfig.customSizedBox(null, 50, null),
+                    SizeConfig.customSizedBox(null, 20, null),
+                    CustomButton(onPressed: () {}, width: 150, height: 50, text: "إنشاء حساب"),
+                    SizeConfig.customSizedBox(null, 20, null),
                     CustomAuthFooter(
-                      headingText: "have_account",
-                      tailText: "login",
+                      headingText: "هل تملك حساب؟",
+                      tailText: "تسجيل الدخول",
                       onTap: () {
                         UsersProvider().resetSignUpErrorText();
                         Get.to(() => const LoginScreen(

@@ -33,7 +33,7 @@ class CustomAuthFooter extends StatelessWidget {
               ),
             ),
             WidgetSpan(
-              child: SizeConfig.customSizedBox(4, null, null),
+              child: SizeConfig.customSizedBox(20, null, null),
             ),
             TextSpan(
               text:tailText,

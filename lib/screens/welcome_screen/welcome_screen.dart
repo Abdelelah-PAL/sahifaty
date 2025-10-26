@@ -17,7 +17,6 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
-    SizeConfig().init(context);
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       body: Column(
