@@ -18,4 +18,5 @@ class AppColors {
   static const Color hardColor = Color(0xFFFF0000);
   static const Color uncategorizedColor = Color(0xFFC6C7C9);
   static const Color dropDownButtonColor = Color(0xFFE5E6EB);
+  static const Color authDividerColor = Color(0xFF808080);
 }

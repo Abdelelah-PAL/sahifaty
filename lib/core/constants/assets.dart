@@ -10,6 +10,7 @@ class Assets {
 
 
   /// Icons
+  static String googleIcon = "$rootIcons/ic_google.png";
 
 
 }
