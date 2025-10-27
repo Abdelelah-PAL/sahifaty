@@ -13,7 +13,7 @@ class CustomAuthTextFieldHeader extends StatelessWidget {
     return Align(
       alignment:  Alignment.topRight,
       child: Padding(
-        padding:EdgeInsets.only(right: SizeConfig.getProportionalWidth(35)),
+        padding:EdgeInsets.only(right: SizeConfig.getProportionalWidth(15)),
         child: Text(
           text,
           style: TextStyle(

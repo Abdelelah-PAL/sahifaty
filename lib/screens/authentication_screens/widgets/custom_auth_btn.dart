@@ -18,7 +18,7 @@ class CustomAuthBtn extends StatelessWidget {
         width: SizeConfig.getProportionalWidth(312),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5),
-            color: AppColors.primaryColor),
+            color: Colors.grey),
         child: Center(
           child: Text(
             text,

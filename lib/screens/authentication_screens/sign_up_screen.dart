@@ -40,8 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    UsersProvider authenticationProvider =
-        Provider.of<UsersProvider>(context);
+    UsersProvider authenticationProvider = Provider.of<UsersProvider>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -58,8 +57,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 onTap: () => FocusScope.of(context).unfocus(),
                 child: Column(
                   children: [
-                     SizeConfig.customSizedBox(
-                         1.5, 3, Image.asset(Assets.quran)),
+                    SizeConfig.customSizedBox(
+                        1.5, 3, Image.asset(Assets.quran)),
                     Padding(
                         padding: EdgeInsets.only(
                             top: SizeConfig.getProportionalHeight(10),
@@ -82,16 +81,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderColor:
                           _authController.signUpEmailTextFieldBorderColor,
                     ),
+                    SizeConfig.customSizedBox(null, 50, null),
                     CustomAuthenticationTextField(
-                      hintText:'أدخل كلمة المرور',
+                      hintText: 'أدخل كلمة المرور',
                       obscureText: true,
                       textEditingController:
                           _authController.signUpPasswordController,
                       borderColor:
                           _authController.signUpPasswordTextFieldBorderColor,
                     ),
+                    SizeConfig.customSizedBox(null, 50, null),
+
                     CustomAuthenticationTextField(
-                      hintText:'تأكيد كلمة المرور',
+                      hintText: 'تأكيد كلمة المرور',
                       obscureText: true,
                       textEditingController:
                           _authController.confirmedPasswordController,
@@ -99,7 +101,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           _authController.confirmPasswordTextFieldBorderColor,
                     ),
                     SizeConfig.customSizedBox(null, 20, null),
-                    CustomButton(onPressed: () {}, width: 150, height: 50, text: "إنشاء حساب"),
+                    CustomButton(
+                        onPressed: () {},
+                        width: 150,
+                        height: 50,
+                        text: "إنشاء حساب"),
                     SizeConfig.customSizedBox(null, 20, null),
                     CustomAuthFooter(
                       headingText: "هل تملك حساب؟",
@@ -116,7 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               if (authenticationProvider.isLoading)
                 const Positioned.fill(
-                  child:  Center(
+                  child: Center(
                     child: CircularProgressIndicator(),
                   ),
                 ),

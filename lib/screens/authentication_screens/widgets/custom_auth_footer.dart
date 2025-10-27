@@ -40,10 +40,9 @@ class CustomAuthFooter extends StatelessWidget {
               style: TextStyle(
                 fontFamily: AppFonts.primaryFont,
                 fontSize: 16,
-                color: AppColors.primaryColor,
+                color: Colors.grey,
                 decoration: TextDecoration.underline,
-                decorationColor:
-                    AppColors.primaryColor, // Change the underline color here
+                decorationColor: Colors.grey,
               ),
               recognizer: TapGestureRecognizer()..onTap = onTap,
             ),
