@@ -6,8 +6,8 @@ import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/users_provider.dart';
 import '../widgets/custom_back_button.dart';
+import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
-import 'widgets/custom_auth_btn.dart';
 import 'widgets/custom_auth_textfield.dart';
 import 'widgets/custom_auth_textfield_header.dart';
 
@@ -15,10 +15,10 @@ class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  _ForgotPasswordScreenState createState() => _ForgotPasswordScreenState();
+  ForgotPasswordScreenState createState() => ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     // return Scaffold(
@@ -93,9 +93,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   null,
                 ),
                 SizeConfig.customSizedBox(null, 15, null),
-                CustomAuthBtn(
+                CustomButton(
                     text: "إرسال",
-                    onTap: () async {
+                    width: SizeConfig.getProportionalWidth(150),
+                    height: SizeConfig.getProportionalHeight(50),
+                    onPressed: () async {
                       if (UsersController()
                           .forgotPasswordEmailController
                           .text

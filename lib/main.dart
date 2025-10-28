@@ -7,7 +7,6 @@ import 'package:sahifaty/providers/general_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/screens/authentication_screens/sign_up_screen.dart';
 
-import 'screens/welcome_screen/welcome_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

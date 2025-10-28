@@ -1,16 +1,14 @@
 class User {
   int? id;
   String username;
-  String login;
-  String email;
+  String? email;
   String? password;
   int? roleNum;
 
   User({
     this.id,
     required this.username,
-    required this.login,
-    required this.email,
+    this.email,
     this.password,
     this.roleNum,
   });
@@ -19,7 +17,6 @@ class User {
     return User(
         id: json['id'],
         username: json['username'],
-        login: json['login'],
         email: json['email'],
         password: json['password'],
         roleNum: json['roleNum']);
@@ -29,7 +26,6 @@ class User {
     return {
       'id': id,
       'username': username,
-      'login': login,
       'email': email,
       'password': password,
       'roleNum': roleNum,

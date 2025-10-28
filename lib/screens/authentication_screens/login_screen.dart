@@ -8,11 +8,11 @@ import '../../core/constants/assets.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
+import '../../models/user.dart';
 import '../../providers/users_provider.dart';
 import '../widgets/custom_text.dart';
 import 'forget_password_screen.dart';
 import 'sign_up_screen.dart';
-import 'widgets/custom_auth_btn.dart';
 import 'widgets/custom_auth_footer.dart';
 import 'widgets/custom_auth_textfield.dart';
 import 'widgets/custom_auth_textfield_header.dart';
@@ -28,13 +28,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late UsersController _authController;
+  late UsersController _userController;
 
   @override
   void initState() {
     super.initState();
-    _authController = UsersController();
-    _authController.getLoginInfo();
+    _userController = UsersController();
+    _userController.getLoginInfo();
   }
 
   @override
@@ -48,7 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
       SizeConfig().init(context);
     }
     UsersProvider usersProvider = Provider.of<UsersProvider>(context);
-    UsersProvider authenticationProvider = Provider.of<UsersProvider>(context);
 
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
@@ -77,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           withBackground: false,
                         )),
                     CustomErrorTxt(
-                      text: _authController.loginErrorText,
+                      text: _userController.loginErrorText,
                     ),
                     const CustomAuthTextFieldHeader(
                       text: 'البريد الإلكتروني',
@@ -86,9 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         hintText: 'example@example.com',
                         obscureText: false,
                         textEditingController:
-                            _authController.loginEmailController,
+                            _userController.loginEmailController,
                         borderColor:
-                            _authController.loginPasswordTextFieldBorderColor),
+                            _userController.loginPasswordTextFieldBorderColor),
                     const CustomAuthTextFieldHeader(
                       text: 'كلمة المرور',
                     ),
@@ -96,9 +95,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       hintText: 'أدخل كلمة المرور',
                       obscureText: true,
                       textEditingController:
-                          _authController.loginPasswordController,
+                          _userController.loginPasswordController,
                       borderColor:
-                          _authController.loginPasswordTextFieldBorderColor,
+                          _userController.loginPasswordTextFieldBorderColor,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,11 +121,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                         const CheckboxThemeData(), // reset it
                                   ),
                                   child: Checkbox(
-                                    value: _authController.rememberMe,
+                                    value: _userController.rememberMe,
                                     activeColor: Colors.grey,
                                     checkColor: AppColors.backgroundColor,
                                     onChanged: (v) => setState(() =>
-                                        _authController.toggleRememberMe()),
+                                        _userController.toggleRememberMe()),
                                     side: const BorderSide(
                                         color: AppColors.textFieldBorderColor,
                                         width: 2),
@@ -165,44 +164,51 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizeConfig.customSizedBox(null, 30, null),
                     CustomButton(
                       text: 'تسجيل الدخول',
-                      width: 150,
-                      height: 50,
+                      width: SizeConfig.getProportionalWidth(150),
+                      height: SizeConfig.getProportionalHeight(50),
                       onPressed: () async {
-                        _authController.checkEmptyFields(true);
-                        if (!_authController.noneIsEmpty) {
+                        _userController.checkEmptyFields(true);
+                        if (!_userController.noneIsEmpty) {
                           setState(() {
-                            _authController.changeTextFieldsColors(true);
+                            _userController.changeTextFieldsColors(true);
                           });
                           return;
-                        } else {
-                          setState(() {
-                            _authController.changeTextFieldsColors(true);
-                            authenticationProvider.isLoading = true;
-                          });
+                        }
+                        setState(() {
+                          _userController.changeTextFieldsColors(true);
+                          usersProvider.isLoading = true;
+                        });
 
-                          var user = await UsersProvider().login(
-                            _authController.loginEmailController.text.trim(),
-                            _authController.loginPasswordController.text,
+                        try {
+                          final user = await usersProvider.login(
+                            _userController.loginEmailController.text.trim(),
+                            _userController.loginPasswordController.text,
                           );
 
-                          if (user == null) {
-                            setState(() {
-                              _authController.loginErrorText =
-                                  "خطأ في البريد الالكتروني أو كلمة المرور";
-                              authenticationProvider.isLoading = false;
-                            });
-                            return;
+                          if (user is! User) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("خطأ في البريد الإلكتروني أو كلمة المرور")),
+                            );
                           } else {
-                            if (_authController.rememberMe == true) {
-                              _authController.saveLoginInfo(
-                                user.email,
-                                _authController.loginPasswordController.text,
+                            // Save login info if rememberMe is checked
+                            if (_userController.rememberMe) {
+                              _userController.saveLoginInfo(
+                                user.username,
+                                _userController.loginPasswordController.text,
                               );
                             }
 
-                            Get.to(const WelcomeScreen());
+                            // Navigate to welcome screen
+                            Get.to(() => const WelcomeScreen());
                           }
-                          UsersProvider().resetLoading();
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(e.toString())),
+                          );
+                        } finally {
+                          setState(() {
+                            usersProvider.isLoading = false;
+                          });
                         }
                       },
                     ),
@@ -217,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ])),
             ),
-            if (authenticationProvider.isLoading)
+            if (usersProvider.isLoading)
               const Center(child: CircularProgressIndicator()),
           ],
         ));

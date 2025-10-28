@@ -7,7 +7,7 @@ import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
 
 class IndexPage extends StatefulWidget {
-  IndexPage({super.key});
+  const IndexPage({super.key});
 
   @override
   State<IndexPage> createState() => _IndexPageState();

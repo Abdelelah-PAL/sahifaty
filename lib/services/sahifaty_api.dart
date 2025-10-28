@@ -27,7 +27,7 @@ class SahifatyApi {
           .get(Uri.parse(_baseURL + url), headers: headers)
           .timeout(_timeout);
 
-      responseJson = _processedResponse(response);
+      responseJson = processedResponse(response);
 
       if (response.statusCode == 200) {
         return responseJson;
@@ -50,7 +50,7 @@ class SahifatyApi {
         'Content-Type': 'application/json',
       };
       var response = await http.get(uri, headers: headers).timeout(_timeout);
-      responseJson = _processedResponse(response);
+      responseJson = processedResponse(response);
       if (response.statusCode == 200) {
         return responseJson;
       } else {
@@ -83,7 +83,7 @@ class SahifatyApi {
         headers: headers,
       )
           .timeout(_timeout);
-      responseJson = _processedResponse(response);
+      responseJson = processedResponse(response);
 
     }
     on SocketException {
@@ -115,7 +115,7 @@ class SahifatyApi {
         headers: headers,
       )
           .timeout(_timeout);
-      responseJson = _processedResponse(response);
+      responseJson = processedResponse(response);
 
     }
     on SocketException {
@@ -142,7 +142,7 @@ class SahifatyApi {
       var response = await http
           .delete(Uri.parse(_baseURL + url), headers: headers)
           .timeout(_timeout);
-      responseJson = _processedResponse(response);
+      responseJson = processedResponse(response);
       if (response.statusCode == 200) {
         return responseJson;
       } else {
@@ -157,7 +157,7 @@ class SahifatyApi {
     }
   }
 
-  dynamic _processedResponse(http.Response response) {
+  dynamic processedResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
       case 201:

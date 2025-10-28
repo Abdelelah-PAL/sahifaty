@@ -11,30 +11,57 @@ class UsersProvider with ChangeNotifier {
 
   UsersProvider._internal();
 
-  final UsersServices _authService = UsersServices();
+  final UsersServices _usersService = UsersServices();
   bool isLoading = false;
   final String errorMessage = "";
 
-  Future<User> signUpWithEmailAndPassword(String email, String password,
-      UsersProvider usersProvider) async {
+  Future<User> register(String username, String email, String password) async {
     setLoading();
-   User user = await _authService.signUpWithEmailAndPassword(
-        email, password, usersProvider);
-    return user;
+    try {
+      final result = await _usersService.register(
+        username: username,
+        email: email,
+        password: password,
+      );
+
+      // result can be User or String error
+      if (result is User) {
+        return result;
+      } else {
+        // throw error to be caught in UI
+        throw Exception(result.toString());
+      }
+    } finally {
+      resetLoading();
+    }
   }
 
   Future<User> login(String email, String password) async {
     setLoading();
-  return User(userId: 'userId', email: 'email', subscriber: false);
+    try {
+      final result = await _usersService.login(
+        email: email,
+        password: password,
+      );
+
+      // result can be User or String error
+      if (result is User) {
+        return result;
+      } else {
+        // throw error to be caught in UI
+        throw Exception(result.toString());
+      }
+    } finally {
+      resetLoading();
+    }
   }
 
   Future<void> logout() async {
-    User user = User(userId: "1", email: "email", subscriber: false);
-    await _authService.logout();
+    await _usersService.logout();
   }
 
   Future<void> sendPasswordResetEmail(email) async {
-    await _authService.sendPasswordResetEmail(email);
+    await _usersService.sendPasswordResetEmail(email);
   }
 
   Future<void> resetSignUpErrorText() async {

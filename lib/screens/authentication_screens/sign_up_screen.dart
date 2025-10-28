@@ -9,7 +9,6 @@ import '../../core/utils/size_config.dart';
 import '../../providers/users_provider.dart';
 import '../widgets/custom_text.dart';
 import 'login_screen.dart';
-import 'widgets/custom_auth_btn.dart';
 import 'widgets/custom_auth_footer.dart';
 import 'widgets/custom_auth_textfield.dart';
 import 'widgets/custom_error_txt.dart';
@@ -26,7 +25,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
-    _authController.confirmedPasswordController.dispose();
+    _authController.signUpConfirmedPasswordController.dispose();
     super.dispose();
   }
 
@@ -83,6 +82,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     SizeConfig.customSizedBox(null, 50, null),
                     CustomAuthenticationTextField(
+                      hintText: 'اسم المستخدم',
+                      obscureText: false,
+                      textEditingController:
+                          _authController.signUpUsernameController,
+                      borderColor:
+                          _authController.signUpEmailTextFieldBorderColor,
+                    ),
+                    SizeConfig.customSizedBox(null, 50, null),
+                    CustomAuthenticationTextField(
                       hintText: 'أدخل كلمة المرور',
                       obscureText: true,
                       textEditingController:
@@ -91,21 +99,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           _authController.signUpPasswordTextFieldBorderColor,
                     ),
                     SizeConfig.customSizedBox(null, 50, null),
-
                     CustomAuthenticationTextField(
                       hintText: 'تأكيد كلمة المرور',
                       obscureText: true,
                       textEditingController:
-                          _authController.confirmedPasswordController,
+                          _authController.signUpConfirmedPasswordController,
                       borderColor:
                           _authController.confirmPasswordTextFieldBorderColor,
                     ),
                     SizeConfig.customSizedBox(null, 20, null),
                     CustomButton(
-                        onPressed: () {},
-                        width: 150,
-                        height: 50,
-                        text: "إنشاء حساب"),
+                      onPressed: () async {
+                        _authController.checkEmptyFields(false);
+                        if (!_authController.noneIsEmpty) {
+                          setState(() {
+                            _authController.changeTextFieldsColors(false);
+                          });
+                          return;
+                        }
+
+                        _authController.checkMatchedPassword();
+                        if (!_authController.isMatched) {
+                          setState(() {
+                            _authController.changeTextFieldsColors(false);
+                          });
+                          return;
+                        }
+
+                        _authController.checkValidPassword();
+                        if (!_authController.passwordIsValid) {
+                          setState(() {
+                            _authController.changeTextFieldsColors(false);
+                          });
+                          return;
+                        }
+
+                        if (_authController.isMatched &&
+                            _authController.passwordIsValid) {
+                          try {
+                            await UsersProvider().register(
+                              _authController.signUpUsernameController.text
+                                  .trim(),
+                              _authController.signUpEmailController.text.trim(),
+                              _authController.signUpPasswordController.text,
+                            );
+
+                            setState(() {
+                              _authController.changeTextFieldsColors(false);
+                            });
+                            UsersController().clearTextFields();
+                            Get.to(() => const LoginScreen(firstScreen: false));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(e.toString())),
+                            );
+                          }
+                        }
+                      },
+                      width: SizeConfig.getProportionalWidth(150),
+                      height: SizeConfig.getProportionalHeight(50),
+                      text: "إنشاء حساب",
+                    ),
                     SizeConfig.customSizedBox(null, 20, null),
                     CustomAuthFooter(
                       headingText: "هل تملك حساب؟",
