@@ -8,7 +8,6 @@ import '../../core/constants/assets.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
-import '../../models/user.dart';
 import '../../providers/users_provider.dart';
 import '../widgets/custom_text.dart';
 import 'forget_password_screen.dart';
@@ -180,23 +179,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         });
 
                         try {
-                          final user = await usersProvider.login(
+                          await usersProvider.login(
                             _userController.loginEmailController.text.trim(),
                             _userController.loginPasswordController.text,
                           );
 
-                          if (user is! User) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("خطأ في البريد الإلكتروني أو كلمة المرور")),
-                            );
-                          } else {
                             // Save login info if rememberMe is checked
                             if (_userController.rememberMe) {
                               _userController.saveLoginInfo(
-                                user.username,
+                                _userController.loginEmailController.text.trim(),
                                 _userController.loginPasswordController.text,
                               );
-                            }
 
                             // Navigate to welcome screen
                             Get.to(() => const WelcomeScreen());
@@ -205,6 +198,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(e.toString())),
                           );
+                          rethrow;
+
                         } finally {
                           setState(() {
                             usersProvider.isLoading = false;

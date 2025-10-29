@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/models/auth_data.dart';
+import 'package:sahifaty/screens/welcome_screen/welcome_screen.dart';
 import 'package:sahifaty/screens/widgets/custom_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../controllers/users_controller.dart';
 import '../../core/constants/assets.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
+import '../../models/user.dart';
 import '../../providers/users_provider.dart';
 import '../widgets/custom_text.dart';
 import 'login_screen.dart';
@@ -137,7 +141,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (_authController.isMatched &&
                             _authController.passwordIsValid) {
                           try {
-                            await UsersProvider().register(
+                            AuthData authData = await UsersProvider().register(
                               _authController.signUpUsernameController.text
                                   .trim(),
                               _authController.signUpEmailController.text.trim(),
@@ -148,7 +152,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               _authController.changeTextFieldsColors(false);
                             });
                             UsersController().clearTextFields();
-                            Get.to(() => const LoginScreen(firstScreen: false));
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setString('token', authData.accessToken!);
+                            prefs.setString(
+                                'refresh_token', authData.refreshToken!);
+                            Get.to(() => const WelcomeScreen());
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(e.toString())),

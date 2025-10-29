@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:sahifaty/models/auth_data.dart';
 import '../models/user.dart';
 
 class UsersServices with ChangeNotifier {
@@ -19,21 +20,19 @@ class UsersServices with ChangeNotifier {
     try {
       final response = await http
           .post(
-        Uri.parse('$_baseURL/auth/register'),
-        headers: _authHeaders,
-        body: json.encode({
-          'username': username,
-          'email': email,
-          'password': password,
-        }),
-      )
+            Uri.parse('$_baseURL/auth/register'),
+            headers: _authHeaders,
+            body: json.encode({
+              'username': username,
+              'email': email,
+              'password': password,
+            }),
+          )
           .timeout(_timeout);
 
       final responseData = json.decode(response.body);
-      print(responseData);
-
-      if (response.statusCode == 200) {
-        return User.fromJson(responseData);
+      if (response.statusCode == 201) {
+        return AuthData.fromJson(responseData);
       } else {
         return responseData['message'] ?? 'Unknown error';
       }
@@ -41,7 +40,6 @@ class UsersServices with ChangeNotifier {
       rethrow;
     }
   }
-
 
   Future<dynamic> login(
       {required String email, required String password}) async {
@@ -58,6 +56,7 @@ class UsersServices with ChangeNotifier {
           )
           .timeout(_timeout);
       final responseData = json.decode(response.body);
+      print(responseData);
 
       if (response.statusCode == 200) {
         return User.fromJson(responseData);

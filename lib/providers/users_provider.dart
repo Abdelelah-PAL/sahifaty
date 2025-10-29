@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:sahifaty/models/auth_data.dart';
 import '../controllers/users_controller.dart';
 import '../core/constants/colors.dart';
 import '../models/user.dart';
@@ -15,7 +16,7 @@ class UsersProvider with ChangeNotifier {
   bool isLoading = false;
   final String errorMessage = "";
 
-  Future<User> register(String username, String email, String password) async {
+  Future<AuthData> register(String username, String email, String password) async {
     setLoading();
     try {
       final result = await _usersService.register(
@@ -25,7 +26,7 @@ class UsersProvider with ChangeNotifier {
       );
 
       // result can be User or String error
-      if (result is User) {
+      if (result is AuthData) {
         return result;
       } else {
         // throw error to be caught in UI
@@ -43,14 +44,14 @@ class UsersProvider with ChangeNotifier {
         email: email,
         password: password,
       );
-
       // result can be User or String error
       if (result is User) {
         return result;
       } else {
-        // throw error to be caught in UI
-        throw Exception(result.toString());
+        throw Exception(result);
       }
+    } catch (ex) {
+      rethrow;
     } finally {
       resetLoading();
     }
