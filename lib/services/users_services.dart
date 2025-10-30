@@ -56,7 +56,6 @@ class UsersServices with ChangeNotifier {
           )
           .timeout(_timeout);
       final responseData = json.decode(response.body);
-      print(responseData);
 
       if (response.statusCode == 200) {
         return User.fromJson(responseData);
