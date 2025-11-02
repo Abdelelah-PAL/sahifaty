@@ -53,10 +53,18 @@ class GeneralController {
     'الجزء الثلاثون',
   ];
 
-  String toArabicDigits(int n) => n.toString()
-      .replaceAll('0','٠').replaceAll('1','١').replaceAll('2','٢').replaceAll('3','٣')
-      .replaceAll('4','٤').replaceAll('5','٥').replaceAll('6','٦')
-      .replaceAll('7','٧').replaceAll('8','٨').replaceAll('9','٩');
+  String toArabicDigits(int n) => n
+      .toString()
+      .replaceAll('0', '٠')
+      .replaceAll('1', '١')
+      .replaceAll('2', '٢')
+      .replaceAll('3', '٣')
+      .replaceAll('4', '٤')
+      .replaceAll('5', '٥')
+      .replaceAll('6', '٦')
+      .replaceAll('7', '٧')
+      .replaceAll('8', '٨')
+      .replaceAll('9', '٩');
 
   String ayahMarker(int n) => '\u2067\u06DD${toArabicDigits(n)}\u2069';
 
@@ -88,12 +96,34 @@ class GeneralController {
 
   Color getColorForOption(String? text) {
     if (text == null) return AppColors.uncategorizedColor;
-    return dropdownOptions
-        .firstWhere(
-          (opt) => opt['text'] == text,
+    return dropdownOptions.firstWhere(
+      (opt) => opt['text'] == text,
       orElse: () => {'color': AppColors.uncategorizedColor},
     )['color'];
   }
 
-
+  String getStringLevel(level) {
+    String stringLevel = '';
+    switch (level) {
+      case 1:
+        stringLevel = "الأول";
+        break;
+      case 2:
+        stringLevel = "الثاني";
+        break;
+      case 3:
+        stringLevel = "الثالث";
+        break;
+      case 4:
+        stringLevel = "الرابع";
+        break;
+      case 5:
+        stringLevel = "الخامس";
+        break;
+      case 6:
+        stringLevel = "السادس";
+        break;
+    }
+    return stringLevel;
+  }
 }

@@ -1,5 +1,8 @@
+import 'package:sahifaty/models/school_level.dart';
+import 'package:sahifaty/models/surah.dart';
+
 class Ayat {
-  String? _id;
+  int? _id;
   String text;
   int ayahNo;
   int juz;
@@ -9,10 +12,12 @@ class Ayat {
   int letterCount;
   double weight;
   String ayahType;
-
+  List<SchoolLevel>? schoolLevels;
+  List<int>? subjects;
+  Surah surah;
 
   Ayat({
-    String? id,
+    int? id,
     required this.text,
     required this.ayahNo,
     required this.juz,
@@ -22,9 +27,12 @@ class Ayat {
     required this.letterCount,
     required this.weight,
     required this.ayahType,
+    this.schoolLevels,
+    this.subjects,
+    required this.surah,
   }) : _id = id;
 
-  String? get id => _id;
+  int? get id => _id;
 
   factory Ayat.fromJson(Map<String, dynamic> json) {
     return Ayat(
@@ -38,8 +46,15 @@ class Ayat {
       letterCount: json['letterCount'],
       weight: json['weight'],
       ayahType: json['ayahType'],
+      schoolLevels: json['schoolLevels'] != null
+          ? (json['schoolLevels'] as List)
+              .map((e) => SchoolLevel.fromJson(e))
+              .toList()
+          : [],
+      subjects:
+          json['subjects'] != null ? List<int>.from(json['subjects']) : [],
+      surah: Surah.fromJson(json['surah']),
     );
-
   }
 
   Map<String, dynamic> toMap() {
@@ -54,6 +69,9 @@ class Ayat {
       'letterCount': letterCount,
       'weight': weight,
       'ayahType': ayahType,
+      'schoolLevels': schoolLevels?.map((level) => level.toMap()).toList(),
+      'subjects': subjects,
+      'surah': surah.toMap(),
     };
   }
 }

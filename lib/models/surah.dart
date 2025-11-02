@@ -1,10 +1,10 @@
-class User {
+class Surah {
   String? _id;
   String? nameAr;
-  String? ayahCount;
+  int? ayahCount;
 
 
-  User({
+  Surah({
     String? id,
     this.nameAr,
     this.ayahCount,
@@ -12,8 +12,8 @@ class User {
 
   String? get id => _id;
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+  factory Surah.fromJson(Map<String, dynamic> json) {
+    return Surah(
       id: json['_id'],
       nameAr: json['nameAr'],
       ayahCount: json['ayahCount'],

@@ -10,24 +10,29 @@ class CustomButton extends StatelessWidget {
     required this.width,
     required this.height,
     this.icon,
+    this.isDisabled = false,
   });
 
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String? text;
   final double width;
   final double height;
   final IconData? icon;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
+    final Color backgroundColor =
+    isDisabled ? Colors.grey : AppColors.buttonColor;
+
     return SizedBox(
       width: width,
       height: height,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: isDisabled ? null : onPressed, // disable if needed
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.buttonColor,
-          padding: EdgeInsets.zero, // remove default padding
+          backgroundColor: backgroundColor,
+          padding: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
           ),
@@ -37,14 +42,14 @@ class CustomButton extends StatelessWidget {
               ? Icon(
             icon,
             size: 20,
-            color: Colors.white,
+            color: isDisabled ? Colors.black38 : Colors.white,
           )
               : text != null
               ? CustomText(
             text: text!,
             withBackground: false,
             fontSize: 14,
-            color: Colors.white,
+            color: isDisabled ? Colors.black38 : Colors.white,
           )
               : null,
         ),
@@ -52,4 +57,3 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
-

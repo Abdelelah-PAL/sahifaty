@@ -1,6 +1,6 @@
 class SchoolLevel {
   String? _id;
-  String schoolId;
+  int schoolId;
   String schoolName;
   int level;
 

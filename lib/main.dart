@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/core/constants/colors.dart';
+import 'package:sahifaty/providers/ayat_provider.dart';
 import 'package:sahifaty/providers/general_provider.dart';
+import 'package:sahifaty/providers/school_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/screens/authentication_screens/sign_up_screen.dart';
 
@@ -20,7 +22,9 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GeneralProvider()),
-        ChangeNotifierProvider(create: (_) => UsersProvider())
+        ChangeNotifierProvider(create: (_) => UsersProvider()),
+        ChangeNotifierProvider(create: (_) => SchoolProvider()),
+        ChangeNotifierProvider(create: (_) => AyatProvider())
       ],
       child: const MyApp(),
     ),
