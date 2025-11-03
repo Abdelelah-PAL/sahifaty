@@ -33,4 +33,9 @@ class AuthData {
       );
     }
   }
+
+  @override
+  String toString() {
+    return 'AuthData(statusCode: $statusCode, message: $message, accessToken: $accessToken, refreshToken: $refreshToken )';
+  }
 }

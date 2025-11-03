@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
@@ -16,23 +17,28 @@ class SahifatyApi {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('accessToken') ?? '';
     final refreshToken = prefs.getString('refreshToken') ?? '';
+    if (kDebugMode) {
+      print(token);
+    }
 
     return {
       'Authorization': 'Bearer $token',
       'X-Refresh-Token': refreshToken,
       'Content-Type': 'application/json',
+      'accept': '*/*'
     };
   }
 
   // Generic request handler
   Future<dynamic> _request(
-      String url, {
-        String method = 'GET',
-        dynamic body,
-        bool auth = true,
-      }) async {
+    String url, {
+    String method = 'GET',
+    dynamic body,
+    bool auth = true,
+  }) async {
     try {
       final headers = await _getHeaders(auth: auth);
+      print(headers);
       http.Response response;
 
       final uri = Uri.parse(_baseURL + url);
@@ -58,7 +64,7 @@ class SahifatyApi {
           throw Exception('Unsupported HTTP method: $method');
       }
 
-      return processedResponse(response);
+      return response;
     } on SocketException {
       throw FetchDataException('No Internet connection');
     } catch (e) {
@@ -68,9 +74,12 @@ class SahifatyApi {
 
   // Public methods
   Future<dynamic> get(String url) => _request(url, method: 'GET');
+
   Future<dynamic> fetch(Uri uri) async {
     try {
-      final response = await http.get(uri, headers: await _getHeaders(auth: false)).timeout(_timeout);
+      final response = await http
+          .get(uri, headers: await _getHeaders(auth: false))
+          .timeout(_timeout);
       return processedResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');

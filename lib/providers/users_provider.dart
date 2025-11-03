@@ -36,7 +36,7 @@ class UsersProvider with ChangeNotifier {
     }
   }
 
-  Future<User> login(String email, String password) async {
+  Future<AuthData> login(String email, String password) async {
     setLoading();
     try {
       final result = await _usersService.login(
@@ -44,7 +44,7 @@ class UsersProvider with ChangeNotifier {
         password: password,
       );
       // result can be User or String error
-      if (result is User) {
+      if (result is AuthData) {
         return result;
       } else {
         throw result;

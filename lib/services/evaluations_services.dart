@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:core';
+import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/evaluation.dart';
 import 'package:sahifaty/services/sahifaty_api.dart';
 
@@ -7,14 +9,28 @@ class EvaluationsServices {
 
   Future<List<Evaluation>> getAllEvaluations() async {
     try {
-      var evaluations = await _sahifatyApi.get('evaluations');
-      if (evaluations != null && evaluations is List) {
-        return evaluations
-            .map<Evaluation>((evaluation) => Evaluation.fromJson(evaluation))
-            .toList();
+      final http.Response res = await _sahifatyApi.get('evaluations');
+
+      if (res.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(res.body);
+
+        // Map each item to Evaluation model
+        return data.map<Evaluation>((e) => Evaluation.fromJson(e)).toList();
       } else {
-        return [];
+        throw Exception('Failed to load evaluations');
       }
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
+  Future<http.Response> evaluateAyah(Map<String, dynamic> body) async {
+    try {
+      print(body);
+      http.Response response =
+          await _sahifatyApi.post(url: 'user-evaluations', body: body);
+      print(response.body);
+      return response;
     } catch (ex) {
       rethrow;
     }

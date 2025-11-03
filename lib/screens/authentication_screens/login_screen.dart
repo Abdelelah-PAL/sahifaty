@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/screens/welcome_screen/welcome_screen.dart';
-import 'package:sahifaty/screens/widgets/custom_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../controllers/users_controller.dart';
 import '../../core/constants/assets.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
+import '../../models/auth_data.dart';
 import '../../providers/users_provider.dart';
+import '../welcome_screen/welcome_screen.dart';
+import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import 'forget_password_screen.dart';
 import 'sign_up_screen.dart';
@@ -177,7 +179,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             _userController.loginEmailController.text.trim(),
                           )) {
                             setState(() {
-                              _userController.loginEmailTextFieldBorderColor = AppColors.errorColor;
+                              _userController.loginEmailTextFieldBorderColor =
+                                  AppColors.errorColor;
                             });
                             throw Exception("أدخل بريدًا إلكترونيًا صحيحًا");
                           }
@@ -189,10 +192,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
 
                           // ✅ Try to log in
-                          await usersProvider.login(
+                          AuthData authData = await usersProvider.login(
                             _userController.loginEmailController.text.trim(),
                             _userController.loginPasswordController.text,
                           );
+                          print(authData.toString());
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setString('accessToken', authData.accessToken!);
 
                           // ✅ Save login info if Remember Me is checked
                           if (_userController.rememberMe) {
@@ -209,7 +215,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (e.toString().contains("invalid credentials")) {
                             message = "خطأ في البريد الإلكتروني أو كلمة المرور";
                           } else {
-                            message = e.toString().replaceFirst('Exception: ', '');
+                            message =
+                                e.toString().replaceFirst('Exception: ', '');
                           }
 
                           ScaffoldMessenger.of(context).showSnackBar(

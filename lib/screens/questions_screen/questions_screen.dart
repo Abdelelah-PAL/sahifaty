@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/controllers/evaluations_controller.dart';
+import 'package:sahifaty/models/ayat.dart';
+import 'package:sahifaty/models/user_evaluation.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/school_provider.dart';
 import 'package:sahifaty/screens/questions_screen/widgets/pagination_bar.dart';
@@ -55,8 +59,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             SizeConfig.customSizedBox(null, 50, null),
             CustomText(
               text:
-              'المستوى ${GeneralController().getStringLevel(
-                  selectedIndex + 1)}',
+                  'المستوى ${GeneralController().getStringLevel(selectedIndex + 1)}',
               fontSize: 16,
               withBackground: true,
               color: const Color(0xFFFFFFFF),
@@ -71,33 +74,33 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             SizedBox(
               height: SizeConfig.getProportionalHeight(60),
               child: Center(
-                  child: PaginationBar(
-                    currentPage: page,
-                    totalPages: ayatProvider.quickQuestionsLevelTotalPages,
-                    onNext: () async {
-                      if (ayatProvider.selectedValues.length ==
-                          ayatProvider.quickQuestionsAyat.length) {
-                        if (page < ayatProvider.quickQuestionsLevelTotalPages) {
-                          setState(() {
-                            page += 1;
-                          });
-                          ayatProvider.resetSelections();
-                          await ayatProvider.getQuickQuestionsAyatByLevel(
-                            selectedIndex + 1,
-                            page,
-                          );
-                          _scrollController.jumpTo(0); // reset scroll
-                        }
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                                "عليك تقييم جميع الآيات قبل الانتقال للصفحة التالية"),
-                          ),
+                child: PaginationBar(
+                  currentPage: page,
+                  totalPages: ayatProvider.quickQuestionsLevelTotalPages,
+                  onNext: () async {
+                    if (ayatProvider.selectedValues.length ==
+                        ayatProvider.quickQuestionsAyat.length) {
+                      if (page < ayatProvider.quickQuestionsLevelTotalPages) {
+                        setState(() {
+                          page += 1;
+                        });
+                        ayatProvider.resetSelections();
+                        await ayatProvider.getQuickQuestionsAyatByLevel(
+                          selectedIndex + 1,
+                          page,
                         );
+                        _scrollController.jumpTo(0); // reset scroll
                       }
-                    },
-                  ),
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              "عليك تقييم جميع الآيات قبل الانتقال للصفحة التالية"),
+                        ),
+                      );
+                    }
+                  },
+                ),
                 // child: ListView.builder(
                 //   shrinkWrap: true,
                 //   scrollDirection: Axis.horizontal,
@@ -161,8 +164,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   itemCount: ayatProvider.quickQuestionsAyat.length,
                   itemBuilder: (context, index) {
                     EvaluationsProvider evaluationsProvider =
-                    Provider.of<EvaluationsProvider>(context);
+                        Provider.of<EvaluationsProvider>(context);
                     Color selectedColor = ayatProvider.getSelectedColor(index);
+                    Ayat verse = ayatProvider.quickQuestionsAyat[index];
                     return Container(
                       padding: EdgeInsets.symmetric(
                           horizontal: SizeConfig.getProportionalWidth(10),
@@ -182,8 +186,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 CustomText(
-                                  text: ayatProvider
-                                      .quickQuestionsAyat[index].text,
+                                  text: verse.text,
                                   fontSize: 16,
                                   withBackground: false,
                                 ),
@@ -191,50 +194,56 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                   child: DropdownButton<String>(
                                     isExpanded: true,
                                     value: null,
-                                    hint: const Text(''),
+                                    hint: null,
+                                    // show hint when nothing selected
                                     items: evaluationsProvider.evaluations
                                         .map<DropdownMenuItem<String>>(
                                             (evaluation) {
-                                          return DropdownMenuItem<String>(
-                                            value: evaluation.nameAr,
-                                            child: Container(
-                                              width: double.infinity,
-                                              color: evaluation.id! < 6
-                                                  ? GeneralController()
-                                                  .dropdownOptions[
-                                              evaluation.id!]['color']
-                                                  : Colors.grey,
-                                              padding: const EdgeInsets
-                                                  .symmetric(
-                                                  vertical: 6, horizontal: 12),
-                                              child: CustomText(
-                                                text: evaluation.nameAr,
-                                                fontSize: 14,
-                                                color: Colors.white,
-                                                withBackground: false,
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
+                                      return DropdownMenuItem<String>(
+                                        value: evaluation.nameAr,
+                                        child: Container(
+                                          width: double.infinity,
+                                          color: evaluation.id! < 6
+                                              ? GeneralController()
+                                                      .dropdownOptions[
+                                                  evaluation.id!]['color']
+                                              : Colors.grey,
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 6, horizontal: 12),
+                                          child: CustomText(
+                                            text: evaluation.nameAr,
+                                            fontSize: 14,
+                                            color: Colors.white,
+                                            withBackground: false,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
                                     onChanged: (value) {
                                       if (value != null) {
-                                        Evaluation eval = evaluationsProvider
-                                            .evaluations
-                                            .firstWhere((evaluation) =>
-                                        evaluation.nameAr == value);
+                                        Evaluation evaluation =
+                                            evaluationsProvider.evaluations
+                                                .firstWhere((evaluation) =>
+                                                    evaluation.nameAr == value);
 
                                         Color color = Colors.grey; // default
-                                        if (eval.id != null &&
-                                            eval.id! >= 0 &&
-                                            eval.id! < GeneralController()
-                                                .dropdownOptions.length) {
+                                        if (evaluation.id != null &&
+                                            evaluation.id! >= 0 &&
+                                            evaluation.id! <
+                                                GeneralController()
+                                                    .dropdownOptions
+                                                    .length) {
                                           color = GeneralController()
-                                              .dropdownOptions[eval
-                                              .id!]['color'];
+                                                  .dropdownOptions[
+                                              evaluation.id!]['color'];
                                         }
-
                                         ayatProvider.selectOption(
                                             index, value, color);
+
+                                        EvaluationsController().sendEvaluation(
+                                            verse,
+                                            evaluation,
+                                            evaluationsProvider);
                                       }
                                     },
                                   ),
@@ -262,7 +271,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                     width: 75,
                     height: 35,
                     isDisabled: selectedIndex + 1 ==
-                        schoolProvider.quickQuestionsSchool.levels.length
+                            schoolProvider.quickQuestionsSchool.levels.length
                         ? false
                         : true,
                   ),
@@ -284,14 +293,16 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       text: "انتقل إلى السؤال التالي",
                       width: 180,
                       height: 35,
-                      isDisabled: (page !=
-                          ayatProvider.quickQuestionsLevelTotalPages ||
-                          ayatProvider.selectedValues.length !=
-                              ayatProvider.quickQuestionsAyat.length) ||
-                          selectedIndex + 1 ==
-                              schoolProvider.quickQuestionsSchool.levels.length
-                          ? true
-                          : false)
+                      isDisabled:
+                          (page != ayatProvider.quickQuestionsLevelTotalPages ||
+                                      ayatProvider.selectedValues.length !=
+                                          ayatProvider
+                                              .quickQuestionsAyat.length) ||
+                                  selectedIndex + 1 ==
+                                      schoolProvider
+                                          .quickQuestionsSchool.levels.length
+                              ? true
+                              : false)
                 ],
               ),
             )

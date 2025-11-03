@@ -14,7 +14,7 @@ class PaginationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int endPage = (currentPage + 4).clamp(1, totalPages);
+    int endPage = (currentPage + 9).clamp(1, totalPages);
 
     List<int> pages = [for (int i = currentPage; i <= endPage; i++) i];
 

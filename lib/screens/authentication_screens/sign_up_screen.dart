@@ -14,7 +14,6 @@ import '../widgets/custom_text.dart';
 import 'login_screen.dart';
 import 'widgets/custom_auth_footer.dart';
 import 'widgets/custom_auth_textfield.dart';
-import 'widgets/custom_error_txt.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -153,7 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             UsersController().clearTextFields();
 
                             final prefs = await SharedPreferences.getInstance();
-                            prefs.setString('token', authData.accessToken!);
+                            prefs.setString('accessToken', authData.accessToken!);
                             // prefs.setString('refresh_token', authData.refreshToken!);
 
                             Get.to(() => const WelcomeScreen());

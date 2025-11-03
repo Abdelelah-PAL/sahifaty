@@ -58,7 +58,7 @@ class UsersServices with ChangeNotifier {
       final responseData = json.decode(response.body);
 
       if (response.statusCode == 200) {
-        return User.fromJson(responseData);
+        return AuthData.fromJson(responseData);
       } else {
         return responseData['message'] ?? 'Unknown error';
       }
