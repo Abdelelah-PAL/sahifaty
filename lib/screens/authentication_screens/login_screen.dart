@@ -15,7 +15,6 @@ import 'sign_up_screen.dart';
 import 'widgets/custom_auth_footer.dart';
 import 'widgets/custom_auth_textfield.dart';
 import 'widgets/custom_auth_textfield_header.dart';
-import 'widgets/custom_error_txt.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.firstScreen});
