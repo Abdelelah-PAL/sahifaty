@@ -5,13 +5,24 @@ import 'package:sahifaty/services/evaluations_services.dart';
 class EvaluationsProvider with ChangeNotifier {
   List<Evaluation> evaluations = [];
   bool isLoading = true;
-  final EvaluationsServices _es = EvaluationsServices();
+  final EvaluationsServices _evaluationsServices = EvaluationsServices();
 
-  Future<List<Evaluation?>> getAllCategories() async {
-    var res = await _es.getAllEvaluations();
-    evaluations = res;
-    isLoading = false;
-    notifyListeners();
+  Future<List<Evaluation?>> getAllEvaluations() async {
+    setLoading();
+    evaluations = await _evaluationsServices.getAllEvaluations();
+    resetLoading();
     return evaluations;
   }
+
+  void setLoading() {
+    isLoading = true;
+    notifyListeners();
+  }
+
+  void resetLoading() {
+    isLoading = false;
+    notifyListeners();
+  }
+
+
 }

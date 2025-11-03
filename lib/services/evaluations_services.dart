@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:core';
-
 import 'package:sahifaty/models/evaluation.dart';
 import 'package:sahifaty/services/sahifaty_api.dart';
 
@@ -9,11 +7,10 @@ class EvaluationsServices {
 
   Future<List<Evaluation>> getAllEvaluations() async {
     try {
-      final evaluations = await _sahifatyApi.get('evaluations');
-
-      if (evaluations != null) {
-        return (evaluations as List)
-            .map((e) => Evaluation.fromJson(e))
+      var evaluations = await _sahifatyApi.get('evaluations');
+      if (evaluations != null && evaluations is List) {
+        return evaluations
+            .map<Evaluation>((evaluation) => Evaluation.fromJson(evaluation))
             .toList();
       } else {
         return [];

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/providers/ayat_provider.dart';
+import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/school_provider.dart';
 import '../../core/constants/assets.dart';
 import '../../core/utils/size_config.dart';
@@ -58,9 +59,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               onPressed: () async {
                 final schoolProvider = context.read<SchoolProvider>();
                 final ayatProvider = context.read<AyatProvider>();
+                final evaluationsProvider = context.read<EvaluationsProvider>();
 
                 await schoolProvider.getQuickQuestionsSchool();
                 await ayatProvider.getQuickQuestionsAyatByLevel(1, 1);
+                await evaluationsProvider.getAllEvaluations();
+
                 Get.to(const QuestionsScreen());
               },
               text: 'إبدأ التقييم',

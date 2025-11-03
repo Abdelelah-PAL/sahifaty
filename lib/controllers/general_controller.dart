@@ -3,17 +3,15 @@ import 'dart:ui';
 import '../core/constants/colors.dart';
 
 class GeneralController {
-  // Store selected values for each index
-  final Map<int, String> selectedValues = {};
 
   // Dropdown options with text and associated color
   final List<Map<String, dynamic>> dropdownOptions = [
-    {'text': 'متمكن', 'color': AppColors.strongColor},
-    {'text': 'للمراجعة', 'color': AppColors.revisionColor},
-    {'text': 'رغبة', 'color': AppColors.desireColor},
-    {'text': 'سهل', 'color': AppColors.easyColor},
-    {'text': 'صعب', 'color': AppColors.hardColor},
-    {'text': 'غير مصنف', 'color': AppColors.uncategorizedColor},
+    {'id': 0, 'color': AppColors.strongColor},
+    {'id': 1, 'color': AppColors.revisionColor},
+    {'id': 2, 'color': AppColors.desireColor},
+    {'id': 3, 'color': AppColors.easyColor},
+    {'id': 4, 'color': AppColors.hardColor},
+    {'id': 5, 'color': AppColors.uncategorizedColor},
   ];
 
   final List<String> firstThird = [

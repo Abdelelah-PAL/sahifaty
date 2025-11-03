@@ -32,6 +32,9 @@ class CustomText extends StatelessWidget {
       child: Text(
         textDirection: TextDirection.rtl,
         text,
+        // maxLines: null,
+        // softWrap: true,
+        // overflow: TextOverflow.visible,
         textAlign: textAlign ?? TextAlign.center,
         locale: const Locale('ar'),
         strutStyle: StrutStyle(

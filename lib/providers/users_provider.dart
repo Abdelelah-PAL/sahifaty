@@ -14,7 +14,6 @@ class UsersProvider with ChangeNotifier {
 
   final UsersServices _usersService = UsersServices();
   bool isLoading = false;
-  final String errorMessage = "";
 
   Future<AuthData> register(String username, String email, String password) async {
     setLoading();
@@ -30,7 +29,7 @@ class UsersProvider with ChangeNotifier {
         return result;
       } else {
         // throw error to be caught in UI
-        throw Exception(result.toString());
+        throw result;
       }
     } finally {
       resetLoading();
@@ -48,7 +47,7 @@ class UsersProvider with ChangeNotifier {
       if (result is User) {
         return result;
       } else {
-        throw Exception(result);
+        throw result;
       }
     } catch (ex) {
       rethrow;
@@ -66,7 +65,6 @@ class UsersProvider with ChangeNotifier {
   }
 
   Future<void> resetSignUpErrorText() async {
-    UsersController().signUpErrorText = "";
     UsersController().signUpEmailTextFieldBorderColor =
         AppColors.textFieldBorderColor;
     UsersController().signUpPasswordTextFieldBorderColor =
@@ -81,17 +79,6 @@ class UsersProvider with ChangeNotifier {
         AppColors.textFieldBorderColor;
     UsersController().loginPasswordTextFieldBorderColor =
         AppColors.textFieldBorderColor;
-    UsersController().loginErrorText = "";
-    notifyListeners();
-  }
-
-  void setSignUpErrorText(String key) {
-    UsersController().signUpErrorText = key;
-    notifyListeners();
-  }
-
-  void setLoginErrorText(String key) {
-    UsersController().loginErrorText = key;
     notifyListeners();
   }
 

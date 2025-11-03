@@ -7,22 +7,12 @@ class GeneralProvider with ChangeNotifier {
 
   GeneralProvider._internal();
 
-  Map<int, String> selectedValues = {};
-  Map<int, Color> selectedColors = {};
+
   int mainScreenView = 1;
   bool thirdsMenuItem = true;
   bool partsMenuItem = false;
   bool assessmentMenuItem = false;
 
-  void selectOption(int index, String value, Color color) {
-    selectedValues[index] = value;
-    selectedColors[index] = color;
-    notifyListeners();
-  }
-
-  String? getSelectedValue(int index) => selectedValues[index];
-
-  Color getSelectedColor(int index) => selectedColors[index] ?? Colors.grey;
 
   void toggleThirdsMenuItem() {
     if (!partsMenuItem && !assessmentMenuItem) return;
@@ -54,4 +44,6 @@ class GeneralProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+
 }

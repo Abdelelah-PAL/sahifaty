@@ -74,9 +74,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: AppColors.blackFontColor,
                           withBackground: false,
                         )),
-                    CustomErrorTxt(
-                      text: _userController.loginErrorText,
-                    ),
                     const CustomAuthTextFieldHeader(
                       text: 'البريد الإلكتروني',
                     ),
@@ -166,43 +163,67 @@ class _LoginScreenState extends State<LoginScreen> {
                       width: SizeConfig.getProportionalWidth(150),
                       height: SizeConfig.getProportionalHeight(50),
                       onPressed: () async {
-                        _userController.checkEmptyFields(true);
-                        if (!_userController.noneIsEmpty) {
+                        try {
+                          // ✅ Check empty fields
+                          _userController.checkEmptyFields(true);
+                          if (!_userController.noneIsEmpty) {
+                            setState(() {
+                              _userController.changeTextFieldsColors(true);
+                            });
+                            throw Exception("جميع الحقول مطلوبة");
+                          }
+
+                          // ✅ Validate email format
+                          if (!_userController.isEmailValid(
+                            _userController.loginEmailController.text.trim(),
+                          )) {
+                            setState(() {
+                              _userController.loginEmailTextFieldBorderColor = AppColors.errorColor;
+                            });
+                            throw Exception("أدخل بريدًا إلكترونيًا صحيحًا");
+                          }
+
+                          // ✅ Indicate loading
                           setState(() {
                             _userController.changeTextFieldsColors(true);
+                            usersProvider.setLoading();
                           });
-                          return;
-                        }
-                        setState(() {
-                          _userController.changeTextFieldsColors(true);
-                          usersProvider.isLoading = true;
-                        });
 
-                        try {
+                          // ✅ Try to log in
                           await usersProvider.login(
                             _userController.loginEmailController.text.trim(),
                             _userController.loginPasswordController.text,
                           );
 
-                            // Save login info if rememberMe is checked
-                            if (_userController.rememberMe) {
-                              _userController.saveLoginInfo(
-                                _userController.loginEmailController.text.trim(),
-                                _userController.loginPasswordController.text,
-                              );
-
-                            // Navigate to welcome screen
-                            Get.to(() => const WelcomeScreen());
+                          // ✅ Save login info if Remember Me is checked
+                          if (_userController.rememberMe) {
+                            _userController.saveLoginInfo(
+                              _userController.loginEmailController.text.trim(),
+                              _userController.loginPasswordController.text,
+                            );
                           }
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(e.toString())),
-                          );
-                          rethrow;
 
+                          // ✅ Navigate to welcome screen
+                          Get.to(() => const WelcomeScreen());
+                        } catch (e) {
+                          String message;
+                          if (e.toString().contains("invalid credentials")) {
+                            message = "خطأ في البريد الإلكتروني أو كلمة المرور";
+                          } else {
+                            message = e.toString().replaceFirst('Exception: ', '');
+                          }
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                message,
+                                textDirection: TextDirection.rtl,
+                              ),
+                            ),
+                          );
                         } finally {
                           setState(() {
-                            usersProvider.isLoading = false;
+                            usersProvider.resetLoading();
                           });
                         }
                       },

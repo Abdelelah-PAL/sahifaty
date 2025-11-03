@@ -31,8 +31,6 @@ class UsersController {
   bool isMatched = true;
   bool passwordIsValid = true;
   bool rememberMe = true;
-  String signUpErrorText = "";
-  String loginErrorText = "";
 
   bool checkEmptyFields(bool login) {
     if (login == false) {
@@ -40,11 +38,9 @@ class UsersController {
           signUpUsernameController.text.isNotEmpty &&
           signUpPasswordController.text.isNotEmpty &&
           signUpConfirmedPasswordController.text.isNotEmpty;
-      signUpErrorText = noneIsEmpty ? "" : "جميع الحقول مطلوبة";
     } else {
       noneIsEmpty = loginEmailController.text.isNotEmpty &&
           loginPasswordController.text.isNotEmpty;
-      loginErrorText = noneIsEmpty ? "" : "جميع الحقول مطلوبة";
     }
 
     return noneIsEmpty;
@@ -53,32 +49,32 @@ class UsersController {
   void checkMatchedPassword() {
     isMatched = signUpPasswordController.text.trim() ==
         signUpConfirmedPasswordController.text.trim();
-    signUpErrorText = !isMatched ? "كلمة المرور غير متطابقة" : "";
   }
 
   void checkValidPassword() {
     String password = signUpPasswordController.text.trim();
-    if (password.length < 6) {
-      signUpErrorText = 'يجب أن تحتوي كلمة المرور على ستة حروف على الأقل';
-      passwordIsValid = false;
+
+    if (password.isEmpty) {
+      throw Exception('أدخل كلمة المرور');
+    } else if (password.length < 6) {
+      throw Exception('يجب أن تحتوي كلمة المرور على ستة أحرف على الأقل');
     } else if (!RegExp(r'[A-Z]').hasMatch(password)) {
-      signUpErrorText = 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل';
-      passwordIsValid = false;
+      throw Exception('يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل');
     } else if (!RegExp(r'[a-z]').hasMatch(password)) {
-      signUpErrorText = 'يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل';
-      passwordIsValid = false;
+      throw Exception('يجب أن تحتوي كلمة المرور على حرف صغير واحد على الأقل');
     } else if (!RegExp(r'\d').hasMatch(password)) {
-      signUpErrorText = 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل';
-      passwordIsValid = false;
-      passwordIsValid = false;
+      throw Exception('يجب أن تحتوي كلمة المرور على رقم واحد على الأقل');
     } else if (!RegExp(r'[!@#\$&*~]').hasMatch(password)) {
-      signUpErrorText = 'يجب أن تحتوي كلمة المرور على حرف رمز واحد على الأقل';
-      passwordIsValid = false;
-      passwordIsValid = false;
-    } else {
-      signUpErrorText = "";
-      passwordIsValid = true;
+      throw Exception('يجب أن تحتوي كلمة المرور على رمز واحد على الأقل (! @ # \$ & * ~)');
     }
+  }
+
+  bool isEmailValid(String email) {
+    final RegExp emailRegex = RegExp(
+      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+    );
+
+    return emailRegex.hasMatch(email);
   }
 
   void changeTextFieldsColors(bool login) {
@@ -125,7 +121,6 @@ class UsersController {
           signUpPasswordTextFieldBorderColor = AppColors.errorColor;
           confirmPasswordTextFieldBorderColor = AppColors.errorColor;
         } else {
-          signUpErrorText = "";
           signUpEmailTextFieldBorderColor = AppColors.textFieldBorderColor;
           signUpPasswordTextFieldBorderColor = AppColors.textFieldBorderColor;
           signUpUsernameTextFieldBorderColor = AppColors.textFieldBorderColor;
