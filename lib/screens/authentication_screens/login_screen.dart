@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../controllers/users_controller.dart';
 import '../../core/constants/assets.dart';
@@ -196,9 +197,16 @@ class _LoginScreenState extends State<LoginScreen> {
                             _userController.loginEmailController.text.trim(),
                             _userController.loginPasswordController.text,
                           );
-                          print(authData.toString());
+
                           final prefs = await SharedPreferences.getInstance();
                           prefs.setString('accessToken', authData.accessToken!);
+
+                          User user = User(
+                              id: authData.user!.id,
+                              fullName: authData.user!.fullName,
+                              email: authData.user!.email);
+
+                          usersProvider.setSelectedUser(user);
 
                           // ✅ Save login info if Remember Me is checked
                           if (_userController.rememberMe) {

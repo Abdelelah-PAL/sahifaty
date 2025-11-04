@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/general_provider.dart';
+import '../../providers/users_provider.dart';
 import '../widgets/3d_pie_chart.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_parts_dropdown.dart';
@@ -33,6 +34,8 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     GeneralProvider generalProvider = Provider.of<GeneralProvider>(context);
+    UsersProvider usersProvider = Provider.of<UsersProvider>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
@@ -92,8 +95,9 @@ class _MainScreenState extends State<MainScreen> {
         ),
         child: Column(
           children: [
-            const CustomText(
-              text: 'مرحبًا أحمد \n هذه هي صحيفتك',
+             CustomText(
+              text:
+                  'مرحبًا ${usersProvider.selectedUser!.fullName} \n هذه هي صحيفتك',
               structHeight: 3,
               textAlign: TextAlign.center,
               fontSize: 24,

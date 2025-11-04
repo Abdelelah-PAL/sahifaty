@@ -38,7 +38,9 @@ class SahifatyApi {
   }) async {
     try {
       final headers = await _getHeaders(auth: auth);
-      print(headers);
+      if (kDebugMode) {
+        print(headers);
+      }
       http.Response response;
 
       final uri = Uri.parse(_baseURL + url);

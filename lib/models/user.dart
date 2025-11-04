@@ -1,39 +1,43 @@
 class User {
-  String? _id;
-  String? username;
-  String? email;
+  int id;
+  String fullName;
+  String email;
   String? password;
-  int? roleNum;
+  int? userRoleId;
 
 
   User({
-    String? id,
-    this.username,
-    this.email,
+    required this.id,
+    required this.fullName,
+    required this.email,
     this.password,
-    this.roleNum,
-  }) : _id = id;
+    this.userRoleId,
+  });
 
-  String? get id => _id;
 
   // from JSON
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['_id'],
-      username: json['username'],
+      id: json['id'],
+      fullName: json['fullName'],
       email: json['email'],
       password: json['password'],
-      roleNum: json['roleNum'],
+      userRoleId: json['userRoleId'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      '_id': _id, // keep consistent with JSON
-      'username': username,
+      'id': id,
+      'fullName': fullName,
       'email': email,
       'password': password,
-      'roleNum': roleNum,
+      'userRoleId': userRoleId,
     };
+  }
+
+  @override
+  String toString() {
+    return 'AuthData(id: $id, fullName: $fullName, email: $email, password: $password, userRoleId: $userRoleId)';
   }
 }

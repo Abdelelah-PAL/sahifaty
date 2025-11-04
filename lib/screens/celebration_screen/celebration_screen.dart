@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:sahifaty/models/user.dart';
+import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/screens/main_screen/main_screen.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
@@ -13,6 +16,7 @@ class CelebrationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UsersProvider usersProvider = Provider.of<UsersProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
@@ -26,8 +30,9 @@ class CelebrationScreen extends StatelessWidget {
             bottom: SizeConfig.getProportionalHeight(55)),
         child: Column(
           children: [
-            const CustomText(
-              text: 'مرحبًا أحمد \n هذه هي صحيفتك',
+            CustomText(
+              text:
+                  'مرحبًا ${usersProvider.selectedUser!.fullName} \n هذه هي صحيفتك',
               structHeight: 3,
               textAlign: TextAlign.center,
               fontSize: 24,

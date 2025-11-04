@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/auth_data.dart';
-import '../models/user.dart';
 
 class UsersServices with ChangeNotifier {
   final String _baseURL = 'https://api.sahifati.org';

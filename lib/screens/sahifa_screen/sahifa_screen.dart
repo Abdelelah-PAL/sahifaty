@@ -1,6 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:sahifaty/controllers/evaluations_controller.dart';
+import 'package:sahifaty/providers/evaluations_provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../celebration_screen/celebration_screen.dart';
@@ -13,17 +16,27 @@ class SahifaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    EvaluationsProvider evaluationsProvider =
+        Provider.of<EvaluationsProvider>(context);
+    final uncategorized =
+        EvaluationsController().getEvaluationById(0, evaluationsProvider);
+    final evaluatedPercentage =
+        (100 - (uncategorized?.percentage ?? 0)).toStringAsFixed(3);
+
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: AppColors.backgroundColor,
-          leading: const CustomBackButton(),
-          ),
+        backgroundColor: AppColors.backgroundColor,
+        leading: const CustomBackButton(),
+      ),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: EdgeInsets.only(
-                top: SizeConfig.getProportionalHeight(50),
-                bottom: SizeConfig.getProportionalHeight(55)),
+              top: SizeConfig.getProportionalHeight(50),
+              bottom: SizeConfig.getProportionalHeight(55),
+              right: SizeConfig.getProportionalWidth(10),
+              left: SizeConfig.getProportionalWidth(10),
+            ),
             child: Column(
               children: [
                 const CustomText(
@@ -35,53 +48,31 @@ class SahifaScreen extends StatelessWidget {
                 ),
                 SizeConfig.customSizedBox(null, 10, null),
                 SizedBox(
-                  width: 200,
-                  height: 200,
-                  child: PieChart(
-                    PieChartData(
-                      sectionsSpace: 2,
+                    width: 200,
+                    height: 200,
+                    child: PieChart(PieChartData(
+                      sectionsSpace: 1,
                       centerSpaceRadius: 0,
-                      sections: [
-                        PieChartSectionData(
-                          color: AppColors.uncategorizedColor,
-                          value: 40,
-                          radius: 150,
-                        ),
-                        PieChartSectionData(
-                          color: AppColors.desireColor,
-                          value: 30,
-                          radius: 150,
-                        ),
-                        PieChartSectionData(
-                          color: AppColors.hardColor,
-                          value: 15,
-                          radius: 150,
-                        ),
-                        PieChartSectionData(
-                          color: AppColors.easyColor,
-                          value: 7,
-                          radius: 150,
-                        ),
-                        PieChartSectionData(
-                          color: AppColors.revisionColor,
-                          value: 8,
-                          radius: 150,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      sections: EvaluationsController()
+                          .buildChartSections(evaluationsProvider)
+                          .map((section) {
+                        // If a section has a very small value, force it to be visible
+                        final double adjustedValue =
+                            section.value < 2.0 ? 2.0 : section.value;
+                        return section.copyWith(value: adjustedValue);
+                      }).toList(),
+                    ))),
                 SizeConfig.customSizedBox(null, 10, null),
-                const Text(
-                  'لقد تم تصنيف 23% من آيات القرآن في صحيفتك',
+                Text(
+                  'لقد تم تصنيف $evaluatedPercentage% من آيات القرآن في صحيفتك',
                   textAlign: TextAlign.center,
-                  locale: Locale('ar'),
-                  strutStyle: StrutStyle(
+                  locale: const Locale('ar'),
+                  strutStyle: const StrutStyle(
                     forceStrutHeight: true,
                     height: 1.35,
                     leading: 0.0,
                   ),
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     height: 1.35,
                   ),

@@ -26,11 +26,24 @@ class EvaluationsServices {
 
   Future<http.Response> evaluateAyah(Map<String, dynamic> body) async {
     try {
-      print(body);
       http.Response response =
           await _sahifatyApi.post(url: 'user-evaluations', body: body);
-      print(response.body);
       return response;
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getQuranChartData(int userId) async {
+    try {
+      final res = await _sahifatyApi.get('user-evaluations/chart/$userId');
+
+      if (res.statusCode == 200) {
+        // Decode the full JSON map
+        return jsonDecode(res.body) as Map<String, dynamic>;
+      } else {
+        throw Exception('Failed to load evaluations');
+      }
     } catch (ex) {
       rethrow;
     }

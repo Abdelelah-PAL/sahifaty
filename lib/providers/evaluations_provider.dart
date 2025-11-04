@@ -1,11 +1,15 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/evaluation.dart';
 import 'package:sahifaty/services/evaluations_services.dart';
 
+import '../models/chart_evaluation_data.dart';
+
 class EvaluationsProvider with ChangeNotifier {
   List<Evaluation> evaluations = [];
+  List<ChartEvaluationData> chartEvaluationData = [];
   bool isLoading = true;
+  int totalCount = 0;
   final EvaluationsServices _evaluationsServices = EvaluationsServices();
 
   Future<List<Evaluation?>> getAllEvaluations() async {
@@ -22,6 +26,25 @@ class EvaluationsProvider with ChangeNotifier {
       resetLoading();
       return response;
     } catch (ex) {
+      rethrow;
+    } finally {
+      resetLoading();
+    }
+  }
+
+  Future<void> getQuranChartData(int userId) async {
+    try {
+      setLoading();
+      final response = await _evaluationsServices.getQuranChartData(userId);
+
+      totalCount = response['total'];
+      chartEvaluationData = (response['evaluations'] as List)
+          .map<ChartEvaluationData>((e) => ChartEvaluationData.fromJson(e))
+          .toList();
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching chart data: $e");
+      }
       rethrow;
     } finally {
       resetLoading();

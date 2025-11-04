@@ -3,7 +3,6 @@ import 'dart:ui';
 import '../core/constants/colors.dart';
 
 class GeneralController {
-
   // Dropdown options with text and associated color
   final List<Map<String, dynamic>> dropdownOptions = [
     {'id': 0, 'color': AppColors.strongColor},
@@ -64,7 +63,7 @@ class GeneralController {
       .replaceAll('8', '٨')
       .replaceAll('9', '٩');
 
-  String ayahMarker(int n) => '\u2067\u06DD${toArabicDigits(n)}\u2069';
+  String ayahMarker(int n) => '\u2067\u06DD${toArabicDigits(n + 1)}\u2069';
 
   Color getColorFromCategory(int category) {
     switch (category) {

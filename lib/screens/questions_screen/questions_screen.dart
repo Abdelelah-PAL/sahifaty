@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/controllers/evaluations_controller.dart';
 import 'package:sahifaty/models/ayat.dart';
-import 'package:sahifaty/models/user_evaluation.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/school_provider.dart';
+import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/screens/questions_screen/widgets/pagination_bar.dart';
 import 'package:sahifaty/screens/sahifa_screen/sahifa_screen.dart';
 import '../../controllers/general_controller.dart';
@@ -39,6 +38,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   Widget build(BuildContext context) {
     SchoolProvider schoolProvider = Provider.of<SchoolProvider>(context);
     AyatProvider ayatProvider = Provider.of<AyatProvider>(context);
+    EvaluationsProvider evaluationsProvider = Provider.of<EvaluationsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -163,8 +163,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   controller: _scrollController,
                   itemCount: ayatProvider.quickQuestionsAyat.length,
                   itemBuilder: (context, index) {
-                    EvaluationsProvider evaluationsProvider =
-                        Provider.of<EvaluationsProvider>(context);
+
                     Color selectedColor = ayatProvider.getSelectedColor(index);
                     Ayat verse = ayatProvider.quickQuestionsAyat[index];
                     return Container(
@@ -266,14 +265,19 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomButton(
-                    onPressed: () => Get.to(const SahifaScreen()),
+                    onPressed: () async{
+                      UsersProvider usersProvider = context.read<UsersProvider>();
+                      await evaluationsProvider.getQuranChartData(usersProvider.selectedUser!.id);
+                      Get.to(const SahifaScreen());
+                    },
                     text: "تخطي",
                     width: 75,
                     height: 35,
-                    isDisabled: selectedIndex + 1 ==
-                            schoolProvider.quickQuestionsSchool.levels.length
-                        ? false
-                        : true,
+                    isDisabled: false,
+                    // isDisabled: selectedIndex + 1 ==
+                    //         schoolProvider.quickQuestionsSchool.levels.length
+                    //     ? false
+                    //     : true,
                   ),
                   CustomButton(
                       onPressed: () {

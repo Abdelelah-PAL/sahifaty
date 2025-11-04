@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sahifaty/providers/evaluations_provider.dart';
 import '../../controllers/categories.dart';
 import '../../controllers/general_controller.dart';
 import '../../core/constants/colors.dart';
@@ -70,7 +72,7 @@ class _IndexPageState extends State<IndexPage> {
     _menuEntry = null;
   }
 
-  void _showOptionsAt(Offset globalPos, int ayahIndex) {
+  void _showOptionsAt(Offset globalPos, int ayahIndex, EvaluationsProvider evaluationProvider) {
     _removeMenu();
     final overlayBox =
     Overlay.of(context).context.findRenderObject() as RenderBox;
@@ -114,37 +116,35 @@ class _IndexPageState extends State<IndexPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
-                    children: gc.dropdownOptions.asMap().entries.map((e) {
-                      final idx = e.key;
-                      final text = e.value['text'] as String;
-                      final bg = e.value['color'] as Color;
+                    children: evaluationProvider.chartEvaluationData
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                      final idx = entry.key;
+                      final evaluation = entry.value;
+                      final text = evaluation.nameAr;
+                      final bg = gc.dropdownOptions[idx]['color'] as Color;
 
                       return InkWell(
                         onTap: () {
                           setState(() {
-                            ayahData[ayahIndex]['category'] =
-                                _categoryFromOption(idx);
+                            ayahData[ayahIndex]['category'] = _categoryFromOption(idx);
                           });
                           _removeMenu();
                         },
                         borderRadius: idx == 0
-                            ? const BorderRadius.vertical(
-                            top: Radius.circular(12))
+                            ? const BorderRadius.vertical(top: Radius.circular(12))
                             : idx == gc.dropdownOptions.length - 1
-                            ? const BorderRadius.vertical(
-                            bottom: Radius.circular(12))
+                            ? const BorderRadius.vertical(bottom: Radius.circular(12))
                             : BorderRadius.zero,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           decoration: BoxDecoration(
                             color: bg,
                             borderRadius: idx == 0
-                                ? const BorderRadius.vertical(
-                                top: Radius.circular(12))
+                                ? const BorderRadius.vertical(top: Radius.circular(12))
                                 : idx == gc.dropdownOptions.length - 1
-                                ? const BorderRadius.vertical(
-                                bottom: Radius.circular(12))
+                                ? const BorderRadius.vertical(bottom: Radius.circular(12))
                                 : null,
                           ),
                           child: Text(
@@ -154,12 +154,14 @@ class _IndexPageState extends State<IndexPage> {
                               color: _onColor(bg),
                               fontWeight: FontWeight.w700,
                               fontFamily: AppFonts.versesFont,
+                              fontSize: 14, // 👈 optional: make smaller to fit better
                             ),
                           ),
                         ),
                       );
                     }).toList(),
                   ),
+
                 ),
               ),
             ),
@@ -179,6 +181,7 @@ class _IndexPageState extends State<IndexPage> {
 
   @override
   Widget build(BuildContext context) {
+    EvaluationsProvider evaluationsProvider = Provider.of<EvaluationsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text("سورة الفاتحة"),
@@ -224,7 +227,7 @@ class _IndexPageState extends State<IndexPage> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTapDown = (details) =>
-                              _showOptionsAt(details.globalPosition, n));
+                              _showOptionsAt(details.globalPosition, n, evaluationsProvider));
                   }).toList(),
                 ),
                 textDirection: TextDirection.rtl,

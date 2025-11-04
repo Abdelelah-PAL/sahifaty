@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pie_chart_3d/pie_chart_3d.dart';
-
 import '../../controllers/general_controller.dart';
 
 class PieChart3D extends StatefulWidget {

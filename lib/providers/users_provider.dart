@@ -12,10 +12,13 @@ class UsersProvider with ChangeNotifier {
 
   UsersProvider._internal();
 
+  User? selectedUser;
+
   final UsersServices _usersService = UsersServices();
   bool isLoading = false;
 
-  Future<AuthData> register(String username, String email, String password) async {
+  Future<AuthData> register(
+      String username, String email, String password) async {
     setLoading();
     try {
       final result = await _usersService.register(
@@ -89,6 +92,11 @@ class UsersProvider with ChangeNotifier {
 
   void resetLoading() {
     isLoading = false;
+    notifyListeners();
+  }
+
+  void setSelectedUser(User user) {
+    selectedUser = user;
     notifyListeners();
   }
 }
