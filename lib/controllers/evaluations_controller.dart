@@ -32,7 +32,7 @@ class EvaluationsController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(
-          msg: 'Evaluation submitted successfully!',
+          msg: 'تم تقييم الآية بنجاح!',
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.green,
@@ -41,7 +41,7 @@ class EvaluationsController {
         );
       } else {
         Fluttertoast.showToast(
-          msg: 'Failed to submit evaluation.',
+          msg: 'مشكلة في التقييم',
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.red,
@@ -91,7 +91,7 @@ class EvaluationsController {
         color: EvaluationsController().getColorForEvaluation(
             evaluation.evaluationId),
         value: adjustedValue,
-        title: '${evaluation.percentage?.toStringAsFixed(1)}%',
+        title: '${evaluation.percentage?.toStringAsFixed(2)}%',
         radius: 150,
         titleStyle: TextStyle(
           fontSize: fontSize,
@@ -107,6 +107,8 @@ class EvaluationsController {
     switch (evaluationId) {
       case 0:
         return AppColors.uncategorizedColor; // غير مصنف
+      case 1:
+        return AppColors.strongColor; // متمكن
       case 2:
         return AppColors.revisionColor; // مراجعة
       case 3:
@@ -114,7 +116,7 @@ class EvaluationsController {
       case 4:
         return AppColors.easyColor; // سهل
       case 5:
-        return AppColors.hardColor; // صعب (example if you have one)
+        return AppColors.hardColor; // صعب
       default:
         return Colors.grey.shade400; // fallback color
     }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:sahifaty/providers/surahs_provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../quran_view/index_page.dart';
 import 'custom_text.dart';
 
 class CustomPartsDropdown extends StatefulWidget {
-  final int part;
+  final Map<String, dynamic> part;
   final bool isOpen;
   final VoidCallback onToggle;
 
@@ -28,51 +30,6 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
 
   late AnimationController _controller;
 
-  final Map<String, List<String>> indexesByPart = {
-    "الجزء الأول": ["الفاتحة", "البقرة", "آل عمران"],
-    "الجزء الثاني": ["البقرة", "آل عمران", "النساء"],
-    "الجزء الثالث": ["آل عمران", "النساء", "المائدة"],
-    "الجزء الرابع": ["النساء", "المائدة", "الأنعام"],
-    "الجزء الخامس": ["المائدة", "الأنعام", "الأعراف"],
-    "الجزء السادس": ["الأنعام", "الأعراف", "الأنفال"],
-    "الجزء السابع": ["الأعراف", "الأنفال", "التوبة"],
-    "الجزء الثامن": ["الأنفال", "التوبة", "يونس"],
-    "الجزء التاسع": ["التوبة", "يونس", "هود"],
-    "الجزء العاشر": ["يونس", "هود", "يوسف"],
-    "الجزء الحادي عشر": ["هود", "يوسف", "إبراهيم"],
-    "الجزء الثاني عشر": ["يوسف", "إبراهيم", "الحجر"],
-    "الجزء الثالث عشر": ["إبراهيم", "الحجر", "النحل"],
-    "الجزء الرابع عشر": ["الحجر", "النحل", "الإسراء"],
-    "الجزء الخامس عشر": ["النحل", "الإسراء", "الكهف"],
-    "الجزء السادس عشر": ["الإسراء", "الكهف", "مريم"],
-    "الجزء السابع عشر": ["الكهف", "مريم", "طه"],
-    "الجزء الثامن عشر": ["مريم", "طه", "الأنبياء"],
-    "الجزء التاسع عشر": ["طه", "الأنبياء", "الحج"],
-    "الجزء العشرون": ["الأنبياء", "الحج", "المؤمنون"],
-    "الجزء الواحد والعشرون": ["الحج", "المؤمنون", "الفرقان"],
-    "الجزء الثاني والعشرون": ["المؤمنون", "الفرقان", "النمل"],
-    "الجزء الثالث والعشرون": ["الفرقان", "النمل", "العنكبوت"],
-    "الجزء الرابع والعشرون": ["النمل", "العنكبوت", "الروم"],
-    "الجزء الخامس والعشرون": ["العنكبوت", "الروم", "الأحزاب"],
-    "الجزء السادس والعشرون": ["الروم", "الأحزاب", "يس"],
-    "الجزء السابع والعشرون": ["الأحزاب", "يس", "الصافات"],
-    "الجزء الثامن والعشرون": ["يس", "الصافات", "الزمر"],
-    "الجزء التاسع والعشرون": ["الصافات", "الزمر", "فصلت"],
-    "الجزء الثلاثون": ["فصلت", "الجن", "الناس"],
-  };
-
-  List<String> get indexesForPart {
-    final keys = indexesByPart.keys.toList();
-    if (widget.part <= 0 || widget.part > keys.length) return [];
-    return indexesByPart[keys[widget.part - 1]] ?? [];
-  }
-
-  String get currentPartName {
-    final keys = indexesByPart.keys.toList();
-    if (widget.part <= 0 || widget.part > keys.length) return '';
-    return keys[widget.part - 1];
-  }
-
   @override
   void initState() {
     super.initState();
@@ -82,8 +39,11 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
     );
   }
 
-  void _showOverlay() {
+  void _showOverlay(SurahsProvider surahsProvider) async {
     if (_overlayEntry != null) return;
+
+    // Start fetching surahs for the selected part
+    await surahsProvider.getSurahsByJuz(widget.part['id']);
 
     final renderBox = context.findRenderObject() as RenderBox;
     final offset = renderBox.localToGlobal(Offset.zero);
@@ -92,12 +52,14 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
+          // Tap outside to close
           Positioned.fill(
             child: GestureDetector(
               onTap: _removeOverlay,
               behavior: HitTestBehavior.translucent,
             ),
           ),
+          // Dropdown list
           Positioned(
             top: offset.dy + size.height + 4,
             left: offset.dx,
@@ -107,36 +69,42 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
               elevation: 6,
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 200),
-                child: ListView.separated(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  itemCount: indexesForPart.length,
-                  separatorBuilder: (_, __) =>
-                  const Divider(height: 1, color: Colors.grey),
-                  itemBuilder: (context, index) {
-                    final item = indexesForPart[index];
-                    return InkWell(
-                      onTap: () {
-                        Get.to( const IndexPage2());
-                        _removeOverlay();
-                        widget.onToggle(); // optional callback
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 12),
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: CustomText(
-                            text: item,
-                            fontSize: 14,
-                            withBackground: false,
-                            color: Colors.black87,
-                          ),
+                child: surahsProvider.isLoading
+                    ? const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(12),
+                          child: CircularProgressIndicator(),
                         ),
+                      )
+                    : ListView.separated(
+                        padding: EdgeInsets.zero,
+                        shrinkWrap: true,
+                        itemCount: surahsProvider.totalSurahs,
+                        separatorBuilder: (_, __) =>
+                            const Divider(height: 1, color: Colors.grey),
+                        itemBuilder: (context, index) {
+                          final surah = surahsProvider.surahsByJuz[index];
+                          return InkWell(
+                            onTap: () {
+                              Get.to(IndexPage2(surah: surah));
+                              _removeOverlay();
+                              widget.onToggle();
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10, horizontal: 12),
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  surah.nameAr,
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Colors.black87),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
               ),
             ),
           ),
@@ -159,13 +127,13 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
   @override
   void didUpdateWidget(covariant CustomPartsDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
-
+    SurahsProvider surahsProvider = Provider.of<SurahsProvider>(context);
     // Avoid triggering overlay changes during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
       if (widget.isOpen && _overlayEntry == null) {
-        _showOverlay();
+        _showOverlay(surahsProvider);
       } else if (!widget.isOpen && _overlayEntry != null) {
         _removeOverlay();
       }
@@ -198,7 +166,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
           ),
           child: Center(
             child: CustomText(
-              text: currentPartName,
+              text: widget.part['name'],
               fontSize: 14,
               color: Colors.white,
               withBackground: false,

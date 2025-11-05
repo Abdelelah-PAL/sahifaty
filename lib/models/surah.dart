@@ -1,28 +1,25 @@
 class Surah {
-  String? _id;
-  String? nameAr;
-  int? ayahCount;
-
+  final int id;
+  final String nameAr;
+  final int ayahCount;
 
   Surah({
-    String? id,
-    this.nameAr,
-    this.ayahCount,
-  }) : _id = id;
-
-  String? get id => _id;
+    required this.id,
+    required this.nameAr,
+    required this.ayahCount,
+  });
 
   factory Surah.fromJson(Map<String, dynamic> json) {
     return Surah(
-      id: json['_id'],
-      nameAr: json['nameAr'],
-      ayahCount: json['ayahCount'],
+      id: json['id'] ?? json['_id'], // ✅ support both id or _id
+      nameAr: json['nameAr'] ?? '',
+      ayahCount: json['ayahCount'] ?? 0,
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      '_id': _id,
+      'id': id,
       'nameAr': nameAr,
       'ayahCount': ayahCount,
     };

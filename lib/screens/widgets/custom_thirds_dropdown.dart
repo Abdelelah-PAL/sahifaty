@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:provider/provider.dart';
 import 'package:sahifaty/controllers/general_controller.dart';
+import 'package:sahifaty/models/surah.dart';
+import 'package:sahifaty/providers/surahs_provider.dart';
 import 'package:sahifaty/screens/quran_view/index_page.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
@@ -31,19 +34,11 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
 
   late AnimationController _controller;
 
-  List<String> get dropdownOptions => widget.third == 1
+  List<Map<String, dynamic>> get dropdownOptions => widget.third == 1
       ? GeneralController().firstThird
       : widget.third == 2
           ? GeneralController().secondThird
           : GeneralController().thirdThird;
-
-  final Map<String, List<String>> indexesByPart = {
-    "الجزء الأول": ["الفاتحة", "البقرة"],
-    "الجزء الثاني": ["البقرة", "آل عمران"],
-    "الجزء الثالث": ["آل عمران", "النساء"],
-    "الجزء الرابع": ["النساء", "المائدة"],
-    "الجزء الخامس": ["المائدة", "الأنعام"],
-  };
 
   @override
   void initState() {
@@ -52,11 +47,9 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
       vsync: this,
       duration: const Duration(milliseconds: 400),
     );
-
   }
 
-
-  void _showOverlay() {
+  void _showOverlay(SurahsProvider surahsProvider) {
     if (_overlayEntry != null) return;
 
     final renderBox = context.findRenderObject() as RenderBox;
@@ -97,15 +90,18 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                   itemBuilder: (context, index) {
                     final option = dropdownOptions[index];
                     return InkWell(
-                      onTap: () =>
-                          _showSideOverlay(option, index, offset, size),
+                      onTap: () async {
+                        await surahsProvider.getSurahsByJuz(option['id']);
+                        _showSideOverlay(option['name'], index, offset, size,
+                            surahsProvider);
+                      },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 10, horizontal: 12),
                         child: Align(
                           alignment: Alignment.centerRight,
                           child: CustomText(
-                            text: option,
+                            text: option['name'],
                             fontSize: 14,
                             withBackground: false,
                             color: Colors.black87,
@@ -128,10 +124,10 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     _controller.forward();
   }
 
-  void _showSideOverlay(
-      String option, int index, Offset parentOffset, Size buttonSize) {
+  void _showSideOverlay(String option, int index, Offset parentOffset,
+      Size buttonSize, SurahsProvider surahsProvider) {
     _removeSideOverlay();
-    if (!indexesByPart.containsKey(option)) return;
+    if (surahsProvider.surahsByJuz.isEmpty) return;
 
     _tappedIndex = index;
     const double itemHeight = 40;
@@ -153,15 +149,15 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
-              itemCount: indexesByPart[option]!.length,
+              itemCount: surahsProvider.totalSurahs,
               itemBuilder: (_, i) {
-                final sura = indexesByPart[option]![i];
+                final Surah sura = surahsProvider.surahsByJuz[i];
                 return InkWell(
                   onTap: () {
                     _removeSideOverlay();
                     _removeOverlay();
                     _controller.value = 0.0;
-                    Get.to( const IndexPage());
+                    Get.to(const IndexPage());
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -169,7 +165,7 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: CustomText(
-                        text: sura,
+                        text: sura.nameAr,
                         fontSize: 13,
                         withBackground: false,
                         color: Colors.black87,
@@ -213,9 +209,17 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
   @override
   void didUpdateWidget(CustomThirdsDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (!mounted) return;
+
+    final surahsProvider = Provider.of<SurahsProvider>(context, listen: false);
+
+    // Don't rebuild overlays while overlay is already showing
+    if (_overlayEntry != null) return;
+
     if (widget.isOpen) {
       _toggleAnimation();
-      WidgetsBinding.instance.addPostFrameCallback((_) => _showOverlay());
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => _showOverlay(surahsProvider));
     } else {
       _toggleAnimation();
       _removeOverlay();

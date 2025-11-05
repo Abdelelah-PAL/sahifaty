@@ -1,25 +1,17 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:pie_chart_3d/pie_chart_3d.dart';
+import 'package:sahifaty/providers/evaluations_provider.dart';
+import '../../controllers/evaluations_controller.dart';
 import '../../controllers/general_controller.dart';
 
 class PieChart3D extends StatefulWidget {
   const PieChart3D({
     super.key,
-    required this.strongValue,
-    required this.revisionValue,
-    required this.desireValue,
-    required this.easyValue,
-    required this.hardValue,
-    required this.uncategorizedValue,
+    required this.evaluationsProvider,
   });
 
-  final double strongValue;
-  final double revisionValue;
-  final double desireValue;
-  final double easyValue;
-  final double hardValue;
-  final double uncategorizedValue;
+  final EvaluationsProvider evaluationsProvider;
 
   @override
   State<PieChart3D> createState() => _PieChart3DState();
@@ -32,28 +24,52 @@ class _PieChart3DState extends State<PieChart3D> {
   Widget build(BuildContext context) {
     final data = [
       ChartData(
-          category: 'Strong',
-          value: widget.strongValue,
+          category: EvaluationsController()
+              .getEvaluationById(0, widget.evaluationsProvider)!
+              .nameAr,
+          value: EvaluationsController()
+              .getEvaluationById(0, widget.evaluationsProvider)!
+              .percentage!,
           color: GeneralController().dropdownOptions[0]['color']),
       ChartData(
-          category: 'Revision',
-          value: widget.revisionValue,
+          category: EvaluationsController()
+              .getEvaluationById(1, widget.evaluationsProvider)!
+              .nameAr,
+          value: EvaluationsController()
+              .getEvaluationById(1, widget.evaluationsProvider)!
+              .percentage!,
           color: GeneralController().dropdownOptions[1]['color']),
       ChartData(
-          category: 'Desire',
-          value: widget.desireValue,
+          category: EvaluationsController()
+              .getEvaluationById(2, widget.evaluationsProvider)!
+              .nameAr,
+          value: EvaluationsController()
+              .getEvaluationById(2, widget.evaluationsProvider)!
+              .percentage!,
           color: GeneralController().dropdownOptions[2]['color']),
       ChartData(
-          category: 'Easy',
-          value: widget.easyValue,
+          category: EvaluationsController()
+              .getEvaluationById(3, widget.evaluationsProvider)!
+              .nameAr,
+          value: EvaluationsController()
+              .getEvaluationById(3, widget.evaluationsProvider)!
+              .percentage!,
           color: GeneralController().dropdownOptions[3]['color']),
       ChartData(
-          category: 'Hard',
-          value: widget.hardValue,
+          category: EvaluationsController()
+              .getEvaluationById(4, widget.evaluationsProvider)!
+              .nameAr,
+          value: EvaluationsController()
+              .getEvaluationById(4, widget.evaluationsProvider)!
+              .percentage!,
           color: GeneralController().dropdownOptions[4]['color']),
       ChartData(
-          category: 'Uncategorized',
-          value: widget.uncategorizedValue,
+          category: EvaluationsController()
+              .getEvaluationById(5, widget.evaluationsProvider)!
+              .nameAr,
+          value: EvaluationsController()
+              .getEvaluationById(5, widget.evaluationsProvider)!
+              .percentage!,
           color: GeneralController().dropdownOptions[5]['color']),
     ];
 

@@ -20,4 +20,20 @@ class AyatServices {
       rethrow;
     }
   }
+  Future<Map<String, dynamic>> getAyatBySurahId(int surahId) async {
+    try {
+      int limit = 1000;
+      final res = await _sahifatyApi.get('ayat?surahId=$surahId&limit=$limit');
+
+      // Decode JSON body
+      if (res.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(res.body);
+        return data;
+      } else {
+        throw Exception('Failed to load ayat');
+      }
+    } catch (ex) {
+      rethrow;
+    }
+  }
 }

@@ -7,6 +7,7 @@ import 'package:sahifaty/providers/ayat_provider.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/general_provider.dart';
 import 'package:sahifaty/providers/school_provider.dart';
+import 'package:sahifaty/providers/surahs_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/screens/authentication_screens/sign_up_screen.dart';
 
@@ -26,7 +27,8 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => UsersProvider()),
         ChangeNotifierProvider(create: (_) => SchoolProvider()),
         ChangeNotifierProvider(create: (_) => AyatProvider()),
-        ChangeNotifierProvider(create: (_) => EvaluationsProvider())
+        ChangeNotifierProvider(create: (_) => EvaluationsProvider()),
+        ChangeNotifierProvider(create: (_) => SurahsProvider())
       ],
       child: const MyApp(),
     ),

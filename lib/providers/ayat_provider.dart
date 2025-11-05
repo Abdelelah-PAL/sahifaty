@@ -4,9 +4,12 @@ import '../models/ayat.dart';
 
 class AyatProvider with ChangeNotifier {
   List<Ayat> quickQuestionsAyat = [];
+  List<Ayat> surahAyat = [];
   int quickQuestionsLevelTotalPages = 1;
   int quickQuestionsLevelTotalCount = 1;
   int evaluatedVersesCount = 1;
+  int surahAyatTotalPages = 1;
+  int surahAyatTotalCount = 1;
   bool isLoading = false;
   Map<int, String> selectedValues = {};
   Map<int, Color> selectedColors = {};
@@ -22,6 +25,19 @@ class AyatProvider with ChangeNotifier {
     quickQuestionsAyat = data.map<Ayat>((ayah) => Ayat.fromJson(ayah)).toList();
     quickQuestionsLevelTotalPages = res['totalPages'];
     quickQuestionsLevelTotalCount = res['total'];
+    resetLoading();
+  }
+
+  Future<void> getAyatBySurahId(int surahId) async {
+    setLoading();
+    var res = await _ayatServices.getAyatBySurahId(surahId);
+    var data = res['data'];
+    if (data is! List) {
+      throw Exception('Unexpected response format: expected a list');
+    }
+    surahAyat = data.map<Ayat>((ayah) => Ayat.fromJson(ayah)).toList();
+    surahAyatTotalPages = res['totalPages'];
+    surahAyatTotalCount = res['total'];
     resetLoading();
   }
 
@@ -56,4 +72,3 @@ class AyatProvider with ChangeNotifier {
     notifyListeners();
   }
 }
-

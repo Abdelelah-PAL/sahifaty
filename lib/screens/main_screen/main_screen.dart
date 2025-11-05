@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/controllers/general_controller.dart';
+import 'package:sahifaty/providers/evaluations_provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/general_provider.dart';
@@ -33,8 +35,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    GeneralProvider generalProvider = Provider.of<GeneralProvider>(context);
-    UsersProvider usersProvider = Provider.of<UsersProvider>(context);
+    final generalProvider = Provider.of<GeneralProvider>(context);
+    final usersProvider = Provider.of<UsersProvider>(context);
+    final evaluationsProvider = Provider.of<EvaluationsProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -50,9 +53,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: MenuItem(
                     text: "أيقونات الأثلاث",
                     onChanged: (v) {
-                      if (v) {
-                        generalProvider.toggleThirdsMenuItem();
-                      }
+                      if (v) generalProvider.toggleThirdsMenuItem();
                     },
                     index: 1,
                   ),
@@ -62,9 +63,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: MenuItem(
                     text: "أيقونات الأجزاء",
                     onChanged: (v) {
-                      if (v) {
-                        generalProvider.togglePartsMenuItem();
-                      }
+                      if (v) generalProvider.togglePartsMenuItem();
                     },
                     index: 2,
                   ),
@@ -74,9 +73,7 @@ class _MainScreenState extends State<MainScreen> {
                   child: MenuItem(
                     text: "أيقونات التقييم",
                     onChanged: (v) {
-                      if (v) {
-                        generalProvider.toggleAssessmentMenuItem();
-                      }
+                      if (v) generalProvider.toggleAssessmentMenuItem();
                     },
                     index: 3,
                   ),
@@ -86,7 +83,7 @@ class _MainScreenState extends State<MainScreen> {
           )
         ],
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.only(
           left: SizeConfig.getProportionalWidth(75),
           right: SizeConfig.getProportionalWidth(75),
@@ -94,53 +91,42 @@ class _MainScreenState extends State<MainScreen> {
           bottom: SizeConfig.getProportionalHeight(55),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-             CustomText(
+            CustomText(
               text:
-                  'مرحبًا ${usersProvider.selectedUser!.fullName} \n هذه هي صحيفتك',
+              'مرحبًا ${usersProvider.selectedUser?.fullName ?? ''}\nهذه هي صحيفتك',
               structHeight: 3,
               textAlign: TextAlign.center,
               fontSize: 24,
               fontWeight: FontWeight.bold,
               withBackground: false,
             ),
-            const PieChart3D(
-              strongValue: 10,
-              revisionValue: 23,
-              desireValue: 47,
-              easyValue: 5,
-              hardValue: 7,
-              uncategorizedValue: 8,
-            ),
+            PieChart3D(evaluationsProvider: evaluationsProvider),
             SizedBox(height: SizeConfig.getProportionalHeight(20)),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: generalProvider.mainScreenView == 1
-                    ? 3
-                    : generalProvider.mainScreenView == 2
-                        ? 30
-                        : 0,
-                itemBuilder: (ctx, index) {
-                  return generalProvider.mainScreenView == 1
-                      ? Padding(
-                          padding: const EdgeInsets.only(bottom: 25),
-                          child: CustomThirdsDropdown(
-                            third: index + 1,
-                            isOpen: openIndex == index,
-                            onToggle: () => toggle(index),
-                          ),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.only(bottom: 25),
-                          child: CustomPartsDropdown(
-                            part: index + 1,
-                            isOpen: openIndex == index,
-                            onToggle: () => toggle(index),
-                          ));
-                },
+
+            // ✅ Dynamically build dropdowns (no nested ListView)
+            ...List.generate(
+              generalProvider.mainScreenView == 1
+                  ? 3
+                  : generalProvider.mainScreenView == 2
+                  ? 30
+                  : 0,
+                  (index) => Padding(
+                padding: const EdgeInsets.only(bottom: 25),
+                child: generalProvider.mainScreenView == 1
+                    ? CustomThirdsDropdown(
+                  third: index + 1,
+                  isOpen: openIndex == index,
+                  onToggle: () => toggle(index),
+                )
+                    : CustomPartsDropdown(
+                  part: GeneralController().parts[index],
+                  isOpen: openIndex == index,
+                  onToggle: () => toggle(index),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
