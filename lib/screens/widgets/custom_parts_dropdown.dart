@@ -86,7 +86,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
                           final surah = surahsProvider.surahsByJuz[index];
                           return InkWell(
                             onTap: () {
-                              Get.to(IndexPage2(surah: surah));
+                              Get.to(IndexPage(surah: surah,));
                               _removeOverlay();
                               widget.onToggle();
                             },

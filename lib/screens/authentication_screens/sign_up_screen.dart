@@ -111,15 +111,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       CustomButton(
                         onPressed: () async {
                           try {
+                            _userController.checkEmptyFields(false);
                             // ✅ Check for empty fields
                             if (!_userController.noneIsEmpty) {
-                              _userController.checkEmptyFields(false);
                               setState(() {
                                 _userController.changeTextFieldsColors(false);
                               });
                               throw Exception("جميع الحقول مطلوبة");
                             }
-
+                            // ✅ Validate email format
+                            if (!_userController.isEmailValid(
+                              _userController.signUpEmailController.text.trim(),
+                            )) {
+                              setState(() {
+                                _userController.signUpEmailTextFieldBorderColor =
+                                    AppColors.errorColor;
+                              });
+                              throw Exception("أدخل بريدًا إلكترونيًا صحيحًا");
+                            }
+                            // ✅ Check password validity
+                            _userController.checkValidPassword();
+                            if (!_userController.passwordIsValid) {
+                              setState(() {
+                                _userController.changeTextFieldsColors(false);
+                              });
+                              throw Exception("كلمة المرور غير صالحة");
+                            }
                             // ✅ Check password match
                             _userController.checkMatchedPassword();
                             if (!_userController.isMatched) {
@@ -129,18 +146,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               throw Exception("كلمتا المرور غير متطابقتان");
                             }
 
-                            // ✅ Check password validity
-                            _userController.checkValidPassword();
-                            if (!_userController.passwordIsValid) {
-                              setState(() {
-                                _userController.changeTextFieldsColors(false);
-                              });
-                              throw Exception("كلمة المرور غير صالحة");
-                            }
-
                             // ✅ If all good → register user
                             AuthData authData = await UsersProvider().register(
-                              _userController.signUpUsernameController.text.trim(),
+                              _userController.signUpUsernameController.text
+                                  .trim(),
                               _userController.signUpEmailController.text.trim(),
                               _userController.signUpPasswordController.text,
                             );
@@ -152,7 +161,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             UsersController().clearTextFields();
 
                             final prefs = await SharedPreferences.getInstance();
-                            prefs.setString('accessToken', authData.accessToken!);
+                            prefs.setString(
+                                'accessToken', authData.accessToken!);
                             // prefs.setString('refresh_token', authData.refreshToken!);
 
                             Get.to(() => const WelcomeScreen());
@@ -163,7 +173,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (e.toString().contains("email already in use")) {
                               message = "البريد الإلكتروني مسجّل سابقًا";
                             } else {
-                              message = e.toString().replaceFirst('Exception: ', '');
+                              message =
+                                  e.toString().replaceFirst('Exception: ', '');
                             }
 
                             ScaffoldMessenger.of(context).showSnackBar(

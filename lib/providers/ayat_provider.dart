@@ -7,7 +7,7 @@ class AyatProvider with ChangeNotifier {
   List<Ayat> surahAyat = [];
   int quickQuestionsLevelTotalPages = 1;
   int quickQuestionsLevelTotalCount = 1;
-  int evaluatedVersesCount = 1;
+  int evaluatedVersesCount = 0;
   int surahAyatTotalPages = 1;
   int surahAyatTotalCount = 1;
   bool isLoading = false;
@@ -18,6 +18,7 @@ class AyatProvider with ChangeNotifier {
   Future<void> getQuickQuestionsAyatByLevel(int level, int page) async {
     setLoading();
     var res = await _ayatServices.getQuickQuestionsAyatByLevel(level, page);
+
     var data = res['data'];
     if (data is! List) {
       throw Exception('Unexpected response format: expected a list');
@@ -25,6 +26,11 @@ class AyatProvider with ChangeNotifier {
     quickQuestionsAyat = data.map<Ayat>((ayah) => Ayat.fromJson(ayah)).toList();
     quickQuestionsLevelTotalPages = res['totalPages'];
     quickQuestionsLevelTotalCount = res['total'];
+    for (var ayah in quickQuestionsAyat) {
+      if (ayah.userEvaluation != null && ayah.userEvaluation!.evaluation!.id! > 0) {
+        evaluatedVersesCount++;
+      }
+    }
     resetLoading();
   }
 
@@ -55,6 +61,11 @@ class AyatProvider with ChangeNotifier {
     evaluatedVersesCount++;
     notifyListeners();
   }
+  void resetEvaluatedVersesCount() {
+    evaluatedVersesCount = 0;
+    notifyListeners();
+  }
+
 
   void selectOption(int index, String value, Color color) {
     selectedValues[index] = value;
@@ -64,11 +75,14 @@ class AyatProvider with ChangeNotifier {
 
   String? getSelectedValue(int index) => selectedValues[index];
 
-  Color getSelectedColor(int index) => selectedColors[index] ?? Colors.grey;
+  Color getSelectedColor(int index)  {
+    return selectedColors[index] ?? Colors.grey;
+}
 
   void resetSelections() {
     selectedValues.clear();
     selectedColors.clear();
     notifyListeners();
   }
+
 }

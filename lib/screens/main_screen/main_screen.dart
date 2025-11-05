@@ -68,16 +68,16 @@ class _MainScreenState extends State<MainScreen> {
                     index: 2,
                   ),
                 ),
-                PopupMenuItem(
-                  value: '3',
-                  child: MenuItem(
-                    text: "أيقونات التقييم",
-                    onChanged: (v) {
-                      if (v) generalProvider.toggleAssessmentMenuItem();
-                    },
-                    index: 3,
-                  ),
-                ),
+                // PopupMenuItem(
+                //   value: '3',
+                //   child: MenuItem(
+                //     text: "أيقونات التقييم",
+                //     onChanged: (v) {
+                //       if (v) generalProvider.toggleAssessmentMenuItem();
+                //     },
+                //     index: 3,
+                //   ),
+                // ),
               ];
             },
           )

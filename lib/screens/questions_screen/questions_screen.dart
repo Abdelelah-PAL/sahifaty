@@ -9,6 +9,7 @@ import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/screens/first_pie_chart_screen/first_pie_chart_screen.dart';
 import 'package:sahifaty/screens/questions_screen/widgets/pagination_bar.dart';
 import '../../controllers/general_controller.dart';
+import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../models/evaluation.dart';
 import '../../providers/ayat_provider.dart';
@@ -25,8 +26,18 @@ class QuestionsScreen extends StatefulWidget {
 class _QuestionsScreenState extends State<QuestionsScreen> {
   int selectedIndex = 0;
   int page = 1;
+  final Map<int, Color> dropdownColors = {
+    0: AppColors.uncategorizedColor,
+    1: AppColors.strongColor,
+    2: AppColors.revisionColor,
+    3: AppColors.desireColor,
+    4: AppColors.easyColor,
+    5: AppColors.hardColor,
+    67: AppColors.uncategorizedColor,
+  };
 
   final ScrollController _scrollController = ScrollController();
+  final Map<int, Color> _selectedColors = {};
 
   @override
   void dispose() {
@@ -38,7 +49,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
   Widget build(BuildContext context) {
     SchoolProvider schoolProvider = Provider.of<SchoolProvider>(context);
     AyatProvider ayatProvider = Provider.of<AyatProvider>(context);
-    EvaluationsProvider evaluationsProvider = Provider.of<EvaluationsProvider>(context);
+    EvaluationsProvider evaluationsProvider =
+        Provider.of<EvaluationsProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -78,20 +90,26 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   currentPage: page,
                   totalPages: ayatProvider.quickQuestionsLevelTotalPages,
                   onNext: () async {
-                    if (ayatProvider.selectedValues.length ==
-                        ayatProvider.quickQuestionsAyat.length) {
-                      if (page < ayatProvider.quickQuestionsLevelTotalPages) {
-                        setState(() {
-                          page += 1;
-                        });
-                        ayatProvider.resetSelections();
-                        await ayatProvider.getQuickQuestionsAyatByLevel(
-                          selectedIndex + 1,
-                          page,
-                        );
-                        _scrollController.jumpTo(0); // reset scroll
-                      }
+                    if (ayatProvider.evaluatedVersesCount ==
+                            ayatProvider.quickQuestionsAyat.length &&
+                        page < ayatProvider.quickQuestionsLevelTotalPages) {
+                      ayatProvider.resetEvaluatedVersesCount();
+                      print(ayatProvider.evaluatedVersesCount);
+                      setState(() {
+                        page += 1;
+                      });
+                      ayatProvider.resetSelections();
+                      await ayatProvider.getQuickQuestionsAyatByLevel(
+                        selectedIndex + 1,
+                        page,
+                      );
+                      print(ayatProvider.evaluatedVersesCount);
+                      _scrollController.jumpTo(0); // reset scroll
                     } else {
+                      print(ayatProvider.evaluatedVersesCount);
+                      print(ayatProvider.quickQuestionsAyat.length);
+                      print(page);
+                      print(ayatProvider.quickQuestionsLevelTotalPages);
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text(
@@ -163,9 +181,20 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   controller: _scrollController,
                   itemCount: ayatProvider.quickQuestionsAyat.length,
                   itemBuilder: (context, index) {
-
-                    Color selectedColor = ayatProvider.getSelectedColor(index);
                     Ayat verse = ayatProvider.quickQuestionsAyat[index];
+
+                    // 1️⃣ Initial color from backend evaluation
+                    Color initialColor =
+                        verse.userEvaluation?.evaluation?.id != null
+                            ? dropdownColors[
+                                    verse.userEvaluation!.evaluation!.id!] ??
+                                Colors.grey
+                            : Colors.grey;
+
+                    // 2️⃣ If user selected a new color locally → use it
+                    Color containerColor =
+                        _selectedColors[index] ?? initialColor;
+
                     return Container(
                       padding: EdgeInsets.symmetric(
                           horizontal: SizeConfig.getProportionalWidth(10),
@@ -173,7 +202,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       margin: EdgeInsets.only(
                           bottom: SizeConfig.getProportionalHeight(50)),
                       decoration: BoxDecoration(
-                        color: selectedColor,
+                        color: containerColor,
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(color: Colors.grey),
                       ),
@@ -193,20 +222,18 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                   child: DropdownButton<String>(
                                     isExpanded: true,
                                     value: null,
-                                    hint: null,
-                                    // show hint when nothing selected
                                     items: evaluationsProvider.evaluations
-                                        .map<DropdownMenuItem<String>>(
-                                            (evaluation) {
+                                        .map((evaluation) {
+                                      final color = evaluation.id != null &&
+                                              evaluation.id! < 6
+                                          ? GeneralController().dropdownOptions[
+                                              evaluation.id!]['color']
+                                          : Colors.grey;
                                       return DropdownMenuItem<String>(
                                         value: evaluation.nameAr,
                                         child: Container(
                                           width: double.infinity,
-                                          color: evaluation.id! < 6
-                                              ? GeneralController()
-                                                      .dropdownOptions[
-                                                  evaluation.id!]['color']
-                                              : Colors.grey,
+                                          color: color,
                                           padding: const EdgeInsets.symmetric(
                                               vertical: 6, horizontal: 12),
                                           child: CustomText(
@@ -222,27 +249,30 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                       if (value != null) {
                                         Evaluation evaluation =
                                             evaluationsProvider.evaluations
-                                                .firstWhere((evaluation) =>
-                                                    evaluation.nameAr == value);
+                                                .firstWhere(
+                                                    (e) => e.nameAr == value);
 
-                                        Color color = Colors.grey; // default
-                                        if (evaluation.id != null &&
-                                            evaluation.id! >= 0 &&
-                                            evaluation.id! <
-                                                GeneralController()
-                                                    .dropdownOptions
-                                                    .length) {
-                                          color = GeneralController()
-                                                  .dropdownOptions[
-                                              evaluation.id!]['color'];
-                                        }
+                                        final newColor =
+                                            evaluation.id != null &&
+                                                    evaluation.id! < 6
+                                                ? GeneralController()
+                                                        .dropdownOptions[
+                                                    evaluation.id!]['color']
+                                                : Colors.grey;
+                                        // Save locally
+                                        setState(() {
+                                          _selectedColors[index] = newColor;
+                                        });
+
+                                        // Also update provider if needed
                                         ayatProvider.selectOption(
-                                            index, value, color);
+                                            index, value, newColor);
 
                                         EvaluationsController().sendEvaluation(
                                             verse,
                                             evaluation,
-                                            evaluationsProvider);
+                                            evaluationsProvider,
+                                            ayatProvider);
                                       }
                                     },
                                   ),
@@ -265,9 +295,11 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomButton(
-                    onPressed: () async{
-                      UsersProvider usersProvider = context.read<UsersProvider>();
-                      await evaluationsProvider.getQuranChartData(usersProvider.selectedUser!.id);
+                    onPressed: () async {
+                      UsersProvider usersProvider =
+                          context.read<UsersProvider>();
+                      await evaluationsProvider
+                          .getQuranChartData(usersProvider.selectedUser!.id);
                       Get.to(const FirstPieChartScreen());
                     },
                     text: "تخطي",
@@ -292,6 +324,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                         });
                         ayatProvider.getQuickQuestionsAyatByLevel(
                             selectedIndex + 1, 1);
+                        ayatProvider.resetEvaluatedVersesCount();
                         ayatProvider.resetSelections();
                       },
                       text: "انتقل إلى السؤال التالي",
@@ -299,9 +332,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                       height: 35,
                       isDisabled:
                           (page != ayatProvider.quickQuestionsLevelTotalPages ||
-                                      ayatProvider.selectedValues.length !=
-                                          ayatProvider
-                                              .quickQuestionsAyat.length) ||
+                                      ayatProvider.evaluatedVersesCount <  ayatProvider.quickQuestionsAyat.length) ||
                                   selectedIndex + 1 ==
                                       schoolProvider
                                           .quickQuestionsSchool.levels.length

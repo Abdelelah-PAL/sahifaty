@@ -62,31 +62,21 @@ class CustomVerseText extends StatelessWidget {
 
 class CustomVerseText2 extends StatelessWidget {
   final String text;
-  final int category;
-  final int verseNumber; // 🔹 added
+  final int verseNumber;
   final Color backgroundColor;
 
   const CustomVerseText2({
     super.key,
     required this.text,
-    required this.category,
-    required this.verseNumber, // 🔹 added
-  }) : backgroundColor = (
-      category == 1 ? AppColors.strongColor :
-      category == 2 ? AppColors.revisionColor :
-      category == 3 ? AppColors.desireColor :
-      category == 4 ? AppColors.easyColor :
-      category == 5 ? AppColors.hardColor :
-      category == 6 ? AppColors.uncategorizedColor :
-      AppColors.uncategorizedColor
-  );
+    required this.verseNumber,
+    required this.backgroundColor
+  });
 
   @override
   Widget build(BuildContext context) {
     return Text.rich(
       TextSpan(
         children: [
-          // 🔹 Verse text
           TextSpan(
             text: text,
             style: TextStyle(
@@ -98,7 +88,6 @@ class CustomVerseText2 extends StatelessWidget {
             ),
           ),
 
-          // 🔹 Verse number (Quran style)
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: Padding(

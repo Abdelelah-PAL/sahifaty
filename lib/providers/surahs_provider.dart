@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sahifaty/models/surah.dart';
-import 'package:sahifaty/services/ayat_services.dart';
 import 'package:sahifaty/services/surahs_services.dart';
-import '../models/ayat.dart';
 
 class SurahsProvider with ChangeNotifier {
   List<Surah> surahsByJuz = [];
@@ -11,7 +9,6 @@ class SurahsProvider with ChangeNotifier {
   final SurahsServices _surahsServices = SurahsServices();
 
   Future<void> getSurahsByJuz(int juz) async {
-    print(juz);
     setLoading();
     var res = await _surahsServices.getSurahsByJuz(juz);
     var data = res['data'];

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/controllers/evaluations_controller.dart';
-import 'package:sahifaty/controllers/general_controller.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/screens/main_screen/main_screen.dart';

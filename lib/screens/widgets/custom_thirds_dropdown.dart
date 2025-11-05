@@ -157,7 +157,7 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                     _removeSideOverlay();
                     _removeOverlay();
                     _controller.value = 0.0;
-                    Get.to(const IndexPage());
+                    Get.to( IndexPage(surah: sura,));
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(

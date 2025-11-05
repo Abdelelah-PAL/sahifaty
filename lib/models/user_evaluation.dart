@@ -1,21 +1,32 @@
+import 'evaluation.dart';
+
 class UserEvaluation {
   int? _id;
-  int ayahId;
-  int evaluationId;
+  int? ayahId;
+  int? evaluationId;
   String? comment;
+  Evaluation? evaluation;
 
-  UserEvaluation(
-      {int? id, required this.ayahId, required this.evaluationId, this.comment})
-      : _id = id;
+  UserEvaluation({
+    int? id,
+    this.ayahId,
+    this.evaluationId,
+    this.comment,
+    this.evaluation,
+  }) : _id = id;
 
   int? get id => _id;
 
   factory UserEvaluation.fromJson(Map<String, dynamic> json) {
     return UserEvaluation(
-        id: json['_id'],
-        ayahId: json['ayahId'],
-        evaluationId: json['evaluationId'],
-        comment: json['comment']);
+      id: json['_id'],
+      ayahId: json['ayahId'],
+      evaluationId: json['evaluationId'],
+      comment: json['comment'],
+      evaluation: json['evaluation'] == null
+          ? null
+          : Evaluation.fromJson(json['evaluation']),
+    );
   }
 
   Map<String, dynamic> toMap() {

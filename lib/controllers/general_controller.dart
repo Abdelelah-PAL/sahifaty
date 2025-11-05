@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:flutter/material.dart';
 import '../core/constants/colors.dart';
 
 class GeneralController {
@@ -11,6 +10,7 @@ class GeneralController {
     {'id': 3, 'color': AppColors.desireColor},
     {'id': 4, 'color': AppColors.easyColor},
     {'id': 5, 'color': AppColors.hardColor},
+    {'id': 67, 'color': AppColors.uncategorizedColor},
   ];
 
   final List<Map<String, dynamic>> parts = [
@@ -102,6 +102,8 @@ class GeneralController {
 
   Color getColorFromCategory(int category) {
     switch (category) {
+      case 0:
+        return AppColors.uncategorizedColor;
       case 1:
         return AppColors.strongColor;
       case 2:
@@ -157,5 +159,9 @@ class GeneralController {
         break;
     }
     return stringLevel;
+  }
+
+  Color getOnColor(Color backgroundColor) {
+    return backgroundColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
 }

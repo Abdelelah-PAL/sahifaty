@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sahifaty/models/evaluation.dart';
+import 'package:sahifaty/providers/ayat_provider.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:http/http.dart' as http;
 import '../core/constants/colors.dart';
@@ -19,7 +20,9 @@ class EvaluationsController {
 
   Future<void> sendEvaluation(Ayat verse,
       Evaluation evaluation,
-      EvaluationsProvider evaluationsProvider,) async {
+      EvaluationsProvider evaluationsProvider,
+      AyatProvider? ayatProvider
+      ) async {
     try {
       final Map<String, dynamic> userEvaluation = UserEvaluation(
         ayahId: verse.id!,
@@ -39,6 +42,11 @@ class EvaluationsController {
           textColor: Colors.white,
           fontSize: 16.0,
         );
+
+        // increment evaluated verses if coming from questions screen
+        if(ayatProvider != null) {
+          ayatProvider.incrementEvaluatedVersesCount();
+        }
       } else {
         Fluttertoast.showToast(
           msg: 'مشكلة في التقييم',
