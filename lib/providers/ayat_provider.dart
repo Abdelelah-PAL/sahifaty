@@ -11,8 +11,6 @@ class AyatProvider with ChangeNotifier {
   int surahAyatTotalPages = 1;
   int surahAyatTotalCount = 1;
   bool isLoading = false;
-  Map<int, String> selectedValues = {};
-  Map<int, Color> selectedColors = {};
   final AyatServices _ayatServices = AyatServices();
 
   Future<void> getQuickQuestionsAyatByLevel(int level, int page) async {
@@ -66,23 +64,7 @@ class AyatProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-  void selectOption(int index, String value, Color color) {
-    selectedValues[index] = value;
-    selectedColors[index] = color;
-    notifyListeners();
-  }
-
-  String? getSelectedValue(int index) => selectedValues[index];
-
-  Color getSelectedColor(int index)  {
-    return selectedColors[index] ?? Colors.grey;
 }
 
-  void resetSelections() {
-    selectedValues.clear();
-    selectedColors.clear();
-    notifyListeners();
-  }
 
-}
+

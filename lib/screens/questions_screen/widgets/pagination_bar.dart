@@ -4,12 +4,14 @@ class PaginationBar extends StatelessWidget {
   final int currentPage;
   final int totalPages;
   final VoidCallback onNext;
+  final VoidCallback onPrevious;
 
   const PaginationBar({
     super.key,
     required this.currentPage,
     required this.totalPages,
     required this.onNext,
+    required this.onPrevious,
   });
 
   @override
@@ -23,6 +25,11 @@ class PaginationBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          if (currentPage > 1)
+            IconButton(
+              icon: const Icon(Icons.arrow_back_ios, size: 16),
+              onPressed: onPrevious,
+            ),
           // Page numbers
           ...pages.map((page) => Container(
             margin: const EdgeInsets.symmetric(horizontal: 4),

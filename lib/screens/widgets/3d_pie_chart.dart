@@ -22,56 +22,22 @@ class _PieChart3DState extends State<PieChart3D> {
 
   @override
   Widget build(BuildContext context) {
-    final data = [
-      ChartData(
-          category: EvaluationsController()
-              .getEvaluationById(0, widget.evaluationsProvider)!
-              .nameAr,
-          value: EvaluationsController()
-              .getEvaluationById(0, widget.evaluationsProvider)!
-              .percentage!,
-          color: GeneralController().dropdownOptions[0]['color']),
-      ChartData(
-          category: EvaluationsController()
-              .getEvaluationById(1, widget.evaluationsProvider)!
-              .nameAr,
-          value: EvaluationsController()
-              .getEvaluationById(1, widget.evaluationsProvider)!
-              .percentage!,
-          color: GeneralController().dropdownOptions[1]['color']),
-      ChartData(
-          category: EvaluationsController()
-              .getEvaluationById(2, widget.evaluationsProvider)!
-              .nameAr,
-          value: EvaluationsController()
-              .getEvaluationById(2, widget.evaluationsProvider)!
-              .percentage!,
-          color: GeneralController().dropdownOptions[2]['color']),
-      ChartData(
-          category: EvaluationsController()
-              .getEvaluationById(3, widget.evaluationsProvider)!
-              .nameAr,
-          value: EvaluationsController()
-              .getEvaluationById(3, widget.evaluationsProvider)!
-              .percentage!,
-          color: GeneralController().dropdownOptions[3]['color']),
-      ChartData(
-          category: EvaluationsController()
-              .getEvaluationById(4, widget.evaluationsProvider)!
-              .nameAr,
-          value: EvaluationsController()
-              .getEvaluationById(4, widget.evaluationsProvider)!
-              .percentage!,
-          color: GeneralController().dropdownOptions[4]['color']),
-      ChartData(
-          category: EvaluationsController()
-              .getEvaluationById(5, widget.evaluationsProvider)!
-              .nameAr,
-          value: EvaluationsController()
-              .getEvaluationById(5, widget.evaluationsProvider)!
-              .percentage!,
-          color: GeneralController().dropdownOptions[5]['color']),
-    ];
+    final evaluationsController = EvaluationsController();
+    final generalController = GeneralController();
+
+// Generate ChartData for each dropdown option dynamically
+    final data = List.generate(generalController.dropdownOptions.length, (i) {
+      final evaluation = evaluationsController.getEvaluationById(
+          i, widget.evaluationsProvider);
+
+      if (evaluation == null) return null; // Skip if not found
+
+      return ChartData(
+        category: evaluation.nameAr,
+        value: evaluation.percentage ?? 0,
+        color: generalController.dropdownOptions[i]['color'],
+      );
+    }).whereType<ChartData>().toList();
 
     return GestureDetector(
       onTapDown: (details) {

@@ -90,34 +90,56 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                   currentPage: page,
                   totalPages: ayatProvider.quickQuestionsLevelTotalPages,
                   onNext: () async {
-                    if (ayatProvider.evaluatedVersesCount ==
-                            ayatProvider.quickQuestionsAyat.length &&
-                        page < ayatProvider.quickQuestionsLevelTotalPages) {
-                      ayatProvider.resetEvaluatedVersesCount();
-                      print(ayatProvider.evaluatedVersesCount);
-                      setState(() {
-                        page += 1;
-                      });
-                      ayatProvider.resetSelections();
-                      await ayatProvider.getQuickQuestionsAyatByLevel(
-                        selectedIndex + 1,
-                        page,
-                      );
-                      print(ayatProvider.evaluatedVersesCount);
-                      _scrollController.jumpTo(0); // reset scroll
-                    } else {
-                      print(ayatProvider.evaluatedVersesCount);
-                      print(ayatProvider.quickQuestionsAyat.length);
-                      print(page);
-                      print(ayatProvider.quickQuestionsLevelTotalPages);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              "عليك تقييم جميع الآيات قبل الانتقال للصفحة التالية"),
-                        ),
-                      );
-                    }
+                    // if (ayatProvider.evaluatedVersesCount ==
+                    //         ayatProvider.quickQuestionsAyat.length &&
+                    //     page < ayatProvider.quickQuestionsLevelTotalPages) {
+                    ayatProvider.resetEvaluatedVersesCount();
+                    setState(() {
+                      page += 1;
+                      _selectedColors.clear();
+                    });
+                    await ayatProvider.getQuickQuestionsAyatByLevel(
+                      selectedIndex + 1,
+                      page,
+                    );
+                    _scrollController.jumpTo(0); // reset scroll
+                    //   }
+                    //   else {
+                    //     ScaffoldMessenger.of(context).showSnackBar(
+                    //       const SnackBar(
+                    //         content: Text(
+                    //             "عليك تقييم جميع الآيات قبل الانتقال للصفحة التالية"),
+                    //       ),
+                    //     );
+                    //   }
+                    // },
                   },
+                  onPrevious: () async {
+                    // if (ayatProvider.evaluatedVersesCount ==
+                    //         ayatProvider.quickQuestionsAyat.length &&
+                    //     page < ayatProvider.quickQuestionsLevelTotalPages) {
+                    ayatProvider.resetEvaluatedVersesCount();
+                    setState(() {
+                      page -= 1;
+                      _selectedColors.clear();
+                    });
+                    await ayatProvider.getQuickQuestionsAyatByLevel(
+                      selectedIndex + 1,
+                      page,
+                    );
+                    _scrollController.jumpTo(0); // reset scroll
+                    //   }
+                    //   else {
+                    //     ScaffoldMessenger.of(context).showSnackBar(
+                    //       const SnackBar(
+                    //         content: Text(
+                    //             "عليك تقييم جميع الآيات قبل الانتقال للصفحة التالية"),
+                    //       ),
+                    //     );
+                    //   }
+                    // },
+                  },
+
                 ),
                 // child: ListView.builder(
                 //   shrinkWrap: true,
@@ -263,11 +285,6 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                         setState(() {
                                           _selectedColors[index] = newColor;
                                         });
-
-                                        // Also update provider if needed
-                                        ayatProvider.selectOption(
-                                            index, value, newColor);
-
                                         EvaluationsController().sendEvaluation(
                                             verse,
                                             evaluation,
@@ -325,19 +342,23 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                         ayatProvider.getQuickQuestionsAyatByLevel(
                             selectedIndex + 1, 1);
                         ayatProvider.resetEvaluatedVersesCount();
-                        ayatProvider.resetSelections();
+                        _selectedColors.clear();
                       },
                       text: "انتقل إلى السؤال التالي",
                       width: 180,
                       height: 35,
                       isDisabled:
-                          (page != ayatProvider.quickQuestionsLevelTotalPages ||
-                                      ayatProvider.evaluatedVersesCount <  ayatProvider.quickQuestionsAyat.length) ||
-                                  selectedIndex + 1 ==
-                                      schoolProvider
-                                          .quickQuestionsSchool.levels.length
-                              ? true
-                              : false)
+                          // (page != ayatProvider.quickQuestionsLevelTotalPages ||
+                          //             ayatProvider.evaluatedVersesCount <
+                          //                 ayatProvider
+                          //                     .quickQuestionsAyat.length) ||
+                          //         selectedIndex + 1 ==
+                          //             schoolProvider
+                          //                 .quickQuestionsSchool.levels.length
+                          //     ? true
+                          //     :
+                          false
+                  )
                 ],
               ),
             )
