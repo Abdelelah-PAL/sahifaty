@@ -46,14 +46,14 @@ class FirstPieChartScreen extends StatelessWidget {
                   structHeight: 2,
                   withBackground: false,
                 ),
-                SizeConfig.customSizedBox(null, 10, null),
+                SizeConfig.customSizedBox(null, 5, null),
                 SizedBox(
-                    width: 200,
-                    height: 200,
+                    width: 100,
+                    height: 100,
                     child: PieChart(
                         PieChartData(
                       sectionsSpace: 1,
-                      centerSpaceRadius: 0,
+                      centerSpaceRadius: 50,
                       sections: EvaluationsController()
                           .buildChartSections(evaluationsProvider)
                           .map((section) {
@@ -62,7 +62,7 @@ class FirstPieChartScreen extends StatelessWidget {
                         return section.copyWith(value: adjustedValue);
                       }).toList(),
                     ))),
-                SizeConfig.customSizedBox(null, 10, null),
+                SizeConfig.customSizedBox(null, 5, null),
                 Text(
                   'لقد تم تصنيف $evaluatedPercentage% من آيات القرآن في صحيفتك',
                   textAlign: TextAlign.center,
@@ -92,7 +92,7 @@ class FirstPieChartScreen extends StatelessWidget {
                     height: 1.35,
                   ),
                 ),
-                SizedBox(height: SizeConfig.getProportionalHeight(70)),
+                SizedBox(height: SizeConfig.getProportionalHeight(50)),
                 CustomButton(
                   onPressed: () => {Get.to( const ShaifaScreen())},
                   text: 'اذهب إلى صحيفتي',
