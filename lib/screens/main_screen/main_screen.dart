@@ -14,7 +14,8 @@ import '../widgets/custom_text.dart';
 import 'widgets/menu_item.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key,  this.comesFirst = false});
+  final bool comesFirst;
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -35,6 +36,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.comesFirst) {
+      SizeConfig().init(context);
+    }
     final generalProvider = Provider.of<GeneralProvider>(context);
     final usersProvider = Provider.of<UsersProvider>(context);
     final evaluationsProvider = Provider.of<EvaluationsProvider>(context);

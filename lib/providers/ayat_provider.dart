@@ -1,4 +1,7 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
+import 'package:sahifaty/controllers/general_controller.dart';
 import 'package:sahifaty/services/ayat_services.dart';
 import '../models/ayat.dart';
 
@@ -25,7 +28,8 @@ class AyatProvider with ChangeNotifier {
     quickQuestionsLevelTotalPages = res['totalPages'];
     quickQuestionsLevelTotalCount = res['total'];
     for (var ayah in quickQuestionsAyat) {
-      if (ayah.userEvaluation != null && ayah.userEvaluation!.evaluation!.id! > 0) {
+      if (ayah.userEvaluation != null &&
+          ayah.userEvaluation!.evaluation!.id! > 0) {
         evaluatedVersesCount++;
       }
     }
@@ -34,15 +38,49 @@ class AyatProvider with ChangeNotifier {
 
   Future<void> getAyatBySurahId(int surahId) async {
     setLoading();
-    var res = await _ayatServices.getAyatBySurahId(surahId);
-    var data = res['data'];
-    if (data is! List) {
-      throw Exception('Unexpected response format: expected a list');
+
+    try {
+      Map<String, dynamic> res;
+      final hasConnection = await GeneralController().checkConnectivity();
+
+      if (!hasConnection) {
+        // 📴 No internet → Load from local JSON
+        final String jsonString =
+            await rootBundle.loadString('assets/json/data.json');
+        final List<dynamic> allAyat = json.decode(jsonString);
+
+        // 🔍 Filter by surah.id
+        final filteredAyat = allAyat.where((ayah) {
+          final surah = ayah['surah'];
+          return surah != null && surah['id'] == surahId;
+        }).toList();
+
+        res = {
+          'data': filteredAyat,
+          'totalPages': 1,
+          'total': filteredAyat.length,
+        };
+      } else {
+        // 🌐 Online → Load from API
+        res = await _ayatServices.getAyatBySurahId(surahId);
+      }
+
+      var data = res['data'];
+      if (data is! List) {
+        throw Exception('Unexpected response format: expected a list');
+      }
+
+      // 🧩 Map to your Ayat model
+      surahAyat = data.map<Ayat>((ayah) => Ayat.fromJson(ayah)).toList();
+      surahAyatTotalPages = res['totalPages'];
+      surahAyatTotalCount = res['total'];
+    } catch (e) {
+      if (kDebugMode) {
+        print("❌ Error loading Ayat: $e");
+      }
+    } finally {
+      resetLoading();
     }
-    surahAyat = data.map<Ayat>((ayah) => Ayat.fromJson(ayah)).toList();
-    surahAyatTotalPages = res['totalPages'];
-    surahAyatTotalCount = res['total'];
-    resetLoading();
   }
 
   void setLoading() {
@@ -59,12 +97,9 @@ class AyatProvider with ChangeNotifier {
     evaluatedVersesCount++;
     notifyListeners();
   }
+
   void resetEvaluatedVersesCount() {
     evaluatedVersesCount = 0;
     notifyListeners();
   }
-
 }
-
-
-

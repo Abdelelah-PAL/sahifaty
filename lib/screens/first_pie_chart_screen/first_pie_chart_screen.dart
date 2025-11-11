@@ -94,7 +94,7 @@ class FirstPieChartScreen extends StatelessWidget {
                 ),
                 SizedBox(height: SizeConfig.getProportionalHeight(70)),
                 CustomButton(
-                  onPressed: () => {Get.to(const ShaifaScreen())},
+                  onPressed: () => {Get.to( const ShaifaScreen())},
                   text: 'اذهب إلى صحيفتي',
                   width: 155,
                   height: 35,

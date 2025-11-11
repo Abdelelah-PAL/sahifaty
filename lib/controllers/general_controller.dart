@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import '../core/constants/colors.dart';
 
@@ -164,4 +165,16 @@ class GeneralController {
   Color getOnColor(Color backgroundColor) {
     return backgroundColor.computeLuminance() > 0.5 ? Colors.black : Colors.white;
   }
-}
+
+  Future<bool> checkConnectivity() async {
+    final List<ConnectivityResult> connectivityResult =
+    await Connectivity().checkConnectivity();
+
+    if (connectivityResult.contains(ConnectivityResult.none)) {
+      return false;
+    }
+
+    return true;
+  }
+ }
+

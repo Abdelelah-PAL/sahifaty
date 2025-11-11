@@ -48,7 +48,7 @@ class EvaluationsController {
           ayatProvider.incrementEvaluatedVersesCount();
         }
       } else {
-        final http.Response response =
+
         await evaluationsProvider.evaluateAyah(userEvaluation);
 
         Fluttertoast.showToast(
