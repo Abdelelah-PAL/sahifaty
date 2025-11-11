@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/controllers/surahs_controller.dart';
 import 'package:sahifaty/providers/surahs_provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
@@ -43,7 +44,8 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
     if (_overlayEntry != null) return;
 
     // Start fetching surahs for the selected part
-    await surahsProvider.getSurahsByJuz(widget.part['id']);
+    // await surahsProvider.getSurahsByJuz(widget.part['id']);
+   final surahs =  await SurahsController().loadSurahsByJuz(widget.part['id']);
 
     final renderBox = context.findRenderObject() as RenderBox;
     final offset = renderBox.localToGlobal(Offset.zero);
@@ -79,11 +81,13 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
                     : ListView.separated(
                         padding: EdgeInsets.zero,
                         shrinkWrap: true,
-                        itemCount: surahsProvider.totalSurahs,
+                        itemCount: surahs.length,
+                        // itemCount: surahsProvider.totalSurahs,
                         separatorBuilder: (_, __) =>
                             const Divider(height: 1, color: Colors.grey),
                         itemBuilder: (context, index) {
-                          final surah = surahsProvider.surahsByJuz[index];
+                          final surah = surahs[index];
+                          // final surah = surahsProvider.surahsByJuz[index];
                           return InkWell(
                             onTap: () {
                               Get.to(IndexPage(surah: surah,));

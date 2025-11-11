@@ -14,7 +14,8 @@ import '../widgets/custom_text.dart';
 import 'widgets/menu_item.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key,  this.comesFirst = false});
+  const MainScreen({super.key, this.comesFirst = false});
+
   final bool comesFirst;
 
   @override
@@ -99,14 +100,20 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             CustomText(
               text:
-              'مرحبًا ${usersProvider.selectedUser?.fullName ?? ''}\nهذه هي صحيفتك',
+              'مرحبًا ${usersProvider.selectedUser?.fullName ??
+                  ''}\nهذه هي صحيفتك',
               structHeight: 3,
               textAlign: TextAlign.center,
               fontSize: 24,
               fontWeight: FontWeight.bold,
               withBackground: false,
             ),
-            PieChart3D(evaluationsProvider: evaluationsProvider),
+
+            if(!widget.comesFirst)PieChart3D(
+                evaluationsProvider: evaluationsProvider)
+            else
+              SizedBox(height: SizeConfig.getProportionalHeight(250)),
+
             SizedBox(height: SizeConfig.getProportionalHeight(20)),
 
             // ✅ Dynamically build dropdowns (no nested ListView)
@@ -116,24 +123,29 @@ class _MainScreenState extends State<MainScreen> {
                   : generalProvider.mainScreenView == 2
                   ? 30
                   : 0,
-                  (index) => Padding(
-                padding: const EdgeInsets.only(bottom: 25),
-                child: generalProvider.mainScreenView == 1
-                    ? CustomThirdsDropdown(
-                  third: index + 1,
-                  isOpen: openIndex == index,
-                  onToggle: () => toggle(index),
-                )
-                    : CustomPartsDropdown(
-                  part: GeneralController().parts[index],
-                  isOpen: openIndex == index,
-                  onToggle: () => toggle(index),
-                ),
-              ),
+                  (index) =>
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 25),
+                    child: generalProvider.mainScreenView == 1
+                        ? CustomThirdsDropdown(
+                      third: index + 1,
+                      isOpen: openIndex == index,
+                      onToggle: () => toggle(index),
+                    )
+                        : CustomPartsDropdown(
+                      part: GeneralController().parts[index],
+                      isOpen: openIndex == index,
+                      onToggle: () => toggle(index),
+                    ),
+                  ),
             ),
           ],
         ),
       ),
     );
   }
+
+
+
+
 }

@@ -5,6 +5,7 @@ import 'package:sahifaty/controllers/general_controller.dart';
 import 'package:sahifaty/models/surah.dart';
 import 'package:sahifaty/providers/surahs_provider.dart';
 import 'package:sahifaty/screens/quran_view/index_page.dart';
+import '../../controllers/surahs_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import 'custom_text.dart';
@@ -91,9 +92,10 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                     final option = dropdownOptions[index];
                     return InkWell(
                       onTap: () async {
-                        await surahsProvider.getSurahsByJuz(option['id']);
+                        // await surahsProvider.getSurahsByJuz(option['id']);
+                        final surahs =  await SurahsController().loadSurahsByJuz(option['id']);
                         _showSideOverlay(option['name'], index, offset, size,
-                            surahsProvider);
+                            surahsProvider, surahs);
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -125,9 +127,9 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
   }
 
   void _showSideOverlay(String option, int index, Offset parentOffset,
-      Size buttonSize, SurahsProvider surahsProvider) {
+      Size buttonSize, SurahsProvider surahsProvider, List<Surah>surahs) {
     _removeSideOverlay();
-    if (surahsProvider.surahsByJuz.isEmpty) return;
+    // if (surahsProvider.surahsByJuz.isEmpty) return;
 
     _tappedIndex = index;
     const double itemHeight = 40;
@@ -149,9 +151,12 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
-              itemCount: surahsProvider.totalSurahs,
+              // itemCount: surahsProvider.totalSurahs,
+              itemCount: surahs.length,
               itemBuilder: (_, i) {
-                final Surah sura = surahsProvider.surahsByJuz[i];
+                // final Surah sura = surahsProvider.surahsByJuz[i];
+                final sura = surahs[i];
+
                 return InkWell(
                   onTap: () {
                     _removeSideOverlay();
