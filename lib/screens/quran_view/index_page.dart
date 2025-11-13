@@ -37,15 +37,16 @@ class _IndexPageState extends State<IndexPage> {
     _menuEntry = null;
   }
 
-  void _showOptionsAt(
-    Offset globalPos,
-    Ayat ayah,
-    EvaluationsProvider evaluationsProvider,
-  ) {
+  void _showOptionsAt(Offset globalPos,
+      Ayat ayah,
+      EvaluationsProvider evaluationsProvider,) {
     _removeMenu();
 
     final overlayBox =
-        Overlay.of(context).context.findRenderObject() as RenderBox;
+    Overlay
+        .of(context)
+        .context
+        .findRenderObject() as RenderBox;
     final screen = overlayBox.size;
 
     const double menuWidth = 150;
@@ -59,69 +60,71 @@ class _IndexPageState extends State<IndexPage> {
     }
 
     final double right =
-        (screen.width - globalPos.dx).clamp(0.0, screen.width - menuWidth);
+    (screen.width - globalPos.dx).clamp(0.0, screen.width - menuWidth);
 
     _menuEntry = OverlayEntry(
-      builder: (context) => Stack(
-        children: [
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: _removeMenu,
-              behavior: HitTestBehavior.translucent,
-              child: const SizedBox(),
-            ),
-          ),
-          Positioned(
-            top: top,
-            right: right,
-            child: Directionality(
-              textDirection: TextDirection.rtl,
-              child: Material(
-                elevation: 6,
-                borderRadius: BorderRadius.circular(12),
-                color: Colors.transparent,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: menuWidth),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: evaluationsProvider.evaluations.map((evaluation) {
-                      final text = evaluation.nameAr;
-                      final color = gc.getColorFromCategory(evaluation.id!);
+      builder: (context) =>
+          Stack(
+            children: [
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: _removeMenu,
+                  behavior: HitTestBehavior.translucent,
+                  child: const SizedBox(),
+                ),
+              ),
+              Positioned(
+                top: top,
+                right: right,
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Material(
+                    elevation: 6,
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.transparent,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: menuWidth),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.min,
+                        children: evaluationsProvider.evaluations.map((
+                            evaluation) {
+                          final text = evaluation.nameAr;
+                          final color = gc.getColorFromCategory(evaluation.id!);
 
-                      return InkWell(
-                        onTap: () {
-                          setState(() {
-                            _selectedColors[ayah.id!] =
-                                color; // update local map
-                          });
-                          _removeMenu();
-                          EvaluationsController().sendEvaluation(
-                              ayah, evaluation, evaluationsProvider, null);
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
-                          color: color,
-                          child: Text(
-                            text,
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: _onColor(color),
-                              fontWeight: FontWeight.w700,
-                              fontFamily: AppFonts.versesFont,
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                _selectedColors[ayah.id!] =
+                                    color; // update local map
+                              });
+                              _removeMenu();
+                              EvaluationsController().sendEvaluation(
+                                  ayah, evaluation, evaluationsProvider, null);
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              color: color,
+                              child: Text(
+                                text,
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: _onColor(color),
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: AppFonts.versesFont,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+                          );
+                        }).toList(),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
     );
 
     Overlay.of(context).insert(_menuEntry!);
@@ -190,7 +193,7 @@ class _IndexPageState extends State<IndexPage> {
                 child: Column(
                   children: [
                     Text(
-                      'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
+                      'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
                       style: TextStyle(
                         fontSize: 20,
                         height: 2,
@@ -202,25 +205,74 @@ class _IndexPageState extends State<IndexPage> {
                     SizeConfig.customSizedBox(null, 30, null),
                     Text.rich(
                       TextSpan(
-                        children:
-                            // ayatProvider.surahAyat.map((ayah) {
-                            widget.ayat.asMap().entries.map((entry) {
-                                final index = entry.key;
-                                final ayah = entry.value;
-                                // 1️⃣ Use local selected color if exists
-                                final color =
-                                    // hasConnection ?
-                                    // _selectedColors[ayah.id!] ??
-                                    //     // 2️⃣ Otherwise use backend evaluation color
-                                    //     (ayah.userEvaluation?.evaluation?.id != null
-                                    //         ? gc.getColorFromCategory(
-                                    //         ayah.userEvaluation!.evaluation!.id!)
-                                    //         : Colors.grey)
-                                    // :
-                                    AppColors.ayatTextDefaultColor;
+                          children:
+                          // ayatProvider.surahAyat.map((ayah) {
+                          widget.ayat
+                              .asMap()
+                              .entries
+                              .map((entry) {
+                            final index = entry.key;
+                            final ayah = entry.value;
+                            // 1️⃣ Use local selected color if exists
+                            final color =
+                            // hasConnection ?
+                            // _selectedColors[ayah.id!] ??
+                            // // 2️⃣ Otherwise use backend evaluation color
+                            // (ayah.userEvaluation?.evaluation?.id != null
+                            // ? gc.getColorFromCategory( // ayah.userEvaluation!.evaluation!.id!)
+                            // : Colors.grey)
+                            // :
+                            AppColors.ayatTextDefaultColor;
 
-                                return TextSpan(
-                                  text: '${ayah.text}${gc.ayahMarker(index)} ',
+                            // --- START MODIFIED AYAH SPAN ---
+                            return TextSpan(
+                              // The Ayah text itself
+                              text: '${ayah.text} ',
+                              style: TextStyle(
+                                fontSize: 20,
+                                height: 2,
+                                color: color,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: AppFonts.versesFont,
+                              ),
+                              recognizer: hasConnection
+                                  ? (TapGestureRecognizer()
+                                ..onTapDown =
+                                    (details) =>
+                                    _showOptionsAt(
+                                      details.globalPosition,
+                                      ayah,
+                                      evaluationProvider,
+                                    ))
+                                  : null,
+                              children: [
+                                // The WidgetSpan contains the IconButton
+                                ayah.userEvaluation != null
+                                    ? WidgetSpan(
+                                  alignment: PlaceholderAlignment.middle,
+                                  child: SizedBox(
+                                    width: 32,
+                                    height: 32,
+                                    child: IconButton(
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      icon: const Icon(
+                                        Icons.remove_circle_outline,
+                                        color: AppColors.errorColor,
+                                        size: 20,
+                                      ),
+                                      onPressed: () {
+                                        print('Icon pressed for Ayah ${ayah.id}');
+                                      },
+                                    ),
+                                  ),
+                                )
+                                    : const WidgetSpan(
+                                  child: SizedBox(width: 0, height: 0),
+                                ),
+                                // The TextSpan contains the Ayah Marker (Number)
+                                TextSpan(
+                                  text: '${gc.ayahMarker(index)} ',
                                   style: TextStyle(
                                     fontSize: 20,
                                     height: 2,
@@ -228,17 +280,11 @@ class _IndexPageState extends State<IndexPage> {
                                     fontWeight: FontWeight.w600,
                                     fontFamily: AppFonts.versesFont,
                                   ),
-                                  recognizer: hasConnection
-                                      ? (TapGestureRecognizer()
-                                        ..onTapDown =
-                                            (details) => _showOptionsAt(
-                                                  details.globalPosition,
-                                                  ayah,
-                                                  evaluationProvider,
-                                                ))
-                                      : null,
-                                );
-                              }).toList()
+                                ),
+                              ],
+                            );
+                            // --- END MODIFIED AYAH SPAN ---
+                          }).toList()
                       ),
                       textDirection: TextDirection.rtl,
                       textAlign: TextAlign.justify,
