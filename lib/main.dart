@@ -10,6 +10,7 @@ import 'package:sahifaty/providers/general_provider.dart';
 import 'package:sahifaty/providers/school_provider.dart';
 import 'package:sahifaty/providers/surahs_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
+import 'package:sahifaty/screens/authentication_screens/login_screen.dart';
 import 'package:sahifaty/screens/authentication_screens/sign_up_screen.dart';
 import 'package:sahifaty/screens/main_screen/main_screen.dart';
 
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
               theme:
                   ThemeData(scaffoldBackgroundColor: AppColors.backgroundColor),
               home:
-                  hasConnection ? const SignUpScreen() :  const MainScreen(comesFirst: true,));
+                  hasConnection ? const LoginScreen(firstScreen: true) :  const MainScreen(comesFirst: true,));
         });
   }
 }

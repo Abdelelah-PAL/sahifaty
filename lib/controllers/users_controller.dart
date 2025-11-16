@@ -65,7 +65,8 @@ class UsersController {
     } else if (!RegExp(r'\d').hasMatch(password)) {
       throw Exception('يجب أن تحتوي كلمة المرور على رقم واحد على الأقل');
     } else if (!RegExp(r'[!@#\$&*~]').hasMatch(password)) {
-      throw Exception('يجب أن تحتوي كلمة المرور على رمز واحد على الأقل (! @ # \$ & * ~)');
+      throw Exception(
+          'يجب أن تحتوي كلمة المرور على رمز واحد على الأقل (! @ # \$ & * ~)');
     }
   }
 
@@ -154,6 +155,8 @@ class UsersController {
     loginPasswordController.text = password;
     return {'email': email, 'password': password};
   }
+
+
 
   Future<void> completeOnboarding() async {
     final prefs = await SharedPreferences.getInstance();

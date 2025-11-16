@@ -215,6 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               _userController.loginPasswordController.text,
                             );
                           }
+                          await usersProvider.checkFirstLogin();
 
                           // ✅ Navigate to welcome screen
                           Get.to(() => const WelcomeScreen());

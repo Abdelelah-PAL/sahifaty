@@ -60,7 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: [
                       SizeConfig.customSizedBox(
-                          1.5, 3, Image.asset(Assets.quran)),
+                          1.5, 3.5, Image.asset(Assets.quran)),
                       Padding(
                           padding: EdgeInsets.only(
                               top: SizeConfig.getProportionalHeight(10),

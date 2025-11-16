@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sahifaty/models/auth_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/users_controller.dart';
 import '../core/constants/colors.dart';
 import '../models/user.dart';
@@ -16,6 +17,7 @@ class UsersProvider with ChangeNotifier {
 
   final UsersServices _usersService = UsersServices();
   bool isLoading = false;
+  bool isFirstLogin = false;
 
   Future<AuthData> register(
       String username, String email, String password) async {
@@ -98,5 +100,13 @@ class UsersProvider with ChangeNotifier {
   void setSelectedUser(User user) {
     selectedUser = user;
     notifyListeners();
+  }
+
+  Future<void> checkFirstLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email') ?? '';
+    final password = prefs.getString('password') ?? '';
+
+    isFirstLogin = email != '' && password != '';
   }
 }
