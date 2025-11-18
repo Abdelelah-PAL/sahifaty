@@ -107,6 +107,7 @@ class UsersProvider with ChangeNotifier {
     final email = prefs.getString('email') ?? '';
     final password = prefs.getString('password') ?? '';
 
-    isFirstLogin = email != '' && password != '';
+    isFirstLogin = email == '' && password == '';
+    notifyListeners();
   }
 }

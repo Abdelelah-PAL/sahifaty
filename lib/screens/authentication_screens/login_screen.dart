@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/models/user.dart';
+import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../controllers/users_controller.dart';
 import '../../core/constants/assets.dart';
@@ -10,6 +11,7 @@ import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
 import '../../models/auth_data.dart';
 import '../../providers/users_provider.dart';
+import '../sahifa_screen/sahifa_screen.dart';
 import '../welcome_screen/welcome_screen.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
@@ -49,6 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
       SizeConfig().init(context);
     }
     UsersProvider usersProvider = Provider.of<UsersProvider>(context);
+    EvaluationsProvider evaluationsProvider =
+        Provider.of<EvaluationsProvider>(context);
 
     return Scaffold(
         backgroundColor: AppColors.backgroundColor,
@@ -207,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               email: authData.user!.email);
 
                           usersProvider.setSelectedUser(user);
-
+                          await usersProvider.checkFirstLogin();
                           // ✅ Save login info if Remember Me is checked
                           if (_userController.rememberMe) {
                             _userController.saveLoginInfo(
@@ -215,10 +219,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               _userController.loginPasswordController.text,
                             );
                           }
-                          await usersProvider.checkFirstLogin();
 
-                          // ✅ Navigate to welcome screen
-                          Get.to(() => const WelcomeScreen());
+                          if (!usersProvider.isFirstLogin) {
+                            await evaluationsProvider.getQuranChartData(
+                                usersProvider.selectedUser!.id);
+                            Get.to(() => const SahifaScreen());
+                          } else {
+                            Get.to(() => const WelcomeScreen());
+                          }
                         } catch (e) {
                           String message;
                           if (e.toString().contains("invalid credentials")) {

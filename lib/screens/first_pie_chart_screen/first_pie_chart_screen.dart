@@ -53,7 +53,7 @@ class FirstPieChartScreen extends StatelessWidget {
                     child: PieChart(
                         PieChartData(
                       sectionsSpace: 1,
-                      centerSpaceRadius: 50,
+                      centerSpaceRadius: 30,
                       sections: EvaluationsController()
                           .buildChartSections(evaluationsProvider)
                           .map((section) {
@@ -94,7 +94,7 @@ class FirstPieChartScreen extends StatelessWidget {
                 ),
                 SizedBox(height: SizeConfig.getProportionalHeight(50)),
                 CustomButton(
-                  onPressed: () => {Get.to( const ShaifaScreen())},
+                  onPressed: () => {Get.to( const SahifaScreen())},
                   text: 'اذهب إلى صحيفتي',
                   width: 155,
                   height: 35,
