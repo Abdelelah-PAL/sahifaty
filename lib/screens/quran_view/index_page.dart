@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -257,8 +258,10 @@ class _IndexPageState extends State<IndexPage> {
                                           size: 20,
                                         ),
                                         onPressed: () {
-                                          print(
+                                          if (kDebugMode) {
+                                            print(
                                               'Icon pressed for Ayah ${ayah.id}');
+                                          }
                                         },
                                       ),
                                     ),

@@ -7,6 +7,9 @@ import 'package:sahifaty/screens/main_screen/main_screen.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
+import '../../providers/ayat_provider.dart';
+import '../../providers/school_provider.dart';
+import '../questions_screen/questions_screen.dart';
 import '../widgets/3d_pie_chart.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
@@ -20,6 +23,8 @@ class SahifaScreen extends StatelessWidget {
     UsersProvider usersProvider = Provider.of<UsersProvider>(context);
     EvaluationsProvider evaluationsProvider =
         Provider.of<EvaluationsProvider>(context);
+    final schoolProvider = context.read<SchoolProvider>();
+    final ayatProvider = context.read<AyatProvider>();
     final uncategorized =
         EvaluationsController().getEvaluationById(0, evaluationsProvider);
     final evaluatedPercentage =
@@ -28,6 +33,72 @@ class SahifaScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
         leading: const CustomBackButton(),
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
+            ),
+          ),
+        ],
+      ),
+      endDrawer: SizedBox(
+        width: SizeConfig.getProportionalWidth(225),
+        child: Drawer(
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: SizeConfig.getProportionalHeight(100),
+            ),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                ListTile(
+                  onTap: () {},
+                  title: Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      const Icon(
+                        Icons.settings,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: SizeConfig.getProportionalWidth(10),
+                      ),
+                      const CustomText(
+                        text: "إعدادات",
+                        withBackground: false,
+                      ),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  onTap: () async {
+                    await schoolProvider.getQuickQuestionsSchool();
+                    await ayatProvider.getQuickQuestionsAyatByLevel(1, 1);
+                    await evaluationsProvider.getAllEvaluations();
+                    Get.to(const QuestionsScreen());
+                  },
+                  title: Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      const Icon(
+                        Icons.question_answer_sharp,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: SizeConfig.getProportionalWidth(10),
+                      ),
+                      const CustomText(
+                        text: "الأسئلة السريعة",
+                        withBackground: false,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.only(

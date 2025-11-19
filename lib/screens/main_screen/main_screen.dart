@@ -50,7 +50,7 @@ class _MainScreenState extends State<MainScreen> {
         leading: const CustomBackButton(),
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.menu),
+            icon: const Icon(Icons.list_alt),
             itemBuilder: (context) {
               return [
                 PopupMenuItem(

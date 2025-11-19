@@ -8,6 +8,7 @@ import 'package:sahifaty/providers/school_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/screens/first_pie_chart_screen/first_pie_chart_screen.dart';
 import 'package:sahifaty/screens/questions_screen/widgets/pagination_bar.dart';
+import 'package:sahifaty/screens/sahifa_screen/sahifa_screen.dart';
 import '../../controllers/general_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
@@ -317,7 +318,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                           context.read<UsersProvider>();
                       await evaluationsProvider
                           .getQuranChartData(usersProvider.selectedUser!.id);
-                      Get.to(const FirstPieChartScreen());
+                      Get.to(const SahifaScreen());
                     },
                     text: "تخطي",
                     width: 75,
