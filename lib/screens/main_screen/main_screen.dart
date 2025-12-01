@@ -36,6 +36,17 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    if (widget.comesFirst) {
+      final evaluationsProvider = context.read<EvaluationsProvider>();
+      evaluationsProvider.getAllEvaluations();
+    }
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (widget.comesFirst) {
       SizeConfig().init(context);
@@ -44,7 +55,11 @@ class _MainScreenState extends State<MainScreen> {
     final usersProvider = Provider.of<UsersProvider>(context);
     final evaluationsProvider = Provider.of<EvaluationsProvider>(context);
 
-    return Scaffold(
+
+    return
+      evaluationsProvider.isLoading == true
+    ?const Center(child: CircularProgressIndicator(),)
+    :Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
         leading: const CustomBackButton(),
@@ -100,8 +115,7 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             CustomText(
               text:
-              'مرحبًا ${usersProvider.selectedUser?.fullName ??
-                  ''}\nهذه هي صحيفتك',
+                  'مرحبًا ${usersProvider.selectedUser?.fullName ?? ''}\nهذه هي صحيفتك',
               structHeight: 3,
               textAlign: TextAlign.center,
               fontSize: 24,
@@ -109,8 +123,8 @@ class _MainScreenState extends State<MainScreen> {
               withBackground: false,
             ),
 
-            if(!widget.comesFirst)PieChart3D(
-                evaluationsProvider: evaluationsProvider)
+            if (!widget.comesFirst)
+              PieChart3D(evaluationsProvider: evaluationsProvider)
             else
               SizedBox(height: SizeConfig.getProportionalHeight(250)),
 
@@ -121,31 +135,26 @@ class _MainScreenState extends State<MainScreen> {
               generalProvider.mainScreenView == 1
                   ? 3
                   : generalProvider.mainScreenView == 2
-                  ? 30
-                  : 0,
-                  (index) =>
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 25),
-                    child: generalProvider.mainScreenView == 1
-                        ? CustomThirdsDropdown(
-                      third: index + 1,
-                      isOpen: openIndex == index,
-                      onToggle: () => toggle(index),
-                    )
-                        : CustomPartsDropdown(
-                      part: GeneralController().parts[index],
-                      isOpen: openIndex == index,
-                      onToggle: () => toggle(index),
-                    ),
-                  ),
+                      ? 30
+                      : 0,
+              (index) => Padding(
+                padding: const EdgeInsets.only(bottom: 25),
+                child: generalProvider.mainScreenView == 1
+                    ? CustomThirdsDropdown(
+                        third: index + 1,
+                        isOpen: openIndex == index,
+                        onToggle: () => toggle(index),
+                      )
+                    : CustomPartsDropdown(
+                        part: GeneralController().parts[index],
+                        isOpen: openIndex == index,
+                        onToggle: () => toggle(index),
+                      ),
+              ),
             ),
           ],
         ),
       ),
     );
   }
-
-
-
-
 }

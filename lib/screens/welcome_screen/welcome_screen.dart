@@ -130,11 +130,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   onPressed: () async {
                     final schoolProvider = context.read<SchoolProvider>();
                     final ayatProvider = context.read<AyatProvider>();
-                    final evaluationsProvider =
-                        context.read<EvaluationsProvider>();
+
                     await schoolProvider.getQuickQuestionsSchool();
                     await ayatProvider.getQuickQuestionsAyatByLevel(1, 1);
-                    await evaluationsProvider.getAllEvaluations();
+
                     Get.to(const QuestionsScreen());
                   },
                   text: 'إبدأ التقييم',

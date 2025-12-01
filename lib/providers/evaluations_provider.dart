@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/evaluation.dart';
+import 'package:sahifaty/models/user_evaluation.dart';
 import 'package:sahifaty/services/evaluations_services.dart';
 
 import '../models/chart_evaluation_data.dart';
 
 class EvaluationsProvider with ChangeNotifier {
   List<Evaluation> evaluations = [];
+  List<UserEvaluation> userEvaluations = [];
   List<ChartEvaluationData> chartEvaluationData = [];
   bool isLoading = true;
   int totalCount = 0;
@@ -50,6 +52,15 @@ class EvaluationsProvider with ChangeNotifier {
       resetLoading();
     }
   }
+
+  Future<void> getAllUserEvaluations(int userId, List<int> ayatIds) async {
+    userEvaluations.clear();
+    setLoading();
+    userEvaluations =
+        await _evaluationsServices.getAllUserEvaluations(userId, ayatIds);
+    resetLoading();
+  }
+
 
   void setLoading() {
     isLoading = true;

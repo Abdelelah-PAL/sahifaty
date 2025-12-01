@@ -1,3 +1,5 @@
+import 'package:sahifaty/models/ayat.dart';
+
 import 'evaluation.dart';
 
 class UserEvaluation {
@@ -6,26 +8,30 @@ class UserEvaluation {
   int? evaluationId;
   String? comment;
   Evaluation? evaluation;
+  Ayat? ayah;
 
-  UserEvaluation({
-    int? id,
-    this.ayahId,
-    this.evaluationId,
-    this.comment,
-    this.evaluation,
-  }) : _id = id;
+  UserEvaluation(
+      {int? id,
+      this.ayahId,
+      this.evaluationId,
+      this.comment,
+      this.evaluation,
+      this.ayah})
+      : _id = id;
 
   int? get id => _id;
 
   factory UserEvaluation.fromJson(Map<String, dynamic> json) {
     return UserEvaluation(
       id: json['_id'],
-      ayahId: json['ayahId'],
-      evaluationId: json['evaluationId'],
-      comment: json['comment'],
-      evaluation: json['evaluation'] == null
-          ? null
-          : Evaluation.fromJson(json['evaluation']),
+      comment: json['comment'] ?? '',
+      ayah: json['ayah'] != null ? Ayat.fromJson(json['ayah']) : null,
+      evaluation: json['evaluation'] != null
+          ? Evaluation.fromJson(json['evaluation'])
+          : null,
+      // Optional: still store IDs for easy lookup
+      ayahId: json['ayah'] != null ? json['ayah']['_id'] : null,
+      evaluationId: json['evaluation'] != null ? json['evaluation']['_id'] : null,
     );
   }
 
@@ -35,6 +41,6 @@ class UserEvaluation {
 
   @override
   String toString() {
-    return 'UserEvaluation(id: $_id, ayahId: $ayahId, evaluationId: $evaluationId, comment: $comment)';
+    return 'UserEvaluation(id: $_id, ayahId: $ayahId, evaluationId: $evaluationId, comment: $comment, evaluation: $evaluation, ayah: $ayah)';
   }
 }

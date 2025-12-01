@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/evaluation.dart';
+import 'package:sahifaty/models/user_evaluation.dart';
 import 'package:sahifaty/services/sahifaty_api.dart';
 
 class EvaluationsServices {
@@ -48,4 +49,28 @@ class EvaluationsServices {
       rethrow;
     }
   }
+
+  Future<List<UserEvaluation>> getAllUserEvaluations(int userId, List<int> ayatIds) async {
+    try {
+
+      final ayatIdsParam = ayatIds.join(',');
+      final http.Response res = await _sahifatyApi.get(
+          'user-evaluations?userId=$userId&ayatIds=$ayatIdsParam'
+      );
+
+      if (res.statusCode == 200) {
+        final Map<String, dynamic> body = jsonDecode(res.body);
+
+        final List<dynamic> data = body['data'] ?? [];
+
+        // Extract only evaluation from each data item
+        return data.map<UserEvaluation>((e) => UserEvaluation.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load evaluations');
+      }
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
 }

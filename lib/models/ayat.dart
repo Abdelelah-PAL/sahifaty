@@ -8,11 +8,11 @@ class Ayat {
   int ayahNo;
   int juz;
   int hizb;
-  int hizbQuarter;
-  int wordCount;
-  int letterCount;
-  double weight;
-  String ayahType;
+  int? hizbQuarter;
+  int? wordCount;
+  int? letterCount;
+  double? weight;
+  String? ayahType;
   List<SchoolLevel>? schoolLevels;
   List<int>? subjects;
   Surah surah;
@@ -24,11 +24,11 @@ class Ayat {
     required this.ayahNo,
     required this.juz,
     required this.hizb,
-    required this.hizbQuarter,
-    required this.wordCount,
-    required this.letterCount,
-    required this.weight,
-    required this.ayahType,
+    this.hizbQuarter,
+    this.wordCount,
+    this.letterCount,
+    this.weight,
+    this.ayahType,
     this.schoolLevels,
     this.subjects,
     required this.surah,

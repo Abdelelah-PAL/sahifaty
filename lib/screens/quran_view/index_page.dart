@@ -1,16 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/controllers/ayatController.dart';
 import 'package:sahifaty/controllers/evaluations_controller.dart';
 import 'package:sahifaty/models/ayat.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
+import 'package:sahifaty/providers/users_provider.dart';
 import '../../controllers/general_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
 import '../../models/surah.dart';
+import '../../models/user_evaluation.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage({super.key, required this.surah});
@@ -86,6 +89,7 @@ class _IndexPageState extends State<IndexPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
+
                     children: evaluationsProvider.evaluations.map((evaluation) {
                       final text = evaluation.nameAr;
                       final color = gc.getColorFromCategory(evaluation.id!);
@@ -134,8 +138,14 @@ class _IndexPageState extends State<IndexPage> {
     super.dispose();
   }
 
-  Future<void> _loadAyat() async {
+  Future<void> _loadAyat(
+      int userId, EvaluationsProvider evaluationsProvider) async {
     final ayat = await AyatController().loadAyatBySurah(widget.surah.id);
+    List<int> ayatIds = ayat
+        .where((ayah) => ayah.id != null)
+        .map((ayah) => ayah.id!)
+        .toList();
+    await evaluationsProvider.getAllUserEvaluations(userId, ayatIds);
 
     // Update the state with the loaded ayat
     setState(() {
@@ -149,7 +159,10 @@ class _IndexPageState extends State<IndexPage> {
 
     // Fetch surah Ayat after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadAyat();
+      int userId = context.read<UsersProvider>().selectedUser!.id;
+      EvaluationsProvider evaluationsProvider =
+          context.read<EvaluationsProvider>();
+      _loadAyat(userId, evaluationsProvider);
       // context.read<AyatProvider>().getAyatBySurahId(widget.surah.id);
     });
   }
@@ -157,12 +170,13 @@ class _IndexPageState extends State<IndexPage> {
   @override
   Widget build(BuildContext context) {
     // final ayatProvider = context.watch<AyatProvider>();
+
     final evaluationProvider = Provider.of<EvaluationsProvider>(context);
-    // if (ayatProvider.isLoading) {
-    //   return const Scaffold(
-    //     body: Center(child: CircularProgressIndicator()),
-    //   );
-    // }
+    if (evaluationProvider.isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
 
     return FutureBuilder(
         future: GeneralController().checkConnectivity(),
@@ -211,16 +225,19 @@ class _IndexPageState extends State<IndexPage> {
                               widget.ayat.asMap().entries.map((entry) {
                         final index = entry.key;
                         final ayah = entry.value;
+                        final UserEvaluation? userEvaluation = evaluationProvider.userEvaluations
+                            .firstWhereOrNull((e) => e.ayah!.id == ayah.id);
                         // 1️⃣ Use local selected color if exists
-                        const color =
-                            // hasConnection ?
-                            // _selectedColors[ayah.id!] ??
-                            // // 2️⃣ Otherwise use backend evaluation color
-                            // (ayah.userEvaluation?.evaluation?.id != null
-                            // ? gc.getColorFromCategory( // ayah.userEvaluation!.evaluation!.id!)
-                            // : Colors.grey)
-                            // :
+                        Color color =
+                            hasConnection ?
+                            _selectedColors[ayah.id!] ??
+                            // 2️⃣ Otherwise use backend evaluation color
+                             (userEvaluation?.evaluation?.id != null
+                             ? gc.getColorFromCategory(userEvaluation!.evaluation!.id!)
+                             : Colors.grey)
+                             :
                             AppColors.ayatTextDefaultColor;
+
 
                         // --- START MODIFIED AYAH SPAN ---
                         return TextSpan(
@@ -243,7 +260,7 @@ class _IndexPageState extends State<IndexPage> {
                               : null,
                           children: [
                             // The WidgetSpan contains the IconButton
-                            ayah.userEvaluation != null
+                            userEvaluation!.evaluation != null
                                 ? WidgetSpan(
                                     alignment: PlaceholderAlignment.middle,
                                     child: SizedBox(
@@ -260,7 +277,7 @@ class _IndexPageState extends State<IndexPage> {
                                         onPressed: () {
                                           if (kDebugMode) {
                                             print(
-                                              'Icon pressed for Ayah ${ayah.id}');
+                                                'Icon pressed for Ayah ${ayah.id}');
                                           }
                                         },
                                       ),
