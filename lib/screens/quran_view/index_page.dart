@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/controllers/ayatController.dart';
 import 'package:sahifaty/controllers/evaluations_controller.dart';
+import 'package:sahifaty/controllers/filter_types.dart';
 import 'package:sahifaty/models/ayat.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
@@ -16,9 +17,11 @@ import '../../models/surah.dart';
 import '../../models/user_evaluation.dart';
 
 class IndexPage extends StatefulWidget {
-  IndexPage({super.key, required this.surah});
+  IndexPage({super.key, required this.surah, required this.filterTypeId, this.hizb});
 
   final Surah surah;
+  final int filterTypeId;
+  final int? hizb;
 
   List<Ayat> ayat = [];
 
@@ -89,7 +92,6 @@ class _IndexPageState extends State<IndexPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
-
                     children: evaluationsProvider.evaluations.map((evaluation) {
                       final text = evaluation.nameAr;
                       final color = gc.getColorFromCategory(evaluation.id!);
@@ -140,11 +142,14 @@ class _IndexPageState extends State<IndexPage> {
 
   Future<void> _loadAyat(
       int userId, EvaluationsProvider evaluationsProvider) async {
-    final ayat = await AyatController().loadAyatBySurah(widget.surah.id);
-    List<int> ayatIds = ayat
-        .where((ayah) => ayah.id != null)
-        .map((ayah) => ayah.id!)
-        .toList();
+    final ayat = (widget.filterTypeId == FilterTypes.parts ||
+        widget.filterTypeId == FilterTypes.thirds)
+        ? await AyatController().loadAyatBySurah(widget.surah.id)
+        : await AyatController().loadAyatByHizb(widget.hizb!);
+
+
+    List<int> ayatIds =
+        ayat.where((ayah) => ayah.id != null).map((ayah) => ayah.id!).toList();
     await evaluationsProvider.getAllUserEvaluations(userId, ayatIds);
 
     // Update the state with the loaded ayat
@@ -223,21 +228,20 @@ class _IndexPageState extends State<IndexPage> {
                           children:
                               // ayatProvider.surahAyat.map((ayah) {
                               widget.ayat.asMap().entries.map((entry) {
-                        final index = entry.key;
                         final ayah = entry.value;
-                        final UserEvaluation? userEvaluation = evaluationProvider.userEvaluations
-                            .firstWhereOrNull((e) => e.ayah!.id == ayah.id);
-                        // 1️⃣ Use local selected color if exists
-                        Color color =
-                            hasConnection ?
-                            _selectedColors[ayah.id!] ??
-                            // 2️⃣ Otherwise use backend evaluation color
-                             (userEvaluation?.evaluation?.id != null
-                             ? gc.getColorFromCategory(userEvaluation!.evaluation!.id!)
-                             : Colors.grey)
-                             :
-                            AppColors.ayatTextDefaultColor;
 
+                        final UserEvaluation? userEvaluation =
+                            evaluationProvider.userEvaluations
+                                .firstWhereOrNull((e) => e.ayah!.id == ayah.id);
+                        // 1️⃣ Use local selected color if exists
+                        Color color = hasConnection
+                            ? _selectedColors[ayah.id!] ??
+                                // 2️⃣ Otherwise use backend evaluation color
+                                (userEvaluation?.evaluation?.id != null
+                                    ? gc.getColorFromCategory(
+                                        userEvaluation!.evaluation!.id!)
+                                    : Colors.grey)
+                            : AppColors.ayatTextDefaultColor;
 
                         // --- START MODIFIED AYAH SPAN ---
                         return TextSpan(
@@ -260,7 +264,7 @@ class _IndexPageState extends State<IndexPage> {
                               : null,
                           children: [
                             // The WidgetSpan contains the IconButton
-                            userEvaluation!.evaluation != null
+                            userEvaluation?.evaluation != null
                                 ? WidgetSpan(
                                     alignment: PlaceholderAlignment.middle,
                                     child: SizedBox(
@@ -288,7 +292,7 @@ class _IndexPageState extends State<IndexPage> {
                                   ),
                             // The TextSpan contains the Ayah Marker (Number)
                             TextSpan(
-                              text: '${gc.ayahMarker(index)} ',
+                              text: '${gc.ayahMarker(ayah.ayahNo)} ',
                               style: TextStyle(
                                 fontSize: 20,
                                 height: 2,

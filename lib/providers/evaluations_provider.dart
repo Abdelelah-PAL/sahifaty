@@ -38,6 +38,7 @@ class EvaluationsProvider with ChangeNotifier {
     try {
       setLoading();
       final response = await _evaluationsServices.getQuranChartData(userId);
+      print(response);
 
       totalCount = response['total'];
       chartEvaluationData = (response['evaluations'] as List)

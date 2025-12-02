@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sahifaty/controllers/filter_types.dart';
 
 class GeneralProvider with ChangeNotifier {
   static final GeneralProvider _instance = GeneralProvider._internal();
@@ -11,16 +12,18 @@ class GeneralProvider with ChangeNotifier {
   int mainScreenView = 1;
   bool thirdsMenuItem = true;
   bool partsMenuItem = false;
-  bool assessmentMenuItem = false;
+  bool hizbsMenuItem = false;
+  bool subjectsMenuItem = false;
 
 
   void toggleThirdsMenuItem() {
-    if (!partsMenuItem && !assessmentMenuItem) return;
+    if (!partsMenuItem && !hizbsMenuItem) return;
     thirdsMenuItem = !thirdsMenuItem;
     if (thirdsMenuItem) {
-      mainScreenView = 1;
+      mainScreenView = FilterTypes.thirds;
       partsMenuItem = false;
-      assessmentMenuItem = false;
+      hizbsMenuItem = false;
+      subjectsMenuItem = false;
     }
     notifyListeners();
   }
@@ -28,22 +31,34 @@ class GeneralProvider with ChangeNotifier {
   void togglePartsMenuItem() {
     partsMenuItem = !partsMenuItem;
     if (partsMenuItem) {
-      mainScreenView = 2;
+      mainScreenView = FilterTypes.parts;
       thirdsMenuItem = false;
-      assessmentMenuItem = false;
+      hizbsMenuItem = false;
+      subjectsMenuItem = false;
     }
     notifyListeners();
   }
 
-  void toggleAssessmentMenuItem() {
-    assessmentMenuItem = !assessmentMenuItem;
-    if (assessmentMenuItem) {
-      mainScreenView = 3;
+  void toggleHizbMenuItem() {
+    hizbsMenuItem = !hizbsMenuItem;
+    if (hizbsMenuItem) {
+      mainScreenView = FilterTypes.hizbs;
       thirdsMenuItem = false;
       partsMenuItem = false;
+      subjectsMenuItem = false;
     }
     notifyListeners();
   }
+  // void toggleSubjectMenuItem() {
+  //         mainScreenView = FilterTypes.subjects;
+  //   if (hizbsMenuItem) {
+  //     mainScreenView = 4;
+  //     thirdsMenuItem = false;
+  //     partsMenuItem = false;
+  //     hizbsMenuItem = false;
+  //   }
+  //   notifyListeners();
+  // }
 
 
 }

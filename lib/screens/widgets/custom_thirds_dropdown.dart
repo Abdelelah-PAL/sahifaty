@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/controllers/filter_types.dart';
 import 'package:sahifaty/controllers/general_controller.dart';
 import 'package:sahifaty/models/surah.dart';
 import 'package:sahifaty/providers/surahs_provider.dart';
@@ -57,25 +58,37 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     final offset = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final overlayWidth = size.width;
+    const overlayHeight = 260.0;
+
+// LEFT (already fixed earlier)
+    double calculatedLeft = offset.dx + (_controller.value * 80);
+    calculatedLeft = calculatedLeft.clamp(0, screenWidth - overlayWidth);
+
+// TOP (new fix)
+    double calculatedTop = offset.dy + size.height + 4;
+    calculatedTop = calculatedTop.clamp(0, screenHeight - overlayHeight);
+
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
-          // Full-screen GestureDetector to detect taps outside
           Positioned.fill(
             child: GestureDetector(
               onTap: () {
-                // Close overlay AND return button to original position
                 _removeOverlay();
                 _controller.reverse();
-                widget.onToggle(); // notify parent
+                widget.onToggle();
               },
               behavior: HitTestBehavior.translucent,
             ),
           ),
           Positioned(
-            top: offset.dy + size.height + 4,
-            left: offset.dx + (_controller.value * 80),
-            width: size.width,
+            top: calculatedTop,
+            left: calculatedLeft,
+            width: overlayWidth,
             child: Material(
               borderRadius: BorderRadius.circular(8),
               elevation: 6,
@@ -92,10 +105,17 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                     final option = dropdownOptions[index];
                     return InkWell(
                       onTap: () async {
-                        // await surahsProvider.getSurahsByJuz(option['id']);
-                        final surahs =  await SurahsController().loadSurahsByJuz(option['id']);
-                        _showSideOverlay(option['name'], index, offset, size,
-                            surahsProvider, surahs);
+                        final surahs = await SurahsController()
+                            .loadSurahsByJuz(option['id']);
+
+                        _showSideOverlay(
+                          option['name'],
+                          index,
+                          offset,
+                          size,
+                          surahsProvider,
+                          surahs,
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -121,26 +141,42 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     );
 
     Overlay.of(context).insert(_overlayEntry!);
-
-    // Slide the button **only when overlay is shown**
     _controller.forward();
   }
 
-  void _showSideOverlay(String option, int index, Offset parentOffset,
-      Size buttonSize, SurahsProvider surahsProvider, List<Surah>surahs) {
+  void _showSideOverlay(
+    String option,
+    int index,
+    Offset parentOffset,
+    Size buttonSize,
+    SurahsProvider surahsProvider,
+    List<Surah> surahs,
+  ) {
     _removeSideOverlay();
-    // if (surahsProvider.surahsByJuz.isEmpty) return;
 
-    _tappedIndex = index;
     const double itemHeight = 40;
     final double topPosition =
         parentOffset.dy + buttonSize.height + (index * itemHeight);
 
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    const overlayWidth = 160.0;
+    const overlayHeight = 200.0;
+
+// LEFT
+    double calculatedLeft =
+        parentOffset.dx - 180 + (_controller.value * 100);
+    calculatedLeft = calculatedLeft.clamp(0, screenWidth - overlayWidth);
+// TOP
+    double calculatedTop = topPosition;
+    calculatedTop = calculatedTop.clamp(0, screenHeight - overlayHeight);
+
     _sideOverlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: topPosition,
-        left: parentOffset.dx - 180 + (_controller.value * 100),
-        width: 160,
+      builder: (context) =>Positioned(
+        top: calculatedTop,
+        left: calculatedLeft,
+        width: overlayWidth,
         child: Material(
           borderRadius: BorderRadius.circular(8),
           elevation: 6,
@@ -151,10 +187,8 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
-              // itemCount: surahsProvider.totalSurahs,
               itemCount: surahs.length,
               itemBuilder: (_, i) {
-                // final Surah sura = surahsProvider.surahsByJuz[i];
                 final sura = surahs[i];
 
                 return InkWell(
@@ -162,7 +196,7 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                     _removeSideOverlay();
                     _removeOverlay();
                     _controller.value = 0.0;
-                    Get.to( IndexPage(surah: sura,));
+                    Get.to(IndexPage(surah: sura, filterTypeId: FilterTypes.thirds,));
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -218,7 +252,6 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
 
     final surahsProvider = Provider.of<SurahsProvider>(context, listen: false);
 
-    // Don't rebuild overlays while overlay is already showing
     if (_overlayEntry != null) return;
 
     if (widget.isOpen) {

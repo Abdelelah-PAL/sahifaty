@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/controllers/filter_types.dart';
 import 'package:sahifaty/controllers/surahs_controller.dart';
 import 'package:sahifaty/providers/surahs_provider.dart';
 import '../../core/constants/colors.dart';
@@ -9,23 +8,23 @@ import '../../core/utils/size_config.dart';
 import '../quran_view/index_page.dart';
 import 'custom_text.dart';
 
-class CustomPartsDropdown extends StatefulWidget {
-  final Map<String, dynamic> part;
+class CustomHizbsDropdown extends StatefulWidget {
+  final Map<String, dynamic> hizb;
   final bool isOpen;
   final VoidCallback onToggle;
 
-  const CustomPartsDropdown({
+  const CustomHizbsDropdown({
     super.key,
-    required this.part,
+    required this.hizb,
     required this.isOpen,
     required this.onToggle,
   });
 
   @override
-  State<CustomPartsDropdown> createState() => _CustomPartsDropdownState();
+  State<CustomHizbsDropdown> createState() => _CustomHizbsDropdownState();
 }
 
-class _CustomPartsDropdownState extends State<CustomPartsDropdown>
+class _CustomHizbsDropdownState extends State<CustomHizbsDropdown>
     with SingleTickerProviderStateMixin {
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
@@ -44,21 +43,21 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
   void _showOverlay(SurahsProvider surahsProvider) async {
     if (_overlayEntry != null) return;
 
-    // Start fetching surahs for the selected part
-    // await surahsProvider.getSurahsByJuz(widget.part['id']);
-    final surahs = await SurahsController().loadSurahsByJuz(widget.part['id']);
+    // Start fetching surahs for the selected hizb
+    // await surahsProvider.getSurahsByJuz(widget.hizb['id']);
+    final surahs = await SurahsController().loadSurahsByHizb(widget.hizb['id']);
 
     final renderBox = context.findRenderObject() as RenderBox;
     final offset = renderBox.localToGlobal(Offset.zero);
     final size = renderBox.size;
-// Screen height
+    // Screen height
     final screenHeight = MediaQuery.of(context).size.height;
 
-// How much space remains below this widget
+    // How much space remains below this widget
     final spaceBelow = screenHeight - (offset.dy + size.height);
 
-// If little space below → open upwards
-    final bool openUpward = spaceBelow < 260; // 260 = max dropdown height
+    // If little space below → open upwards
+    final bool openUpward = spaceBelow < 260;
 
     final double dropdownTop =
         openUpward ? offset.dy - 50 : offset.dy + size.height + 4;
@@ -103,7 +102,8 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
                             onTap: () {
                               Get.to(IndexPage(
                                 surah: surah,
-                                filterTypeId: FilterTypes.parts,
+                                filterTypeId: 3,
+                                hizb: widget.hizb['id'],
                               ));
                               _removeOverlay();
                               widget.onToggle();
@@ -143,7 +143,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
   }
 
   @override
-  void didUpdateWidget(covariant CustomPartsDropdown oldWidget) {
+  void didUpdateWidget(covariant CustomHizbsDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
     SurahsProvider surahsProvider = Provider.of<SurahsProvider>(context);
     // Avoid triggering overlay changes during build
@@ -184,7 +184,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
           ),
           child: Center(
             child: CustomText(
-              text: widget.part['name'],
+              text: widget.hizb['name'],
               fontSize: 14,
               color: Colors.white,
               withBackground: false,

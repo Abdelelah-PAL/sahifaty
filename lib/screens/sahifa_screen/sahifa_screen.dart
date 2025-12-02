@@ -25,6 +25,7 @@ class SahifaScreen extends StatelessWidget {
         Provider.of<EvaluationsProvider>(context);
     final schoolProvider = context.read<SchoolProvider>();
     final ayatProvider = context.read<AyatProvider>();
+
     final uncategorized =
         EvaluationsController().getEvaluationById(0, evaluationsProvider);
     final evaluatedPercentage =
@@ -32,7 +33,8 @@ class SahifaScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
-        leading: const CustomBackButton(),
+        automaticallyImplyLeading: usersProvider.isFirstLogin,
+        leading: usersProvider.isFirstLogin ? const CustomBackButton() : null,
         actions: [
           Builder(
             builder: (context) => IconButton(
@@ -100,90 +102,92 @@ class SahifaScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.only(
-            left: SizeConfig.getProportionalWidth(75),
-            right: SizeConfig.getProportionalWidth(75),
-            top: SizeConfig.getProportionalHeight(50),
-            bottom: SizeConfig.getProportionalHeight(55)),
-        child: Column(
-          children: [
-            CustomText(
-              text:
-                  'مرحبًا ${usersProvider.selectedUser!.fullName} \n هذه هي صحيفتك',
-              structHeight: 3,
-              textAlign: TextAlign.center,
-              fontSize: 24,
-              withBackground: false,
-            ),
-            PieChart3D(
-              evaluationsProvider: evaluationsProvider,
-            ),
-            SizedBox(
-              height: SizeConfig.getProportionalHeight(50),
-            ),
-            Text(
-              '$evaluatedPercentage% من آيات القرآن أصبحت مصنّفة في صحيفتك',
-              textAlign: TextAlign.center,
-              locale: const Locale('ar'),
-              strutStyle: const StrutStyle(
-                forceStrutHeight: true,
-                height: 1.35,
-                leading: 0.0,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+              left: SizeConfig.getProportionalWidth(75),
+              right: SizeConfig.getProportionalWidth(75),
+              top: SizeConfig.getProportionalHeight(50),
+              bottom: SizeConfig.getProportionalHeight(55)),
+          child: Column(
+            children: [
+              CustomText(
+                text:
+                    'مرحبًا ${usersProvider.selectedUser!.fullName} \n هذه هي صحيفتك',
+                structHeight: 3,
+                textAlign: TextAlign.center,
+                fontSize: 24,
+                withBackground: false,
               ),
-              style: const TextStyle(
-                fontSize: 18,
-                height: 1.35,
+              PieChart3D(
+                evaluationsProvider: evaluationsProvider,
               ),
-            ),
-            SizedBox(
-              height: SizeConfig.getProportionalHeight(100),
-            ),
-            CustomButton(
-                onPressed: () => {Get.to(const MainScreen())},
-                text: "تصفّح الآيات",
-                width: 120,
-                height: 35),
-            // SizedBox(
-            //   height: SizeConfig.getProportionalHeight(10),
-            // ),
-            // SizedBox(
-            //   width: SizeConfig.getProportionalWidth(170),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //     children: [
-            //       Column(
-            //         mainAxisSize: MainAxisSize.min,
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           CustomButton(
-            //               onPressed: () => {},
-            //               icon: Icons.notes_outlined,
-            //               width: 40,
-            //               height: 35),
-            //           const CustomText(
-            //               text: "النصائح", withBackground: false, fontSize: 14)
-            //         ],
-            //       ),
-            //       Column(
-            //         mainAxisSize: MainAxisSize.min,
-            //         crossAxisAlignment: CrossAxisAlignment.end,
-            //         children: [
-            //           CustomButton(
-            //               onPressed: () => {},
-            //               icon: Icons.check_circle_outline_outlined,
-            //               width: 40,
-            //               height: 35),
-            //           const CustomText(
-            //               text: "صفحة الآيات",
-            //               withBackground: false,
-            //               fontSize: 14)
-            //         ],
-            //       )
-            //     ],
-            //   ),
-            // )
-          ],
+              SizedBox(
+                height: SizeConfig.getProportionalHeight(50),
+              ),
+              Text(
+                '$evaluatedPercentage% من آيات القرآن أصبحت مصنّفة في صحيفتك',
+                textAlign: TextAlign.center,
+                locale: const Locale('ar'),
+                strutStyle: const StrutStyle(
+                  forceStrutHeight: true,
+                  height: 1.35,
+                  leading: 0.0,
+                ),
+                style: const TextStyle(
+                  fontSize: 18,
+                  height: 1.35,
+                ),
+              ),
+              SizedBox(
+                height: SizeConfig.getProportionalHeight(100),
+              ),
+              CustomButton(
+                  onPressed: () => {Get.to(const MainScreen())},
+                  text: "تصفّح الآيات",
+                  width: 120,
+                  height: 35),
+              // SizedBox(
+              //   height: SizeConfig.getProportionalHeight(10),
+              // ),
+              // SizedBox(
+              //   width: SizeConfig.getProportionalWidth(170),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Column(
+              //         mainAxisSize: MainAxisSize.min,
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           CustomButton(
+              //               onPressed: () => {},
+              //               icon: Icons.notes_outlined,
+              //               width: 40,
+              //               height: 35),
+              //           const CustomText(
+              //               text: "النصائح", withBackground: false, fontSize: 14)
+              //         ],
+              //       ),
+              //       Column(
+              //         mainAxisSize: MainAxisSize.min,
+              //         crossAxisAlignment: CrossAxisAlignment.end,
+              //         children: [
+              //           CustomButton(
+              //               onPressed: () => {},
+              //               icon: Icons.check_circle_outline_outlined,
+              //               width: 40,
+              //               height: 35),
+              //           const CustomText(
+              //               text: "صفحة الآيات",
+              //               withBackground: false,
+              //               fontSize: 14)
+              //         ],
+              //       )
+              //     ],
+              //   ),
+              // )
+            ],
+          ),
         ),
       ),
     );

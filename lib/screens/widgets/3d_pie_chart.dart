@@ -34,7 +34,7 @@ class _PieChart3DState extends State<PieChart3D> {
 
       return ChartData(
         category: evaluation.nameAr,
-        value: evaluation.percentage ?? 0,
+        value: evaluation.percentage?.toDouble() ?? 0,
         color: generalController.dropdownOptions[i]['color'],
       );
     }).whereType<ChartData>().toList();

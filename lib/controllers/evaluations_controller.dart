@@ -85,7 +85,7 @@ class EvaluationsController {
 
   List<PieChartSectionData> buildChartSections(EvaluationsProvider provider) {
     return provider.chartEvaluationData.map((evaluation) {
-      final double value = evaluation.percentage ?? 0;
+      final double value = evaluation.percentage?.toDouble() ?? 0;
       final double adjustedValue = value < 2.0 ? 2.0 : value;
 
       // Adjust font size dynamically based on the percentage

@@ -3,7 +3,7 @@ class ChartEvaluationData {
   String nameAr;
   String code;
   int? count;
-  double? percentage;
+  num? percentage;
 
   ChartEvaluationData(
       {required this.evaluationId,
