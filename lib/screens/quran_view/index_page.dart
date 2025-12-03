@@ -1,9 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/controllers/ayatController.dart';
+import 'package:sahifaty/controllers/ayat_controller.dart';
 import 'package:sahifaty/controllers/evaluations_controller.dart';
 import 'package:sahifaty/controllers/filter_types.dart';
 import 'package:sahifaty/models/ayat.dart';
@@ -14,14 +13,19 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
 import '../../models/surah.dart';
-import '../../models/user_evaluation.dart';
 
 class IndexPage extends StatefulWidget {
-  IndexPage({super.key, required this.surah, required this.filterTypeId, this.hizb});
+  IndexPage(
+      {super.key,
+      required this.surah,
+      required this.filterTypeId,
+      this.hizb,
+      this.hizbQuarter});
 
   final Surah surah;
   final int filterTypeId;
   final int? hizb;
+  final int? hizbQuarter;
 
   List<Ayat> ayat = [];
 
@@ -33,6 +37,11 @@ class _IndexPageState extends State<IndexPage> {
   final gc = GeneralController();
   OverlayEntry? _menuEntry;
   final Map<int, Color> _selectedColors = {};
+  int? _currentHizbQuarter;
+  int? _minHizbQuarter;
+  int? _maxHizbQuarter;
+  int? _lastDisplayedSurahId;
+  final ScrollController _scrollController = ScrollController(keepScrollOffset: true);
 
   Color _onColor(Color bg) {
     final b = ThemeData.estimateBrightnessForColor(bg);
@@ -44,11 +53,7 @@ class _IndexPageState extends State<IndexPage> {
     _menuEntry = null;
   }
 
-  void _showOptionsAt(
-    Offset globalPos,
-    Ayat ayah,
-    EvaluationsProvider evaluationsProvider,
-  ) {
+  void _showOptionsAt( Offset globalPos, Ayat ayah, EvaluationsProvider evaluationsProvider) {
     _removeMenu();
 
     final overlayBox =
@@ -88,35 +93,37 @@ class _IndexPageState extends State<IndexPage> {
                 borderRadius: BorderRadius.circular(12),
                 color: Colors.transparent,
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: menuWidth),
+                  constraints: const BoxConstraints(minWidth: 150, maxWidth: 150),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
                     children: evaluationsProvider.evaluations.map((evaluation) {
-                      final text = evaluation.nameAr;
                       final color = gc.getColorFromCategory(evaluation.id!);
 
                       return InkWell(
-                        onTap: () {
+                        onTap:  () async {
+                          final savedScrollOffset = _scrollController.offset;
                           setState(() {
-                            _selectedColors[ayah.id!] =
-                                color; // update local map
+                            _selectedColors[ayah.id!] = color;
                           });
+
                           _removeMenu();
-                          EvaluationsController().sendEvaluation(
+                          await EvaluationsController().sendEvaluation(
                               ayah, evaluation, evaluationsProvider, null);
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (_scrollController.hasClients) {
+                              _scrollController.jumpTo(savedScrollOffset);
+                            }
+                          });
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
+                          width: double.infinity,
+                          height: SizeConfig.getProportionalHeight(50),
                           color: color,
-                          child: Text(
-                            text,
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: _onColor(color),
-                              fontWeight: FontWeight.w700,
-                              fontFamily: AppFonts.versesFont,
+                          child: Center(
+                            child: Text(
+                              evaluation.nameAr,
+                              style: TextStyle(
+                                  color: _onColor(color),
+                                  fontFamily: AppFonts.versesFont),
                             ),
                           ),
                         ),
@@ -142,17 +149,57 @@ class _IndexPageState extends State<IndexPage> {
 
   Future<void> _loadAyat(
       int userId, EvaluationsProvider evaluationsProvider) async {
-    final ayat = (widget.filterTypeId == FilterTypes.parts ||
-        widget.filterTypeId == FilterTypes.thirds)
-        ? await AyatController().loadAyatBySurah(widget.surah.id)
-        : await AyatController().loadAyatByHizb(widget.hizb!);
+    if (_currentHizbQuarter == null ||
+        _minHizbQuarter == null ||
+        _maxHizbQuarter == null) {
+      if (widget.hizbQuarter != null) {
+        _currentHizbQuarter = widget.hizbQuarter;
+        _minHizbQuarter = 1;
+        _maxHizbQuarter = 240;
+      } else {
+        List<Ayat> initialAyat;
+        if (widget.filterTypeId == FilterTypes.parts ||
+            widget.filterTypeId == FilterTypes.thirds) {
+          initialAyat = await AyatController().loadAyatBySurah(widget.surah.id);
+        } else {
+          initialAyat = await AyatController().loadAyatByHizb(widget.hizb!);
+        }
 
+        if (initialAyat.isNotEmpty) {
+          final quarters =
+              initialAyat.map((e) => e.hizbQuarter).whereType<int>().toList();
 
-    List<int> ayatIds =
-        ayat.where((ayah) => ayah.id != null).map((ayah) => ayah.id!).toList();
+          quarters.sort();
+          _minHizbQuarter = quarters.first;
+          _maxHizbQuarter = quarters.last;
+          _currentHizbQuarter = _minHizbQuarter;
+        }
+      }
+    }
+
+    List<Ayat> ayat =
+        await AyatController().loadAyatByHizbQuarter(_currentHizbQuarter!);
+
+    // ---------------------------------------------
+    // FILTER AYAT BY SELECTED SURAH
+    // ---------------------------------------------
+    if (widget.filterTypeId == FilterTypes.parts ||
+        widget.filterTypeId == FilterTypes.thirds) {
+      ayat = ayat.where((a) => a.surah.id == widget.surah.id).toList();
+
+      // 🔥 DO NOT START A NEW SURAH IN THIS PAGE
+      if (ayat.isEmpty || ayat.last.ayahNo == widget.surah.ayahCount) {
+        _maxHizbQuarter = _currentHizbQuarter!;
+      }
+    }
+
+    // ---------------------------------------------
+
+    List<int> ayatIds = ayat.map((ayah) => ayah.id!).toList();
+
     await evaluationsProvider.getAllUserEvaluations(userId, ayatIds);
+    _lastDisplayedSurahId = null;
 
-    // Update the state with the loaded ayat
     setState(() {
       widget.ayat = ayat;
     });
@@ -161,22 +208,18 @@ class _IndexPageState extends State<IndexPage> {
   @override
   void initState() {
     super.initState();
-
-    // Fetch surah Ayat after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       int userId = context.read<UsersProvider>().selectedUser!.id;
       EvaluationsProvider evaluationsProvider =
           context.read<EvaluationsProvider>();
       _loadAyat(userId, evaluationsProvider);
-      // context.read<AyatProvider>().getAyatBySurahId(widget.surah.id);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // final ayatProvider = context.watch<AyatProvider>();
-
     final evaluationProvider = Provider.of<EvaluationsProvider>(context);
+
     if (evaluationProvider.isLoading) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -185,19 +228,16 @@ class _IndexPageState extends State<IndexPage> {
 
     return FutureBuilder(
         future: GeneralController().checkConnectivity(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if ((snapshot.hasError)) {
-            return const MaterialApp(
-              home: Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              ),
-            );
-          }
+        builder: (context, snapshot) {
           final hasConnection = snapshot.data ?? false;
 
           return Scaffold(
             appBar: AppBar(
-              title: Text(widget.surah.nameAr),
+              title: Text(
+                widget.filterTypeId == FilterTypes.hizbs
+                    ? "الحزب ${widget.hizb}"
+                    : widget.surah.nameAr,
+              ),
               centerTitle: true,
             ),
             body: Padding(
@@ -206,119 +246,186 @@ class _IndexPageState extends State<IndexPage> {
                 horizontal: SizeConfig.getProportionalWidth(10),
               ),
               child: SingleChildScrollView(
+                controller: _scrollController,
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
-                    Visibility(
-                      visible: widget.surah.id != 1 && widget.surah.id != 9,
-                      child: Text(
-                        'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
-                        style: TextStyle(
-                          fontSize: 20,
-                          height: 2,
-                          color: AppColors.blackFontColor,
-                          fontWeight: FontWeight.w600,
-                          fontFamily: AppFonts.versesFont,
-                        ),
-                      ),
-                    ),
-                    SizeConfig.customSizedBox(null, 30, null),
-                    Text.rich(
-                      TextSpan(
-                          children:
-                              // ayatProvider.surahAyat.map((ayah) {
-                              widget.ayat.asMap().entries.map((entry) {
-                        final ayah = entry.value;
+                    ..._buildAyatWidgets(evaluationProvider, hasConnection),
 
-                        final UserEvaluation? userEvaluation =
-                            evaluationProvider.userEvaluations
-                                .firstWhereOrNull((e) => e.ayah!.id == ayah.id);
-                        // 1️⃣ Use local selected color if exists
-                        Color color = hasConnection
-                            ? _selectedColors[ayah.id!] ??
-                                // 2️⃣ Otherwise use backend evaluation color
-                                (userEvaluation?.evaluation?.id != null
-                                    ? gc.getColorFromCategory(
-                                        userEvaluation!.evaluation!.id!)
-                                    : Colors.grey)
-                            : AppColors.ayatTextDefaultColor;
-
-                        // --- START MODIFIED AYAH SPAN ---
-                        return TextSpan(
-                          // The Ayah text itself
-                          text: '${ayah.text} ',
-                          style: TextStyle(
-                            fontSize: 20,
-                            height: 2,
-                            color: color,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: AppFonts.versesFont,
-                          ),
-                          recognizer: hasConnection
-                              ? (TapGestureRecognizer()
-                                ..onTapDown = (details) => _showOptionsAt(
-                                      details.globalPosition,
-                                      ayah,
-                                      evaluationProvider,
-                                    ))
-                              : null,
+                    // ORIGINAL PAGINATION BUTTONS (UNCHANGED)
+                    if (_currentHizbQuarter != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            // The WidgetSpan contains the IconButton
-                            userEvaluation?.evaluation != null
-                                ? WidgetSpan(
-                                    alignment: PlaceholderAlignment.middle,
-                                    child: SizedBox(
-                                      width: 32,
-                                      height: 32,
-                                      child: IconButton(
-                                        padding: EdgeInsets.zero,
-                                        constraints: const BoxConstraints(),
-                                        icon: const Icon(
-                                          Icons.remove_circle_outline,
-                                          color: AppColors.errorColor,
-                                          size: 20,
-                                        ),
-                                        onPressed: () {
-                                          if (kDebugMode) {
-                                            print(
-                                                'Icon pressed for Ayah ${ayah.id}');
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  )
-                                : const WidgetSpan(
-                                    child: SizedBox(width: 0, height: 0),
-                                  ),
-                            // The TextSpan contains the Ayah Marker (Number)
-                            TextSpan(
-                              text: '${gc.ayahMarker(ayah.ayahNo)} ',
-                              style: TextStyle(
-                                fontSize: 20,
-                                height: 2,
-                                color: color,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: AppFonts.versesFont,
-                              ),
-                            ),
+                            if (_currentHizbQuarter! < _maxHizbQuarter!)
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _currentHizbQuarter =
+                                        _currentHizbQuarter! + 1;
+                                  });
+
+                                  final userId = context
+                                      .read<UsersProvider>()
+                                      .selectedUser!
+                                      .id;
+
+                                  final evalProvider =
+                                      context.read<EvaluationsProvider>();
+
+                                  _loadAyat(userId, evalProvider);
+                                },
+                                child: const Text('التالي'),
+                              )
+                            else
+                              const SizedBox(),
+                            if (_currentHizbQuarter! > _minHizbQuarter!)
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _currentHizbQuarter =
+                                        _currentHizbQuarter! - 1;
+                                  });
+
+                                  final userId = context
+                                      .read<UsersProvider>()
+                                      .selectedUser!
+                                      .id;
+
+                                  final evalProvider =
+                                      context.read<EvaluationsProvider>();
+
+                                  _loadAyat(userId, evalProvider);
+                                },
+                                child: const Text('السابق'),
+                              )
+                            else
+                              const SizedBox(),
                           ],
-                        );
-                        // --- END MODIFIED AYAH SPAN ---
-                      }).toList()),
-                      textDirection: TextDirection.rtl,
-                      textAlign: TextAlign.justify,
-                      strutStyle: const StrutStyle(
-                        fontSize: 20,
-                        height: 2,
-                        forceStrutHeight: true,
-                      ),
-                      locale: const Locale('ar'),
-                    )
+                        ),
+                      )
                   ],
                 ),
               ),
             ),
           );
         });
+  }
+
+  List<Widget> _buildAyatWidgets(
+      EvaluationsProvider evaluationProvider, bool hasConnection) {
+    List<Widget> widgets = [];
+    if (widget.ayat.isEmpty) return widgets;
+
+    List<List<Ayat>> groups = [];
+    List<Ayat> currentGroup = [];
+    int? currentSurahId;
+
+    for (var ayah in widget.ayat) {
+      if (currentSurahId != null && ayah.surah.id != currentSurahId) {
+        groups.add(currentGroup);
+        currentGroup = [];
+      }
+      currentGroup.add(ayah);
+      currentSurahId = ayah.surah.id;
+    }
+    if (currentGroup.isNotEmpty) groups.add(currentGroup);
+
+    for (var group in groups) {
+      final firstAyah = group.first;
+
+      // 🔥 Show surah title only when entering a NEW surah
+      final showBasmalah = firstAyah.ayahNo == 1 &&
+          firstAyah.surah.id != 1 &&
+          firstAyah.surah.id != 9;
+
+      if (showBasmalah) {
+        widgets.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Text(
+              'سورة ${firstAyah.surah.nameAr}',
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+
+        // Update last displayed surah
+        _lastDisplayedSurahId = firstAyah.surah.id;
+
+        widgets.add(
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              child: Text(
+                'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
+                style: TextStyle(
+                  fontSize: 20,
+                  height: 2,
+                  color: AppColors.blackFontColor,
+                  fontFamily: AppFonts.versesFont,
+                ),
+              ),
+            ),
+          ),
+        );
+      }
+
+      widgets.add(
+        Text.rich(
+          TextSpan(
+            children: group.map((ayah) {
+              final userEvaluation = evaluationProvider.userEvaluations
+                  .firstWhereOrNull((e) => e.ayah!.id == ayah.id);
+
+              Color color = hasConnection
+                  ? _selectedColors[ayah.id!] ??
+                      (userEvaluation?.evaluation != null
+                          ? gc.getColorFromCategory(
+                              userEvaluation!.evaluation!.id!)
+                          : Colors.grey)
+                  : AppColors.ayatTextDefaultColor;
+
+              return TextSpan(
+                text: '${ayah.text} ',
+                style: TextStyle(
+                  fontSize: 20,
+                  height: 2,
+                  color: color,
+                  fontFamily: AppFonts.versesFont,
+                ),
+                recognizer: hasConnection
+                    ? (TapGestureRecognizer()
+                      ..onTapDown = (details) => _showOptionsAt(
+                          details.globalPosition, ayah, evaluationProvider))
+                    : null,
+                children: [
+                  TextSpan(
+                    text: '${gc.ayahMarker(ayah.ayahNo)} ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      height: 2,
+                      color: color,
+                      fontFamily: AppFonts.versesFont,
+                    ),
+                  ),
+                ],
+              );
+            }).toList(),
+          ),
+          textDirection: TextDirection.rtl,
+          textAlign: TextAlign.justify,
+        ),
+      );
+    }
+
+    return widgets;
   }
 }

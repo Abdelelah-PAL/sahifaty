@@ -23,6 +23,7 @@ class AyatController {
 
     return surahAyat;
   }
+
   Future<List<Ayat>> loadAyatByHizb(int hizb) async {
     // Load file from assets
     final String response =
@@ -42,6 +43,26 @@ class AyatController {
 
 
     return hizbAyat;
+  }
+
+  Future<List<Ayat>> loadAyatByHizbQuarter(int hizbQuarter) async {
+    // Load file from assets
+    final String response =
+        await rootBundle.loadString('assets/json/data.json');
+
+    // Decode JSON — your root is a map, not a list
+    final Map<String, dynamic> jsonData = json.decode(response);
+
+    // Extract the 'data' array
+    final List<dynamic> ayahs = jsonData['data'];
+
+    // Filter and map to Surah objects
+    final List<Ayat> hizbQuarterAyat = ayahs
+        .where((item) => item['hizbQuarter'] == hizbQuarter)
+        .map((item) => Ayat.fromJson(item))
+        .toList();
+
+    return hizbQuarterAyat;
   }
 
 }

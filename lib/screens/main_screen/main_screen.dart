@@ -164,10 +164,8 @@ class _MainScreenState extends State<MainScreen> {
                                   isOpen: openIndex == index,
                                   onToggle: () => toggle(index),
                                 )
-                              : CustomHizbsDropdown(
+                              : CustomHizbsButton(
                                   hizb: GeneralController().hizbList[index],
-                                  isOpen: openIndex == index,
-                                  onToggle: () => toggle(index),
                                 ),
                     ),
                   ),

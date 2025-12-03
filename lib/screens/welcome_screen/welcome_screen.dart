@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/providers/ayat_provider.dart';
-import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/school_provider.dart';
 import '../../core/utils/size_config.dart';
 import '../../core/constants/colors.dart';

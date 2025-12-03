@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/controllers/general_controller.dart';
-import 'package:sahifaty/core/constants/colors.dart';
-import 'package:sahifaty/providers/ayat_provider.dart';
-import 'package:sahifaty/providers/evaluations_provider.dart';
-import 'package:sahifaty/providers/general_provider.dart';
-import 'package:sahifaty/providers/school_provider.dart';
-import 'package:sahifaty/providers/surahs_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
-import 'package:sahifaty/screens/authentication_screens/login_screen.dart';
-import 'package:sahifaty/screens/authentication_screens/sign_up_screen.dart';
-import 'package:sahifaty/screens/main_screen/main_screen.dart';
+
+import 'controllers/general_controller.dart';
+import 'core/constants/colors.dart';
+import 'providers/ayat_provider.dart';
+import 'providers/evaluations_provider.dart';
+import 'providers/general_provider.dart';
+import 'providers/school_provider.dart';
+import 'providers/surahs_provider.dart';
+import 'screens/authentication_screens/login_screen.dart';
+import 'screens/main_screen/main_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
