@@ -76,7 +76,7 @@ class SahifaScreen extends StatelessWidget {
                 ListTile(
                   onTap: () async {
                     await schoolProvider.getQuickQuestionsSchool();
-                    await ayatProvider.getQuickQuestionsAyatByLevel(1, 1);
+
                     await evaluationsProvider.getAllEvaluations();
                     Get.to(const QuestionsScreen());
                   },

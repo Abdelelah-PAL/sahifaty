@@ -131,7 +131,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     final ayatProvider = context.read<AyatProvider>();
 
                     await schoolProvider.getQuickQuestionsSchool();
-                    await ayatProvider.getQuickQuestionsAyatByLevel(1, 1);
+
 
                     Get.to(const QuestionsScreen());
                   },

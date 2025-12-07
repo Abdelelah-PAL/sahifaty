@@ -1,34 +1,36 @@
+import 'package:sahifaty/models/school_level_content.dart';
+
 class SchoolLevel {
   String? _id;
-  int schoolId;
-  String schoolName;
-  int level;
-
+  String name;
+  List<SchoolLevelContent> content;
 
   SchoolLevel({
     String? id,
-    required this.schoolId,
-    required this.schoolName,
-    required this.level,
+    required this.name,
+    required this.content,
   }) : _id = id;
 
   String? get id => _id;
 
   factory SchoolLevel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return SchoolLevel(
       id: json['_id'],
-      schoolId: json['schoolId'],
-      schoolName: json['schoolName'],
-      level: json['level'],
+      name: json['name'],
+      content: json['content'] != null
+          ? (json['content'] as List)
+          .map((e) => SchoolLevelContent.fromJson(e))
+          .toList()
+          : [],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
       '_id': _id,
-      'schoolId': schoolId,
-      'schoolName': schoolName,
-      'level': level,
+      'name': name,
+      'content': content,
     };
   }
 }

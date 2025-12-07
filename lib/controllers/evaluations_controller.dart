@@ -44,9 +44,9 @@ class EvaluationsController {
         );
 
         // increment evaluated verses if coming from questions screen
-        if(ayatProvider != null) {
-          ayatProvider.incrementEvaluatedVersesCount();
-        }
+        // if(ayatProvider != null) {
+        //   ayatProvider.incrementEvaluatedVersesCount();
+        // }
       } else {
 
         await evaluationsProvider.evaluateAyah(userEvaluation);
