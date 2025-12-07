@@ -87,20 +87,14 @@ class AyatProvider with ChangeNotifier {
 
   Future<List<Ayat>> fetchAyatForContent(SchoolLevelContent content) async {
     try {
-      if (kDebugMode) {
-        print("Fetching ayat for content: type=${content.type}, surahId=${content.surahId}, hizb=${content.hizb}, juz=${content.juz}");
-      }
+      print("Fetching ayat for content: type=${content.type}, surahId=${content.surahId}, hizb=${content.hizb}, juz=${content.juz}");
       
       final String jsonString = await rootBundle.loadString('assets/json/data.json');
       final Map<String, dynamic> jsonMap = json.decode(jsonString);
       final List<dynamic> allAyat = jsonMap['data'] ?? [];
-      if (kDebugMode) {
-        print("Loaded ${allAyat.length} ayahs from data.json");
-      }
+      print("Loaded ${allAyat.length} ayahs from data.json");
       if (allAyat.isNotEmpty) {
-        if (kDebugMode) {
-          print("First ayah sample: ${allAyat.first}");
-        }
+        print("First ayah sample: ${allAyat.first}");
       }
       
       List<dynamic> filteredData = [];
@@ -122,15 +116,11 @@ class AyatProvider with ChangeNotifier {
         }).toList();
       }
       
-      if (kDebugMode) {
-        print("Filtered ${filteredData.length} ayahs");
-      }
+      print("Filtered ${filteredData.length} ayahs");
 
       return filteredData.map<Ayat>((ayah) => Ayat.fromJson(ayah)).toList();
     } catch (e) {
-      if (kDebugMode) {
-        print("Error fetching content ayahs: $e");
-      }
+      print("Error fetching content ayahs: $e");
       return [];
     }
   }

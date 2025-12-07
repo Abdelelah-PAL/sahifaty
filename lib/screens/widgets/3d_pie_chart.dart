@@ -1,12 +1,11 @@
-import 'dart:math';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:pie_chart_3d/pie_chart_3d.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../controllers/general_controller.dart';
 
-class PieChart3D extends StatefulWidget {
-  const PieChart3D({
+class DonutChart extends StatefulWidget {
+  const DonutChart({
     super.key,
     required this.evaluationsProvider,
   });
@@ -14,93 +13,173 @@ class PieChart3D extends StatefulWidget {
   final EvaluationsProvider evaluationsProvider;
 
   @override
-  State<PieChart3D> createState() => _PieChart3DState();
+  State<DonutChart> createState() => _DonutChartState();
 }
 
-class _PieChart3DState extends State<PieChart3D> {
-  int? selectedSlice;
+class _DonutChartState extends State<DonutChart> {
+  int touchedIndex = -1;
 
   @override
   Widget build(BuildContext context) {
     final evaluationsController = EvaluationsController();
     final generalController = GeneralController();
 
-// Generate ChartData for each dropdown option dynamically
-    final data = List.generate(generalController.dropdownOptions.length, (i) {
+    // Prepare data
+    // We only want sections that have a percentage > 0 to avoid clutter
+    // Or we can show all, but usually charts look better without 0% slices.
+    // However, original code generated list for all dropdownOptions.
+
+    // Calculate total for valid entries first to ensure correctness if needed,
+    // but PieChart calculates percentages based on total value automatically.
+
+    final List<PieChartSectionData> sections = [];
+
+    for (int i = 0; i < generalController.dropdownOptions.length; i++) {
       final evaluation = evaluationsController.getEvaluationById(
           i, widget.evaluationsProvider);
 
-      if (evaluation == null) return null; // Skip if not found
+      if (evaluation == null) continue;
 
-      return ChartData(
-        category: evaluation.nameAr,
-        value: evaluation.percentage?.toDouble() ?? 0,
-        color: generalController.dropdownOptions[i]['color'],
+      final value = evaluation.percentage?.toDouble() ?? 0;
+      // if (value <= 0) continue; // Optional: Hide 0% sections
+
+      final isTouched = i == touchedIndex;
+      final fontSize = isTouched ? 20.0 : 16.0;
+      final radius = isTouched ? 60.0 : 50.0;
+      final color = generalController.dropdownOptions[i]['color'] as Color;
+
+      sections.add(
+        PieChartSectionData(
+          color: color,
+          value: value,
+          title: '${value.toStringAsFixed(1)}%',
+          radius: radius,
+          titleStyle: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xffffffff),
+            shadows: const [Shadow(color: Colors.black, blurRadius: 2)],
+          ),
+          badgeWidget: isTouched
+              ? _Badge(
+                  evaluation.nameAr,
+                  size: 40,
+                  borderColor: color,
+                )
+              : null,
+          badgePositionPercentageOffset: .98,
+        ),
       );
-    }).whereType<ChartData>().toList();
+    }
 
-    return GestureDetector(
-      onTapDown: (details) {
-        final box = context.findRenderObject() as RenderBox;
-        final offset = box.globalToLocal(details.globalPosition);
-        final center = Offset(box.size.width / 2, box.size.height / 2);
-        final dx = offset.dx - center.dx;
-        final dy = offset.dy - center.dy;
-
-        double angle = atan2(dy, dx);
-        if (angle < -pi / 2) {
-          angle += 2 * pi; // normalize
-        }
-
-        // Calculate which slice was tapped
-        final total = data.fold(0.0, (sum, item) => sum + item.value);
-        double currentAngle = -pi / 2;
-        for (int i = 0; i < data.length; i++) {
-          double sweep = (data[i].value / total) * 2 * pi;
-          if (angle >= currentAngle && angle <= currentAngle + sweep) {
-            setState(() {
-              selectedSlice = i;
-            });
-            break;
-          }
-          currentAngle += sweep;
-        }
-      },
+    return AspectRatio(
+      aspectRatio: .8,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          ThreeDPieChart(
-            data: data,
-            options: PieChartOptions(
-              height: 250,
-              width: 250,
-              radius: 0.6,
-              depthDarkness: 3.5,
-              ellipseRatio: 0.7,
-              showLabels: false,
+          PieChart(
+            PieChartData(
+              pieTouchData: PieTouchData(
+                touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                  setState(() {
+                    if (!event.isInterestedForInteractions ||
+                        pieTouchResponse == null ||
+                        pieTouchResponse.touchedSection == null) {
+                      touchedIndex = -1;
+                      return;
+                    }
+                    touchedIndex =
+                        pieTouchResponse.touchedSection!.touchedSectionIndex;
+                  });
+                },
+              ),
+              borderData: FlBorderData(
+                show: false,
+              ),
+              sectionsSpace: 2,
+              // Gap between sections
+              centerSpaceRadius: 120,
+              // Internal radius for Donut shape
+              sections: sections,
             ),
           ),
-          if (selectedSlice != null)
-            Positioned(
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.black.withValues(
-                    red: 0,
-                    green: 0,
-                    blue: 0,
-                    alpha: 0.7 * 255,
-                  ),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  data[selectedSlice!].category,
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+          // Center Text
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                touchedIndex != -1 && touchedIndex < sections.length
+                    ? "${sections[touchedIndex].value.toStringAsFixed(1)}%"
+                    : "آيات القرآن",
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
               ),
-            ),
+              if (touchedIndex != -1)
+                Text(
+                  evaluationsController
+                          .getEvaluationById(
+                              touchedIndex, widget.evaluationsProvider)
+                          ?.nameAr ??
+                      "",
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _Badge extends StatelessWidget {
+  const _Badge(
+    this.text, {
+    required this.size,
+    required this.borderColor,
+  });
+
+  final String text;
+  final double size;
+  final Color borderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: PieChart.defaultDuration,
+      width: size * 2.5,
+      // wider for text
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(size / 2),
+        border: Border.all(
+          color: borderColor,
+          width: 2,
+        ),
+        boxShadow: const <BoxShadow>[
+          BoxShadow(
+            color: Colors.black,
+            offset: Offset(3, 3),
+            blurRadius: 3,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(4),
+      child: Center(
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.center,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }

@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sahifaty/models/auth_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart' as google_sign_in;
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../controllers/users_controller.dart';
 import '../core/constants/colors.dart';
 import '../models/user.dart';
 import '../services/users_services.dart';
+
 
 class UsersProvider with ChangeNotifier {
   static final UsersProvider _instance = UsersProvider._internal();
@@ -53,6 +56,60 @@ class UsersProvider with ChangeNotifier {
         return result;
       } else {
         throw result;
+      }
+    } catch (ex) {
+      rethrow;
+    } finally {
+      resetLoading();
+    }
+  }
+
+
+//   Future<AuthData> signInWithGoogle() async {
+//     setLoading();
+//     try {
+//       final google_sign_in.GoogleSignIn googleSignIn =
+//       google_sign_in.GoogleSignIn(scopes: ['email']);
+//
+//       final google_sign_in.GoogleSignInAccount? googleUser =
+//       await googleSignIn.signIn();
+// `
+//       if (googleUser == null) throw 'Google Sign In aborted';
+//
+//       final google_sign_in.GoogleSignInAuthentication googleAuth =
+//       await googleUser.authentication;
+//
+//       final String? idToken = googleAuth.idToken;
+//
+//       if (idToken == null) throw 'Could not retrieve ID Token';
+//
+//       final result = await _usersService.loginWithGoogle(idToken);
+//       if (result is AuthData) return result;
+//
+//       throw result;
+//     } finally {
+//       resetLoading();
+//     }
+//   }
+
+  Future<AuthData> signInWithFacebook() async {
+    setLoading();
+    try {
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      if (loginResult.status == LoginStatus.success) {
+        final AccessToken? accessToken = loginResult.accessToken;
+        if (accessToken == null) {
+          throw 'Could not retrieve Access Token';
+        }
+        final result =
+            await _usersService.loginWithFacebook(accessToken.tokenString);
+        if (result is AuthData) {
+          return result;
+        } else {
+          throw result;
+        }
+      } else {
+        throw 'Facebook Sign In failed: ${loginResult.message}';
       }
     } catch (ex) {
       rethrow;

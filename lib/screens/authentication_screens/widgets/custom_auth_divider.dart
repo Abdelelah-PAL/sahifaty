@@ -24,7 +24,7 @@ class CustomAuthDivider extends StatelessWidget {
               padding: EdgeInsets.symmetric(
                 horizontal: SizeConfig.getProportionalWidth(30),
               ),
-              child: const Text("or")),
+              child: const Text("أو")),
           const Expanded(
             child: Divider(
               color: AppColors.authDividerColor,

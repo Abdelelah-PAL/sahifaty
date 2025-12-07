@@ -117,7 +117,7 @@ class SahifaScreen extends StatelessWidget {
                 fontSize: 24,
                 withBackground: false,
               ),
-              PieChart3D(
+              DonutChart(
                 evaluationsProvider: evaluationsProvider,
               ),
               SizedBox(

@@ -40,6 +40,7 @@ class UsersServices with ChangeNotifier {
     }
   }
 
+
   Future<dynamic> login(
       {required String email, required String password}) async {
     try {
@@ -60,6 +61,48 @@ class UsersServices with ChangeNotifier {
         return AuthData.fromJson(responseData);
       } else {
         return responseData['message'] ?? 'Unknown error';
+      }
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> loginWithGoogle(String idToken) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$_baseURL/auth/google'),
+            headers: _authHeaders,
+            body: json.encode({'idToken': idToken}),
+          )
+          .timeout(_timeout);
+
+      final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return AuthData.fromJson(responseData);
+      } else {
+        return responseData['message'] ?? 'Google login failed';
+      }
+    } catch (ex) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> loginWithFacebook(String accessToken) async {
+    try {
+      final response = await http
+          .post(
+            Uri.parse('$_baseURL/auth/facebook'),
+            headers: _authHeaders,
+            body: json.encode({'accessToken': accessToken}),
+          )
+          .timeout(_timeout);
+
+      final responseData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return AuthData.fromJson(responseData);
+      } else {
+        return responseData['message'] ?? 'Facebook login failed';
       }
     } catch (ex) {
       rethrow;

@@ -8,13 +8,11 @@ class GeneralProvider with ChangeNotifier {
 
   GeneralProvider._internal();
 
-
   int mainScreenView = 1;
   bool thirdsMenuItem = true;
   bool partsMenuItem = false;
   bool hizbsMenuItem = false;
   bool subjectsMenuItem = false;
-
 
   void toggleThirdsMenuItem() {
     if (!partsMenuItem && !hizbsMenuItem) return;
@@ -47,18 +45,19 @@ class GeneralProvider with ChangeNotifier {
       partsMenuItem = false;
       subjectsMenuItem = false;
     }
+    print(hizbsMenuItem);
+    print(subjectsMenuItem);
     notifyListeners();
   }
-  // void toggleSubjectMenuItem() {
-  //         mainScreenView = FilterTypes.subjects;
-  //   if (hizbsMenuItem) {
-  //     mainScreenView = 4;
-  //     thirdsMenuItem = false;
-  //     partsMenuItem = false;
-  //     hizbsMenuItem = false;
-  //   }
-  //   notifyListeners();
-  // }
 
-
+  void toggleSubjectMenuItem() {
+    subjectsMenuItem = !subjectsMenuItem;
+    if (subjectsMenuItem) {
+      mainScreenView = FilterTypes.subjects;
+      thirdsMenuItem = false;
+      partsMenuItem = false;
+      hizbsMenuItem = false;
+    }
+    notifyListeners();
+  }
 }

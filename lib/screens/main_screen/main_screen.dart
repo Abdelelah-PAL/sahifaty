@@ -104,7 +104,7 @@ class _MainScreenState extends State<MainScreen> {
                         child: MenuItem(
                           text: "أيقونات المواضيع",
                           onChanged: (v) {
-                            // if (v) generalProvider.toggleHizbMenuItem();
+                           if (v) generalProvider.toggleSubjectMenuItem();
                           },
                           index: 4,
                         ),
@@ -135,7 +135,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
 
                   if (!widget.comesFirst)
-                    PieChart3D(evaluationsProvider: evaluationsProvider)
+                    DonutChart(evaluationsProvider: evaluationsProvider)
                   else
                     SizedBox(height: SizeConfig.getProportionalHeight(250)),
 

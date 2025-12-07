@@ -35,7 +35,9 @@ class MenuItem extends StatelessWidget {
               ? generalProvider.thirdsMenuItem
               : index == 2
                   ? generalProvider.partsMenuItem
-                  : generalProvider.hizbsMenuItem,
+                  : index == 3
+                      ? generalProvider.hizbsMenuItem
+                      : generalProvider.subjectsMenuItem,
           onChanged: onChanged,
           activeThumbColor: Colors.green,
           activeTrackColor: Colors.greenAccent,
