@@ -5,6 +5,7 @@ import 'evaluation.dart';
 class UserEvaluation {
   int? _id;
   int? ayahId;
+  List<int>? ayahIds;
   int? evaluationId;
   String? comment;
   Evaluation? evaluation;
@@ -13,6 +14,7 @@ class UserEvaluation {
   UserEvaluation(
       {int? id,
       this.ayahId,
+      this.ayahIds,
       this.evaluationId,
       this.comment,
       this.evaluation,
@@ -31,12 +33,19 @@ class UserEvaluation {
           : null,
       // Optional: still store IDs for easy lookup
       ayahId: json['ayah'] != null ? json['ayah']['_id'] : null,
-      evaluationId: json['evaluation'] != null ? json['evaluation']['_id'] : null,
+      ayahIds: json['ayahIds'] != null ? List<int>.from(json['ayahIds']) : null,
+      evaluationId:
+          json['evaluation'] != null ? json['evaluation']['_id'] : null,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {'ayahId': ayahId, 'evaluationId': evaluationId, 'comment': comment};
+    return {
+      'ayahId': ayahId,
+      'evaluationId': evaluationId,
+      'comment': comment,
+      'ayahIds': ayahIds,
+    };
   }
 
   @override

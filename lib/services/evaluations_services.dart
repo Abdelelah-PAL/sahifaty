@@ -50,13 +50,12 @@ class EvaluationsServices {
     }
   }
 
-  Future<List<UserEvaluation>> getAllUserEvaluations(int userId, List<int> ayatIds) async {
+  Future<List<UserEvaluation>> getAllUserEvaluations(
+      int userId, List<int> ayatIds) async {
     try {
-
       final ayatIdsParam = ayatIds.join(',');
-      final http.Response res = await _sahifatyApi.get(
-          'user-evaluations?userId=$userId&ayatIds=$ayatIdsParam'
-      );
+      final http.Response res = await _sahifatyApi
+          .get('user-evaluations?userId=$userId&ayatIds=$ayatIdsParam');
 
       if (res.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(res.body);
@@ -64,7 +63,9 @@ class EvaluationsServices {
         final List<dynamic> data = body['data'] ?? [];
 
         // Extract only evaluation from each data item
-        return data.map<UserEvaluation>((e) => UserEvaluation.fromJson(e)).toList();
+        return data
+            .map<UserEvaluation>((e) => UserEvaluation.fromJson(e))
+            .toList();
       } else {
         throw Exception('Failed to load evaluations');
       }
@@ -73,4 +74,16 @@ class EvaluationsServices {
     }
   }
 
+  Future<http.Response> evaluateMultipleAyat(Map<String, dynamic> body) async {
+    try {
+
+      http.Response response =
+          await _sahifatyApi.post(url: 'user-evaluations/bulk', body: body);
+
+      print(response.body);
+        return response;
+    } catch (ex) {
+      rethrow;
+    }
+  }
 }

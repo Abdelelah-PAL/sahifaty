@@ -7,7 +7,6 @@ import 'package:sahifaty/screens/main_screen/main_screen.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
-import '../../providers/ayat_provider.dart';
 import '../../providers/school_provider.dart';
 import '../questions_screen/questions_screen.dart';
 import '../widgets/3d_pie_chart.dart';
@@ -24,7 +23,6 @@ class SahifaScreen extends StatelessWidget {
     EvaluationsProvider evaluationsProvider =
         Provider.of<EvaluationsProvider>(context);
     final schoolProvider = context.read<SchoolProvider>();
-    final ayatProvider = context.read<AyatProvider>();
 
     final uncategorized =
         EvaluationsController().getEvaluationById(0, evaluationsProvider);
@@ -76,7 +74,7 @@ class SahifaScreen extends StatelessWidget {
                 ListTile(
                   onTap: () async {
                     await schoolProvider.getQuickQuestionsSchool();
-                    await ayatProvider.getQuickQuestionsAyatByLevel(1, 1);
+
                     await evaluationsProvider.getAllEvaluations();
                     Get.to(const QuestionsScreen());
                   },

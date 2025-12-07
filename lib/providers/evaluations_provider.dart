@@ -34,6 +34,20 @@ class EvaluationsProvider with ChangeNotifier {
     }
   }
 
+  Future<http.Response> evaluateMultipleAyat(Map<String, dynamic> body) async {
+    try {
+      setLoading();
+      http.Response response = await _evaluationsServices.evaluateMultipleAyat(body);
+      resetLoading();
+      return response;
+    } catch (ex) {
+      rethrow;
+    } finally {
+      resetLoading();
+    }
+  }
+
+
   Future<void> getQuranChartData(int userId) async {
     try {
       setLoading();

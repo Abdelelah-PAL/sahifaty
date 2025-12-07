@@ -1,7 +1,9 @@
+import 'package:sahifaty/models/school_level.dart';
+
 class School {
   int? _id;
   String schoolName;
-  List<Map<String, dynamic>> levels;
+  List<SchoolLevel> levels;
 
   School({
     int? id,
@@ -11,18 +13,18 @@ class School {
 
   int? get id => _id;
 
-  // Corrected fromJson
   factory School.fromJson(Map<String, dynamic> json) {
     return School(
       id: json['_id'],
       schoolName: json['schoolName'],
       levels: json['levels'] != null
-          ? List<Map<String, dynamic>>.from(
-        json['levels'].map((level) => Map<String, dynamic>.from(level)),
-      )
+          ? (json['levels'] as List)
+          .map((e) => SchoolLevel.fromJson(e))
+          .toList()
           : [],
     );
   }
+
 
   Map<String, dynamic> toMap() {
     return {

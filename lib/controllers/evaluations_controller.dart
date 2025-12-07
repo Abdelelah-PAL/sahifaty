@@ -12,17 +12,17 @@ import '../models/user_evaluation.dart';
 
 class EvaluationsController {
   static final EvaluationsController _instance =
-  EvaluationsController._internal();
+      EvaluationsController._internal();
 
   factory EvaluationsController() => _instance;
 
   EvaluationsController._internal();
 
-  Future<void> sendEvaluation(Ayat verse,
+  Future<void> sendEvaluation(
+      Ayat verse,
       Evaluation evaluation,
       EvaluationsProvider evaluationsProvider,
-      AyatProvider? ayatProvider
-      ) async {
+      AyatProvider? ayatProvider) async {
     try {
       final Map<String, dynamic> userEvaluation = UserEvaluation(
         ayahId: verse.id!,
@@ -31,7 +31,7 @@ class EvaluationsController {
       ).toMap();
 
       final http.Response response =
-      await evaluationsProvider.evaluateAyah(userEvaluation);
+          await evaluationsProvider.evaluateAyah(userEvaluation);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(
@@ -44,11 +44,10 @@ class EvaluationsController {
         );
 
         // increment evaluated verses if coming from questions screen
-        if(ayatProvider != null) {
-          ayatProvider.incrementEvaluatedVersesCount();
-        }
+        // if(ayatProvider != null) {
+        //   ayatProvider.incrementEvaluatedVersesCount();
+        // }
       } else {
-
         await evaluationsProvider.evaluateAyah(userEvaluation);
 
         Fluttertoast.showToast(
@@ -72,11 +71,65 @@ class EvaluationsController {
     }
   }
 
-  ChartEvaluationData? getEvaluationById(int id,
-      EvaluationsProvider evaluationsProvider) {
+  Future<void> sendMultipleEvaluations(
+      List<Ayat> verses,
+      Evaluation evaluation,
+      EvaluationsProvider evaluationsProvider,
+      AyatProvider? ayatProvider,
+      String unitName) async {
+    try {
+      final ayatIds = verses.map((v) => v.id!).toList();
+      final Map<String, dynamic> userEvaluation = UserEvaluation(
+        ayahIds: ayatIds,
+        evaluationId: evaluation.id!,
+        comment: '',
+      ).toMap();
+
+      final http.Response response =
+          await evaluationsProvider.evaluateMultipleAyat(userEvaluation);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        Fluttertoast.showToast(
+          msg: 'تم تقييم ${unitName}  بنجاح!',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+
+        // increment evaluated verses if coming from questions screen
+        // if(ayatProvider != null) {
+        //   ayatProvider.incrementEvaluatedVersesCount();
+        // }
+      } else {
+        Fluttertoast.showToast(
+          msg: 'مشكلة في التقييم',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      }
+    } catch (error) {
+      Fluttertoast.showToast(
+        msg: 'Something went wrong. Please try again.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      rethrow;
+    }
+  }
+
+  ChartEvaluationData? getEvaluationById(
+      int id, EvaluationsProvider evaluationsProvider) {
     try {
       return evaluationsProvider.chartEvaluationData.firstWhere(
-            (e) => e.evaluationId == id,
+        (e) => e.evaluationId == id,
       );
     } catch (e) {
       return null;
@@ -99,8 +152,8 @@ class EvaluationsController {
       }
 
       return PieChartSectionData(
-        color: EvaluationsController().getColorForEvaluation(
-            evaluation.evaluationId),
+        color: EvaluationsController()
+            .getColorForEvaluation(evaluation.evaluationId),
         value: adjustedValue,
         title: '${evaluation.percentage?.toStringAsFixed(2)}%',
         radius: 150,
@@ -112,7 +165,6 @@ class EvaluationsController {
       );
     }).toList();
   }
-
 
   Color getColorForEvaluation(int? evaluationId) {
     switch (evaluationId) {

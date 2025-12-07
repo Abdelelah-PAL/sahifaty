@@ -2,7 +2,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/providers/ayat_provider.dart';
 import 'package:sahifaty/providers/school_provider.dart';
 import '../../core/utils/size_config.dart';
 import '../../core/constants/colors.dart';
@@ -128,10 +127,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 CustomButton(
                   onPressed: () async {
                     final schoolProvider = context.read<SchoolProvider>();
-                    final ayatProvider = context.read<AyatProvider>();
 
                     await schoolProvider.getQuickQuestionsSchool();
-                    await ayatProvider.getQuickQuestionsAyatByLevel(1, 1);
+
 
                     Get.to(const QuestionsScreen());
                   },
