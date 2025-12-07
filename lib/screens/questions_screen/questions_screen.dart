@@ -77,11 +77,11 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
               color: const Color(0xFFFFFFFF),
             ),
             SizeConfig.customSizedBox(null, 30, null),
-            CustomText(
-              text: schoolProvider.quickQuestionsSchool.levels[selectedIndex],
-              fontSize: 16,
-              withBackground: false,
-            ),
+            // CustomText(
+            //   text: schoolProvider.quickQuestionsSchool.levels[selectedIndex],
+            //   fontSize: 16,
+            //   withBackground: false,
+            // ),
             SizeConfig.customSizedBox(null, 30, null),
             SizedBox(
               height: SizeConfig.getProportionalHeight(60),

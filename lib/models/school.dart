@@ -1,7 +1,7 @@
 class School {
   int? _id;
   String schoolName;
-  List<String> levels;
+  List<Map<String, dynamic>> levels;
 
   School({
     int? id,
@@ -11,12 +11,15 @@ class School {
 
   int? get id => _id;
 
+  // Corrected fromJson
   factory School.fromJson(Map<String, dynamic> json) {
     return School(
       id: json['_id'],
       schoolName: json['schoolName'],
       levels: json['levels'] != null
-          ? List<String>.from(json['levels'])
+          ? List<Map<String, dynamic>>.from(
+        json['levels'].map((level) => Map<String, dynamic>.from(level)),
+      )
           : [],
     );
   }
