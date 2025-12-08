@@ -78,4 +78,9 @@ class Ayat {
       'subjects': subjects,
     };
   }
+
+  @override
+  String toString() {
+    return 'Ayat(text: $text)';
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/models/user.dart';
@@ -71,7 +72,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: SingleChildScrollView(
                     child: Column(children: [
                       SizeConfig.customSizedBox(
-                          1.5, 3, Image.asset(Assets.quran)),
+                          1.5, 3.5, SvgPicture.asset(
+                        'assets/images/logo.svg',
+                        width: 100,
+                        height: 100,
+                      )),
+                      SizeConfig.customSizedBox(null, 15, null),
                       Padding(
                           padding: EdgeInsets.only(
                               top: SizeConfig.getProportionalHeight(10),
@@ -256,90 +262,90 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       SizeConfig.customSizedBox(null, 20, null),
-                      const CustomAuthDivider(),
-                      SizeConfig.customSizedBox(null, 20, null),
-                      SocialLoginButton(
-                        text: "المتابعة باستخدام Google",
-                        iconPath: Assets.googleIcon,
-                        onPressed: () async {
-                          // try {
-                          //   AuthData authData =
-                          //       await usersProvider.signInWithGoogle();
-                          //
-                          //   final prefs = await SharedPreferences.getInstance();
-                          //   prefs.setString('accessToken', authData.accessToken!);
-                          //
-                          //   User user = User(
-                          //       id: authData.user!.id,
-                          //       fullName: authData.user!.fullName,
-                          //       email: authData.user!.email);
-                          //
-                          //   usersProvider.setSelectedUser(user);
-                          //   await usersProvider.checkFirstLogin();
-                          //
-                          //   if (!usersProvider.isFirstLogin) {
-                          //     await evaluationsProvider.getQuranChartData(
-                          //         usersProvider.selectedUser!.id);
-                          //     Get.to(() => const SahifaScreen());
-                          //   } else {
-                          //     Get.to(() => const WelcomeScreen());
-                          //   }
-                          // } catch (e) {
-                          //   if (!context.mounted) return;
-                          //   ScaffoldMessenger.of(context).showSnackBar(
-                          //     SnackBar(
-                          //       content: Text(
-                          //         e.toString(),
-                          //         textDirection: TextDirection.rtl,
-                          //       ),
-                          //     ),
-                          //   );
-                          // }
-                        },
-                      ),
-                      SizeConfig.customSizedBox(null, 15, null),
-                      SocialLoginButton(
-                        text: "المتابعة باستخدام Facebook",
-                        iconData: Icons.facebook,
-                        backgroundColor: const Color(0xFF1877F2),
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          try {
-                            AuthData authData =
-                                await usersProvider.signInWithFacebook();
-                    
-                            final prefs = await SharedPreferences.getInstance();
-                            prefs.setString('accessToken', authData.accessToken!);
-                    
-                            User user = User(
-                                id: authData.user!.id,
-                                fullName: authData.user!.fullName,
-                                email: authData.user!.email);
-                    
-                            usersProvider.setSelectedUser(user);
-                            await usersProvider.checkFirstLogin();
-                    
-                            if (!usersProvider.isFirstLogin) {
-                              await evaluationsProvider.getQuranChartData(
-                                  usersProvider.selectedUser!.id);
-                              Get.to(() => const SahifaScreen());
-                            } else {
-                              Get.to(() => const WelcomeScreen());
-                            }
-                          } catch (e) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  e.toString(),
-                                  textDirection: TextDirection.rtl,
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                      SizeConfig.customSizedBox(null, 20, null),
+                      // const CustomAuthDivider(),
+                      // SizeConfig.customSizedBox(null, 20, null),
+                      // SocialLoginButton(
+                      //   text: "المتابعة باستخدام Google",
+                      //   iconPath: Assets.googleIcon,
+                      //   onPressed: () async {
+                      //     // try {
+                      //     //   AuthData authData =
+                      //     //       await usersProvider.signInWithGoogle();
+                      //     //
+                      //     //   final prefs = await SharedPreferences.getInstance();
+                      //     //   prefs.setString('accessToken', authData.accessToken!);
+                      //     //
+                      //     //   User user = User(
+                      //     //       id: authData.user!.id,
+                      //     //       fullName: authData.user!.fullName,
+                      //     //       email: authData.user!.email);
+                      //     //
+                      //     //   usersProvider.setSelectedUser(user);
+                      //     //   await usersProvider.checkFirstLogin();
+                      //     //
+                      //     //   if (!usersProvider.isFirstLogin) {
+                      //     //     await evaluationsProvider.getQuranChartData(
+                      //     //         usersProvider.selectedUser!.id);
+                      //     //     Get.to(() => const SahifaScreen());
+                      //     //   } else {
+                      //     //     Get.to(() => const WelcomeScreen());
+                      //     //   }
+                      //     // } catch (e) {
+                      //     //   if (!context.mounted) return;
+                      //     //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     //     SnackBar(
+                      //     //       content: Text(
+                      //     //         e.toString(),
+                      //     //         textDirection: TextDirection.rtl,
+                      //     //       ),
+                      //     //     ),
+                      //     //   );
+                      //     // }
+                      //   },
+                      // ),
+                      // SizeConfig.customSizedBox(null, 15, null),
+                      // SocialLoginButton(
+                      //   text: "المتابعة باستخدام Facebook",
+                      //   iconData: Icons.facebook,
+                      //   backgroundColor: const Color(0xFF1877F2),
+                      //   textColor: Colors.white,
+                      //   onPressed: () async {
+                      //     try {
+                      //       AuthData authData =
+                      //           await usersProvider.signInWithFacebook();
+                      //
+                      //       final prefs = await SharedPreferences.getInstance();
+                      //       prefs.setString('accessToken', authData.accessToken!);
+                      //
+                      //       User user = User(
+                      //           id: authData.user!.id,
+                      //           fullName: authData.user!.fullName,
+                      //           email: authData.user!.email);
+                      //
+                      //       usersProvider.setSelectedUser(user);
+                      //       await usersProvider.checkFirstLogin();
+                      //
+                      //       if (!usersProvider.isFirstLogin) {
+                      //         await evaluationsProvider.getQuranChartData(
+                      //             usersProvider.selectedUser!.id);
+                      //         Get.to(() => const SahifaScreen());
+                      //       } else {
+                      //         Get.to(() => const WelcomeScreen());
+                      //       }
+                      //     } catch (e) {
+                      //       if (!context.mounted) return;
+                      //       ScaffoldMessenger.of(context).showSnackBar(
+                      //         SnackBar(
+                      //           content: Text(
+                      //             e.toString(),
+                      //             textDirection: TextDirection.rtl,
+                      //           ),
+                      //         ),
+                      //       );
+                      //     }
+                      //   },
+                      // ),
+                      // SizeConfig.customSizedBox(null, 20, null),
                       CustomAuthFooter(
                         headingText: "لا تملك حساب؟",
                         tailText: "قم بإنشاء حساب",

@@ -33,7 +33,7 @@ class _DonutChartState extends State<DonutChart> {
     // but PieChart calculates percentages based on total value automatically.
 
     final List<PieChartSectionData> sections = [];
-
+    List<int> sectionEvaluationIds = [];
     for (int i = 0; i < generalController.dropdownOptions.length; i++) {
       final evaluation = evaluationsController.getEvaluationById(
           i, widget.evaluationsProvider);
@@ -43,7 +43,7 @@ class _DonutChartState extends State<DonutChart> {
       final value = evaluation.percentage?.toDouble() ?? 0;
       // if (value <= 0) continue; // Optional: Hide 0% sections
 
-      final isTouched = i == touchedIndex;
+      final isTouched = sectionEvaluationIds.length == touchedIndex;
       final fontSize = isTouched ? 20.0 : 16.0;
       final radius = isTouched ? 60.0 : 50.0;
       final color = generalController.dropdownOptions[i]['color'] as Color;
@@ -70,6 +70,7 @@ class _DonutChartState extends State<DonutChart> {
           badgePositionPercentageOffset: .98,
         ),
       );
+      sectionEvaluationIds.add(evaluation.evaluationId);
     }
 
     return AspectRatio(
@@ -98,7 +99,7 @@ class _DonutChartState extends State<DonutChart> {
               ),
               sectionsSpace: 2,
               // Gap between sections
-              centerSpaceRadius: 120,
+              centerSpaceRadius: 80,
               // Internal radius for Donut shape
               sections: sections,
             ),
@@ -120,8 +121,8 @@ class _DonutChartState extends State<DonutChart> {
               if (touchedIndex != -1)
                 Text(
                   evaluationsController
-                          .getEvaluationById(
-                              touchedIndex, widget.evaluationsProvider)
+                          .getEvaluationById(sectionEvaluationIds[touchedIndex],
+                              widget.evaluationsProvider)
                           ?.nameAr ??
                       "",
                   style: const TextStyle(fontSize: 14, color: Colors.grey),

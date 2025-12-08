@@ -36,6 +36,7 @@ class EvaluationsProvider with ChangeNotifier {
 
   Future<http.Response> evaluateMultipleAyat(Map<String, dynamic> body) async {
     try {
+
       setLoading();
       http.Response response = await _evaluationsServices.evaluateMultipleAyat(body);
       resetLoading();

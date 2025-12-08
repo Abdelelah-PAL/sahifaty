@@ -143,13 +143,9 @@ class EvaluationsController {
 
       // Adjust font size dynamically based on the percentage
       double fontSize;
-      if (value > 15) {
-        fontSize = 16;
-      } else if (value > 5) {
-        fontSize = 12;
-      } else {
-        fontSize = 8;
-      }
+      // Dynamically calculate font size based on percentage
+      // Scaling factor of 2.5 seems appropriate given the radius of 150
+      fontSize = (value * 2.5).clamp(5.0, 18.0);
 
       return PieChartSectionData(
         color: EvaluationsController()

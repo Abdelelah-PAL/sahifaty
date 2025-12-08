@@ -60,6 +60,7 @@ class AyatController {
     // Extract the 'data' array
     final List<dynamic> ayahs = jsonData['data'];
 
+
     // Filter and map to Surah objects
     final List<Ayat> hizbQuarterAyat = ayahs
         .where((item) => item['hizbQuarter'] == hizbQuarter)

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/providers/users_provider.dart';
-
 import 'controllers/general_controller.dart';
 import 'core/constants/colors.dart';
 import 'providers/ayat_provider.dart';
@@ -11,6 +9,7 @@ import 'providers/evaluations_provider.dart';
 import 'providers/general_provider.dart';
 import 'providers/school_provider.dart';
 import 'providers/surahs_provider.dart';
+import 'providers/users_provider.dart';
 import 'screens/authentication_screens/login_screen.dart';
 import 'screens/main_screen/main_screen.dart';
 

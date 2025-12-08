@@ -55,7 +55,7 @@ class EvaluationsServices {
     try {
       final ayatIdsParam = ayatIds.join(',');
       final http.Response res = await _sahifatyApi
-          .get('user-evaluations?userId=$userId&ayatIds=$ayatIdsParam');
+          .get('user-evaluations?userId=$userId&ayatIds=$ayatIdsParam&limit=1000');
 
       if (res.statusCode == 200) {
         final Map<String, dynamic> body = jsonDecode(res.body);
@@ -76,7 +76,6 @@ class EvaluationsServices {
 
   Future<http.Response> evaluateMultipleAyat(Map<String, dynamic> body) async {
     try {
-
       http.Response response =
           await _sahifatyApi.post(url: 'user-evaluations/bulk', body: body);
 

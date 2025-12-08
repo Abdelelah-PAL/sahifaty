@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/models/auth_data.dart';
@@ -60,7 +61,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: [
                       SizeConfig.customSizedBox(
-                          1.5, 3.5, Image.asset(Assets.quran)),
+                          1.5, 3.5, SvgPicture.asset(
+                        'assets/images/logo.svg',
+                        width: 100,
+                        height: 100,
+                      )),
+                      SizeConfig.customSizedBox(null, 100, null),
                       Padding(
                           padding: EdgeInsets.only(
                               top: SizeConfig.getProportionalHeight(10),
@@ -76,36 +82,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'أدخل البريد الإلكتروني',
                         obscureText: false,
                         textEditingController:
-                            _userController.signUpEmailController,
+                        _userController.signUpEmailController,
                         borderColor:
-                            _userController.signUpEmailTextFieldBorderColor,
+                        _userController.signUpEmailTextFieldBorderColor,
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
                         hintText: 'اسم المستخدم',
                         obscureText: false,
                         textEditingController:
-                            _userController.signUpUsernameController,
+                        _userController.signUpUsernameController,
                         borderColor:
-                            _userController.signUpEmailTextFieldBorderColor,
+                        _userController.signUpEmailTextFieldBorderColor,
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
                         hintText: 'أدخل كلمة المرور',
                         obscureText: true,
                         textEditingController:
-                            _userController.signUpPasswordController,
+                        _userController.signUpPasswordController,
                         borderColor:
-                            _userController.signUpPasswordTextFieldBorderColor,
+                        _userController.signUpPasswordTextFieldBorderColor,
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
                         hintText: 'تأكيد كلمة المرور',
                         obscureText: true,
                         textEditingController:
-                            _userController.signUpConfirmedPasswordController,
+                        _userController.signUpConfirmedPasswordController,
                         borderColor:
-                            _userController.confirmPasswordTextFieldBorderColor,
+                        _userController.confirmPasswordTextFieldBorderColor,
                       ),
                       SizeConfig.customSizedBox(null, 20, null),
                       CustomButton(
@@ -124,7 +130,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               _userController.signUpEmailController.text.trim(),
                             )) {
                               setState(() {
-                                _userController.signUpEmailTextFieldBorderColor =
+                                _userController
+                                    .signUpEmailTextFieldBorderColor =
                                     AppColors.errorColor;
                               });
                               throw Exception("أدخل بريدًا إلكترونيًا صحيحًا");
@@ -197,9 +204,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         tailText: "تسجيل الدخول",
                         onTap: () {
                           UsersProvider().resetSignUpErrorText();
-                          Get.to(() => const LoginScreen(
-                                firstScreen: false,
-                              ));
+                          Get.to(() =>
+                          const LoginScreen(
+                            firstScreen: false,
+                          ));
                         },
                       )
                     ],
