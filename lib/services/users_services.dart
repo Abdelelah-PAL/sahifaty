@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/auth_data.dart';
 
 class UsersServices with ChangeNotifier {
-  final String _baseURL = 'https://api.sahifati.org';
+  final String _baseURL = 'https://sahifati.org';
   final Duration _timeout = const Duration(seconds: 30);
   final Map<String, String> _authHeaders = {
     'Content-Type': 'application/json',

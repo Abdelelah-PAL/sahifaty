@@ -7,7 +7,7 @@ import 'dart:async';
 import 'app_exception.dart';
 
 class SahifatyApi {
-  final String _baseURL = 'https://api.sahifati.org/';
+  final String _baseURL = 'https://sahifati.org';
   final Duration _timeout = const Duration(seconds: 30);
 
   // Get headers with token
