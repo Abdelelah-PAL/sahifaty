@@ -7,6 +7,7 @@ import '../../providers/evaluations_provider.dart';
 import '../../providers/school_provider.dart';
 import '../../providers/users_provider.dart';
 import '../sahifa_screen/sahifa_screen.dart';
+import '../widgets/user_profile_badge.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import 'content_item_card.dart';

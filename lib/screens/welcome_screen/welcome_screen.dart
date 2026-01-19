@@ -8,6 +8,7 @@ import '../../core/constants/colors.dart';
 import '../questions_screen/questions_screen.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
+import '../widgets/user_profile_badge.dart';
 import '../widgets/custom_text.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -80,6 +81,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
         leading: const CustomBackButton(),
+        leadingWidth: 56 , // adjust
       ),
       body: SingleChildScrollView(
         child: Center(

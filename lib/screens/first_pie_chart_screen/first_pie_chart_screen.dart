@@ -10,6 +10,7 @@ import '../sahifa_screen/sahifa_screen.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/user_profile_badge.dart';
 
 class FirstPieChartScreen extends StatelessWidget {
   const FirstPieChartScreen({super.key});

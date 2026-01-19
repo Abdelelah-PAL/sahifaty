@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sahifaty/controllers/surahs_controller.dart';
+import 'package:sahifaty/models/surah.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../quran_view/index_page.dart';
@@ -20,7 +21,7 @@ class CustomHizbsButton extends StatelessWidget {
       onTap: () async {
         // Load the surahs that belong to this hizb
         final surahs =
-        await SurahsController().loadSurahsByHizb(hizb['id']);
+            await SurahsController().loadSurahsByHizb(hizb['id']);
 
         // Pick first surah (IndexPage only needs hizb when filtering)
         final surah = surahs.first;
@@ -28,7 +29,7 @@ class CustomHizbsButton extends StatelessWidget {
         Get.to(
           IndexPage(
             surah: surah,
-            filterTypeId: 3, // FilterTypes.hizbs
+            filterTypeId: 3,
             hizb: hizb['id'],
           ),
         );
@@ -45,12 +46,22 @@ class CustomHizbsButton extends StatelessWidget {
           border: Border.all(color: Colors.grey),
         ),
         child: Center(
-          child: CustomText(
-            text: hizb['name'],
-            fontSize: 14,
-            color: Colors.white,
-            withBackground: false,
-            textAlign: TextAlign.center,
+          child: FutureBuilder<List<Surah>>(
+            future: SurahsController().loadSurahsByHizb(hizb['id']),
+            builder: (context, snapshot) {
+              String displayText = hizb['name'];
+              if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                final surahNames = snapshot.data!.map((e) => e.nameAr).join('، ');
+                displayText = '$displayText\n($surahNames)';
+              }
+              return CustomText(
+                text: displayText,
+                fontSize: 14,
+                color: Colors.white,
+                withBackground: false,
+                textAlign: TextAlign.center,
+              );
+            },
           ),
         ),
       ),

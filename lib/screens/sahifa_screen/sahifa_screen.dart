@@ -13,9 +13,11 @@ import '../widgets/3d_pie_chart.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/user_profile_badge.dart';
 
 class SahifaScreen extends StatelessWidget {
   const SahifaScreen({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -32,8 +34,13 @@ class SahifaScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
         automaticallyImplyLeading: usersProvider.isFirstLogin,
-        leading: usersProvider.isFirstLogin ? const CustomBackButton() : null,
-        actions: [
+        leadingWidth: usersProvider.isFirstLogin ? 56 : 140, // adjust
+        leading: usersProvider.isFirstLogin
+            ? const CustomBackButton()
+            : const Padding(
+          padding: EdgeInsetsDirectional.only(start: 12),
+          child: UserProfileBadge(),
+        ),        actions: [
           Builder(
             builder: (context) => IconButton(
               icon: const Icon(Icons.menu),

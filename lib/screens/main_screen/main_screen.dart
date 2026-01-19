@@ -12,6 +12,7 @@ import '../widgets/custom_back_button.dart';
 import '../widgets/custom_parts_dropdown.dart';
 import '../widgets/custom_thirds_dropdown.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/user_profile_badge.dart';
 import 'widgets/menu_item.dart';
 
 class MainScreen extends StatefulWidget {
@@ -104,14 +105,14 @@ class _MainScreenState extends State<MainScreen> {
                         child: MenuItem(
                           text: "أيقونات المواضيع",
                           onChanged: (v) {
-                           if (v) generalProvider.toggleSubjectMenuItem();
+                            if (v) generalProvider.toggleSubjectMenuItem();
                           },
                           index: 4,
                         ),
                       ),
                     ];
                   },
-                )
+                ),
               ],
             ),
             body: SingleChildScrollView(

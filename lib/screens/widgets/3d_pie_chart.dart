@@ -24,14 +24,6 @@ class _DonutChartState extends State<DonutChart> {
     final evaluationsController = EvaluationsController();
     final generalController = GeneralController();
 
-    // Prepare data
-    // We only want sections that have a percentage > 0 to avoid clutter
-    // Or we can show all, but usually charts look better without 0% slices.
-    // However, original code generated list for all dropdownOptions.
-
-    // Calculate total for valid entries first to ensure correctness if needed,
-    // but PieChart calculates percentages based on total value automatically.
-
     final List<PieChartSectionData> sections = [];
     List<int> sectionEvaluationIds = [];
     for (int i = 0; i < generalController.dropdownOptions.length; i++) {
@@ -45,14 +37,16 @@ class _DonutChartState extends State<DonutChart> {
 
       final isTouched = sectionEvaluationIds.length == touchedIndex;
       final fontSize = isTouched ? 20.0 : 16.0;
-      final radius = isTouched ? 60.0 : 50.0;
+      final radius = isTouched ? 90.0 : 80.0;
       final color = generalController.dropdownOptions[i]['color'] as Color;
 
       sections.add(
         PieChartSectionData(
           color: color,
           value: value,
-          title: '${value.toStringAsFixed(1)}%',
+          title: '\u200F${value.toStringAsFixed(1)}%\n'
+              '\u200F${evaluation.nameAr}\n'
+              '\u200F${evaluation.count} آية',
           radius: radius,
           titleStyle: TextStyle(
             fontSize: fontSize,
@@ -98,9 +92,7 @@ class _DonutChartState extends State<DonutChart> {
                 show: false,
               ),
               sectionsSpace: 2,
-              // Gap between sections
-              centerSpaceRadius: 80,
-              // Internal radius for Donut shape
+              centerSpaceRadius: 60,
               sections: sections,
             ),
           ),

@@ -6,7 +6,6 @@ import 'package:sahifaty/models/user.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../controllers/users_controller.dart';
-import '../../core/constants/assets.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
@@ -21,8 +20,6 @@ import 'sign_up_screen.dart';
 import 'widgets/custom_auth_footer.dart';
 import 'widgets/custom_auth_textfield.dart';
 import 'widgets/custom_auth_textfield_header.dart';
-import 'widgets/custom_auth_divider.dart';
-import 'widgets/social_login_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key, required this.firstScreen});
@@ -187,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                               throw Exception("جميع الحقول مطلوبة");
                             }
-                    
+
                             // ✅ Validate email format
                             if (!_userController.isEmailValid(
                               _userController.loginEmailController.text.trim(),
@@ -198,27 +195,27 @@ class _LoginScreenState extends State<LoginScreen> {
                               });
                               throw Exception("أدخل بريدًا إلكترونيًا صحيحًا");
                             }
-                    
+
                             // ✅ Indicate loading
                             setState(() {
                               _userController.changeTextFieldsColors(true);
                               usersProvider.setLoading();
                             });
-                    
+
                             // ✅ Try to log in
                             AuthData authData = await usersProvider.login(
                               _userController.loginEmailController.text.trim(),
                               _userController.loginPasswordController.text,
                             );
-                    
+
                             final prefs = await SharedPreferences.getInstance();
                             prefs.setString('accessToken', authData.accessToken!);
-                    
+
                             User user = User(
                                 id: authData.user!.id,
                                 fullName: authData.user!.fullName,
                                 email: authData.user!.email);
-                    
+
                             usersProvider.setSelectedUser(user);
                             await usersProvider.checkFirstLogin();
                             // ✅ Save login info if Remember Me is checked
@@ -228,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _userController.loginPasswordController.text,
                               );
                             }
-                    
+
                             if (!usersProvider.isFirstLogin) {
                               await evaluationsProvider.getQuranChartData(
                                   usersProvider.selectedUser!.id);
@@ -244,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               message =
                                   e.toString().replaceFirst('Exception: ', '');
                             }
-                    
+
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
