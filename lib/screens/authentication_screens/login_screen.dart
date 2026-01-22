@@ -258,7 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                         },
                       ),
-                      SizeConfig.customSizedBox(null, 20, null),
+                      SizeConfig.customSizedBox(null, 30, null),
                       // const CustomAuthDivider(),
                       // SizeConfig.customSizedBox(null, 20, null),
                       // SocialLoginButton(
@@ -351,6 +351,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           Get.to(() => const SignUpScreen())
                         },
                       ),
+                      SizeConfig.customSizedBox(null, 25, null),
+                      const CustomText(text:'1.0.2', withBackground: false, textAlign: TextAlign.center,)
                     ]),
                   )),
             ),

@@ -820,94 +820,93 @@ class _ContentItemCardState extends State<ContentItemCard> {
                           : Theme.of(context).primaryColor,
                       shape: BoxShape.circle,
                     ),
-                    child: Center(
-                      child: isCompleted
-                          ? const Icon(Icons.check, color: Colors.white)
-                          : CustomText(
-                              text: '${widget.index + 1}',
-                              withBackground: false,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                    ),
+                    child: isCompleted
+                        ? const Icon(Icons.check, color: Colors.white)
+                        : CustomText(
+                            text: '${widget.index + 1}',
+                            withBackground: false,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
                   ),
-                  SizedBox(width: SizeConfig.getProportionalWidth(15)),
+                  SizeConfig.customSizedBox(25, null, null),
                   Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        if (widget.content.surahId != null) ...[
-                          CustomText(
-                            text:
-                                'سورة ${GeneralController().getSurahNameByNumber(widget.content.surahId!)}',
-                            withBackground: false,
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ],
-                        if (widget.content.startAyah != null &&
-                            widget.content.endAyah != null) ...[
-                          SizedBox(height: SizeConfig.getProportionalHeight(5)),
-                          CustomText(
-                            text:
-                                'الآيات: ${widget.content.startAyah} - ${widget.content.endAyah}',
-                            withBackground: false,
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ],
-                        if (widget.content.type == "hizb" &&
-                            widget.content.hizb != null) ...[
-                          CustomText(
-                            text: 'الحزب ${widget.content.hizb}',
-                            withBackground: false,
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ],
-                        if (widget.content.type == "hizbQuarter" &&
-                            widget.content.hizbQuarter != null) ...[
-                          CustomText(
-                            text: 'ريع الحزب ${widget.content.hizbQuarter}',
-                            withBackground: false,
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ],
-                        if (widget.content.type == "juz" &&
-                            widget.content.juz != null) ...[
-                          CustomText(
-                            text: 'جزء ${widget.content.juz}',
-                            withBackground: false,
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ],
-                        SizedBox(height: SizeConfig.getProportionalHeight(5)),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: isCompleted
-                                ? Colors.green.withOpacity(0.1)
-                                : Colors.grey.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                              color: isCompleted ? Colors.green : Colors.grey,
-                              width: 1,
+                        Row(children: [
+                          if (widget.content.surahId != null) ...[
+                            CustomText(
+                              text:
+                              'سورة ${GeneralController().getSurahNameByNumber(widget.content.surahId!)}',
+                              withBackground: false,
+                              fontSize: 14,
+                              color: Colors.grey[600],
                             ),
-                          ),
-                          child: Text(
-                            isCompleted ? 'مكتمل' : 'غير مكتمل',
-                            style: TextStyle(
-                              color:
-                                  isCompleted ? Colors.green : Colors.grey[700],
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
+                          ],
+                          if (widget.content.startAyah != null &&
+                              widget.content.endAyah != null) ...[
+                            CustomText(
+                              text:
+                              'الآيات: ${widget.content.startAyah} - ${widget.content.endAyah}',
+                              withBackground: false,
+                              fontSize: 14,
+                              color: Colors.grey[600],
                             ),
-                          ),
-                        ),
+                          ],
+                          if (widget.content.type == "hizb" &&
+                              widget.content.hizb != null) ...[
+                            CustomText(
+                              text: 'الحزب ${widget.content.hizb}',
+                              withBackground: false,
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ],
+                          if (widget.content.type == "hizbQuarter" &&
+                              widget.content.hizbQuarter != null) ...[
+                            CustomText(
+                              text: 'ريع الحزب ${widget.content.hizbQuarter}',
+                              withBackground: false,
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ],
+                          if (widget.content.type == "juz" &&
+                              widget.content.juz != null) ...[
+                            CustomText(
+                              text: 'جزء ${widget.content.juz}',
+                              withBackground: false,
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ],
+                          // SizedBox(height: SizeConfig.getProportionalHeight(5)),
+                          // Container(
+                          //   padding: const EdgeInsets.symmetric(
+                          //       horizontal: 8, vertical: 4),
+                          //   decoration: BoxDecoration(
+                          //     color: isCompleted
+                          //         ? Colors.green.withOpacity(0.1)
+                          //         : Colors.grey.withOpacity(0.1),
+                          //     borderRadius: BorderRadius.circular(4),
+                          //     border: Border.all(
+                          //       color: isCompleted ? Colors.green : Colors.grey,
+                          //       width: 1,
+                          //     ),
+                          //   ),
+                          //   child: Text(
+                          //     isCompleted ? 'مكتمل' : 'غير مكتمل',
+                          //     style: TextStyle(
+                          //       color:
+                          //       isCompleted ? Colors.green : Colors.grey[700],
+                          //       fontSize: 12,
+                          //       fontWeight: FontWeight.bold,
+                          //     ),
+                          //   ),
+                          // ),
+                        ],)
                       ],
                     ),
                   ),

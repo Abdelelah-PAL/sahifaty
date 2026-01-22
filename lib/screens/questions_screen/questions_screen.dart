@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/core/constants/colors.dart';
 import '../../controllers/general_controller.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/evaluations_provider.dart';
@@ -21,7 +22,6 @@ class QuestionsScreen extends StatefulWidget {
 
 class _QuestionsScreenState extends State<QuestionsScreen> {
   int selectedIndex = 0;
-
 
   final ScrollController _scrollController = ScrollController();
 
@@ -56,17 +56,12 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             SizeConfig.customSizedBox(null, 50, null),
             CustomText(
               text:
-                  'المستوى ${GeneralController().getStringLevel(selectedIndex + 1)}',
+                  'المستوى ${GeneralController().getStringLevel(selectedIndex + 1)} : ${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name!}',
               fontSize: 16,
               withBackground: true,
               color: const Color(0xFFFFFFFF),
             ),
-            SizeConfig.customSizedBox(null, 30, null),
-            // CustomText(
-            //   text: schoolProvider.quickQuestionsSchool.levels[selectedIndex],
-            //   fontSize: 16,
-            //   withBackground: false,
-            // ),
+
             // PaginationBar removed as we are listing content items now
             SizeConfig.customSizedBox(null, 30, null),
             Expanded(
@@ -74,12 +69,14 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 25),
                 child: ListView.builder(
                   controller: _scrollController,
-                  itemCount: schoolProvider.quickQuestionsSchool.levels[selectedIndex].content.length,
+                  itemCount: schoolProvider.quickQuestionsSchool
+                      .levels[selectedIndex].content.length,
                   itemBuilder: (context, index) {
-                     return ContentItemCard(
-                       content: schoolProvider.quickQuestionsSchool.levels[selectedIndex].content[index],
-                       index: index,
-                     );
+                    return ContentItemCard(
+                      content: schoolProvider.quickQuestionsSchool
+                          .levels[selectedIndex].content[index],
+                      index: index,
+                    );
                   },
                 ),
               ),
@@ -89,7 +86,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
               padding: EdgeInsets.symmetric(
                   horizontal: SizeConfig.getProportionalWidth(25)),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   CustomButton(
                     onPressed: () async {
@@ -99,32 +96,55 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                           .getQuranChartData(usersProvider.selectedUser!.id);
                       Get.to(const SahifaScreen());
                     },
-                    text: "تخطي",
-                    width: 75,
+                    text: "تخطّي",
+                    width: 60,
                     height: 35,
                     isDisabled: false,
                   ),
+                  SizeConfig.customSizedBox(80, null, null),
                   CustomButton(
                       onPressed: () {
-                        if (selectedIndex + 1 < schoolProvider.quickQuestionsSchool.levels.length) {
-                             _scrollController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 400),
-                              curve: Curves.easeOut,
-                            );
-                            setState(() {
-                              selectedIndex = selectedIndex + 1;
-                            });
+                        if (selectedIndex > 0) {
+                          _scrollController.animateTo(
+                            0,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeOut,
+                          );
+                          setState(() {
+                            selectedIndex = selectedIndex - 1;
+                          });
                         } else {
-                            // Finished all levels
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("انتهت الأسئلة")));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("أنت في المستوى الأول")));
                         }
                       },
-                      text: "انتقل إلى السؤال التالي",
-                      width: 180,
+                      text: " السؤال السابق",
+                      width: 100,
                       height: 35,
-                      isDisabled: false // Validation disabled for now as we don't track total ayahs
-                  )
+                      isDisabled: false),
+                  SizeConfig.customSizedBox(80, null, null),
+                  CustomButton(
+                      onPressed: () {
+                        if (selectedIndex + 1 <
+                            schoolProvider.quickQuestionsSchool.levels.length) {
+                          _scrollController.animateTo(
+                            0,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeOut,
+                          );
+                          setState(() {
+                            selectedIndex = selectedIndex + 1;
+                          });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text("انتهت الأسئلة")));
+                        }
+                      },
+                      text: " السؤال التالي",
+                      width: 100,
+                      height: 35,
+                      isDisabled: false),
                 ],
               ),
             )
