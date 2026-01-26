@@ -7,7 +7,7 @@ import '../../core/utils/size_config.dart';
 import '../../providers/evaluations_provider.dart';
 import '../../providers/general_provider.dart';
 import '../../providers/users_provider.dart';
-import '../widgets/3d_pie_chart.dart';
+import '../widgets/bar_chart_widget.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_parts_dropdown.dart';
 import '../widgets/custom_thirds_dropdown.dart';
@@ -136,7 +136,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
 
                   if (!widget.comesFirst)
-                    DonutChart(evaluationsProvider: evaluationsProvider)
+                    BarChartWidget(evaluationsProvider: evaluationsProvider)
                   else
                     SizedBox(height: SizeConfig.getProportionalHeight(250)),
 

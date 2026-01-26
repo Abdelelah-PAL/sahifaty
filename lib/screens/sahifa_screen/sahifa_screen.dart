@@ -9,7 +9,7 @@ import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/school_provider.dart';
 import '../questions_screen/questions_screen.dart';
-import '../widgets/3d_pie_chart.dart';
+import '../widgets/bar_chart_widget.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
@@ -124,7 +124,7 @@ class SahifaScreen extends StatelessWidget {
                 fontSize: 24,
                 withBackground: false,
               ),
-              DonutChart(
+              BarChartWidget(
                 evaluationsProvider: evaluationsProvider,
               ),
               SizedBox(

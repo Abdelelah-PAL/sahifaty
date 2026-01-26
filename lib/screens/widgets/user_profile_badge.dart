@@ -17,9 +17,9 @@ class UserProfileBadge extends StatelessWidget {
     }
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: SizeConfig.getProportionalWidth(10)),
+      padding: EdgeInsets.symmetric(horizontal: SizeConfig.getProportionalWidth(5)),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           const CircleAvatar(
             radius: 18,
