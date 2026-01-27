@@ -54,107 +54,120 @@ class BarChartWidget extends StatelessWidget {
       aspectRatio: 0.7,
       child: Padding(
         padding: const EdgeInsets.only(top: 16),
-        child: BarChart(
-          BarChartData(
-            alignment: BarChartAlignment.spaceAround,
-            maxY: 100, 
-            barTouchData: BarTouchData(
-              enabled: false, // Disable touch interaction since we show data always
-              touchTooltipData: BarTouchTooltipData(
-                getTooltipColor: (_) => Colors.transparent,
-                tooltipPadding: EdgeInsets.zero,
-                tooltipMargin: 8,
-                getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                   final evaluation = evaluationsController.getEvaluationById(
-                      group.x, evaluationsProvider);
-                   return BarTooltipItem(
-                     '',
-                     // '${rod.toY.toStringAsFixed(1)}%\n',
-                     const TextStyle(
-                       color: Colors.blueGrey,
-                       fontWeight: FontWeight.bold,
-                       fontSize: 12,
-                     ),
-                     children: <TextSpan>[
-                       TextSpan(
-                         text: '${evaluation?.count} آية',
-                         style: const TextStyle(
-                           color: Colors.blueGrey,
-                           fontSize: 12,
-                           fontWeight: FontWeight.w500,
-                         ),
-                       ),
-                     ],
-                   );
-                },
-              ),
-            ),
-            titlesData: FlTitlesData(
-              show: true,
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (double value, TitleMeta meta) {
-                     final evaluation = evaluationsController.getEvaluationById(
-                        value.toInt(), evaluationsProvider);
-                     return SideTitleWidget(
-                       meta: meta,
-                       child: Text(
-                         evaluation?.nameAr ?? '',
-                         style: const TextStyle(
-                           color: Colors.black,
-                           fontWeight: FontWeight.bold,
-                           fontSize: 10,
-                         ),
-                       ),
-                     );
-                  },
-                  reservedSize: 30, // Adjust as needed for label height
-                ),
-              ),
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (double value, TitleMeta meta) {
-                    return SideTitleWidget(
-                       meta: meta,
-                       child: Text(
-                         '${value.toInt()}%',
-                         style: const TextStyle(
-                           color: Colors.black,
-                           fontSize: 10,
-                         ),
-                       ),
+        child: RotatedBox(
+          quarterTurns: 1,
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              maxY: 100,
+              barTouchData: BarTouchData(
+                enabled: false, // Disable touch interaction since we show data always
+                touchTooltipData: BarTouchTooltipData(
+                  getTooltipColor: (_) => Colors.transparent,
+                  tooltipPadding: EdgeInsets.zero,
+                  tooltipMargin: 8,
+                  rotateAngle: -90,
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    final evaluation = evaluationsController.getEvaluationById(
+                        group.x, evaluationsProvider);
+                    return BarTooltipItem(
+                      '',
+                      // '${rod.toY.toStringAsFixed(1)}%\n',
+                      const TextStyle(
+                        color: Colors.blueGrey,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '${evaluation?.count} آية',
+                          style: const TextStyle(
+                            color: Colors.blueGrey,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     );
                   },
-                  reservedSize: 30,
-                  interval: 20, 
                 ),
               ),
-              topTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
+              titlesData: FlTitlesData(
+                show: true,
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (double value, TitleMeta meta) {
+                      final evaluation = evaluationsController.getEvaluationById(
+                          value.toInt(), evaluationsProvider);
+                      return SideTitleWidget(
+                        meta: meta,
+                        child: RotatedBox(
+                          quarterTurns: -1,
+                          child: Text(
+                            evaluation?.nameAr ?? '',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    reservedSize: 60, // Adjust as needed for label height
+                  ),
+                ),
+                rightTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (double value, TitleMeta meta) {
+                      return SideTitleWidget(
+                        meta: meta,
+                        child: RotatedBox(
+                          quarterTurns: -1,
+                          child: Text(
+                            '${value.toInt()}%',
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                    reservedSize: 30,
+                    interval: 20,
+                  ),
+                ),
+                leftTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
               ),
-              rightTitles: const AxisTitles(
-                sideTitles: SideTitles(showTitles: false),
+              gridData: FlGridData(
+                show: true,
+                checkToShowHorizontalLine: (value) => value % 20 == 0,
+                getDrawingHorizontalLine: (value) => FlLine(
+                  color: Colors.grey.withOpacity(0.2),
+                  strokeWidth: 1,
+                ),
+                drawVerticalLine: false,
               ),
+              borderData: FlBorderData(
+                show: true,
+                border: const Border(
+                  bottom: BorderSide(
+                      color: Colors.black, width: 1), // Becomes Left Border
+                  left: BorderSide.none, // Becomes Top Border
+                  right: BorderSide(
+                      color: Colors.black, width: 1), // Becomes Bottom Border
+                ),
+              ),
+              barGroups: barGroups,
             ),
-            gridData: FlGridData(
-              show: true,
-              checkToShowHorizontalLine: (value) => value % 20 == 0,
-              getDrawingHorizontalLine: (value) => FlLine(
-                color: Colors.grey.withOpacity(0.2),
-                strokeWidth: 1,
-              ),
-              drawVerticalLine: false,
-            ),
-            borderData: FlBorderData(
-              show: true,
-              border: const Border(
-                bottom: BorderSide(color: Colors.black, width: 1),
-                left: BorderSide(color: Colors.black, width: 1),
-              ),
-            ),
-            barGroups: barGroups,
           ),
         ),
       ),
