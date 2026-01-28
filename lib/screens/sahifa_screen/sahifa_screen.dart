@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/providers/evaluations_provider.dart';
-import 'package:sahifaty/providers/users_provider.dart';
-import 'package:sahifaty/screens/main_screen/main_screen.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
+import '../../providers/evaluations_provider.dart';
 import '../../providers/school_provider.dart';
+import '../../providers/users_provider.dart';
+import '../main_screen/main_screen.dart';
 import '../questions_screen/questions_screen.dart';
 import '../widgets/bar_chart_widget.dart';
 import '../widgets/custom_back_button.dart';
@@ -17,7 +17,6 @@ import '../widgets/user_profile_badge.dart';
 
 class SahifaScreen extends StatelessWidget {
   const SahifaScreen({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +33,15 @@ class SahifaScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
         automaticallyImplyLeading: usersProvider.isFirstLogin,
-        leadingWidth: usersProvider.isFirstLogin ? 56 : 140, // adjust
+        leadingWidth: usersProvider.isFirstLogin ? 56 : 140,
+        // adjust
         leading: usersProvider.isFirstLogin
             ? const CustomBackButton()
             : const Padding(
-          padding: EdgeInsetsDirectional.only(start: 12),
-          child: UserProfileBadge(),
-        ),        actions: [
+                padding: EdgeInsetsDirectional.only(start: 12),
+                child: UserProfileBadge(),
+              ),
+        actions: [
           Builder(
             builder: (context) => IconButton(
               icon: const Icon(Icons.menu),
@@ -110,15 +111,14 @@ class SahifaScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-              left: SizeConfig.getProportionalWidth(75),
-              right: SizeConfig.getProportionalWidth(75),
+              left: SizeConfig.getProportionalWidth(50),
+              right: SizeConfig.getProportionalWidth(50),
               top: SizeConfig.getProportionalHeight(50),
               bottom: SizeConfig.getProportionalHeight(55)),
           child: Column(
             children: [
               CustomText(
-                text:
-                    'مرحبًا ${usersProvider.selectedUser!.fullName} \n هذه هي صحيفتك',
+                text: 'أحسنت ${usersProvider.selectedUser?.fullName ?? ''}',
                 structHeight: 3,
                 textAlign: TextAlign.center,
                 fontSize: 24,
@@ -131,7 +131,7 @@ class SahifaScreen extends StatelessWidget {
                 height: SizeConfig.getProportionalHeight(50),
               ),
               Text(
-                '$evaluatedPercentage% من آيات القرآن أصبحت مصنّفة في صحيفتك',
+                '$evaluatedPercentage% \n  من الآيات  مصنّفة في صحيفتك ',
                 textAlign: TextAlign.center,
                 locale: const Locale('ar'),
                 strutStyle: const StrutStyle(
@@ -145,52 +145,13 @@ class SahifaScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: SizeConfig.getProportionalHeight(100),
+                height: SizeConfig.getProportionalHeight(50),
               ),
               CustomButton(
                   onPressed: () => {Get.to(const MainScreen())},
                   text: "تصفّح الآيات",
                   width: 120,
                   height: 35),
-              // SizedBox(
-              //   height: SizeConfig.getProportionalHeight(10),
-              // ),
-              // SizedBox(
-              //   width: SizeConfig.getProportionalWidth(170),
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //     children: [
-              //       Column(
-              //         mainAxisSize: MainAxisSize.min,
-              //         crossAxisAlignment: CrossAxisAlignment.start,
-              //         children: [
-              //           CustomButton(
-              //               onPressed: () => {},
-              //               icon: Icons.notes_outlined,
-              //               width: 40,
-              //               height: 35),
-              //           const CustomText(
-              //               text: "النصائح", withBackground: false, fontSize: 14)
-              //         ],
-              //       ),
-              //       Column(
-              //         mainAxisSize: MainAxisSize.min,
-              //         crossAxisAlignment: CrossAxisAlignment.end,
-              //         children: [
-              //           CustomButton(
-              //               onPressed: () => {},
-              //               icon: Icons.check_circle_outline_outlined,
-              //               width: 40,
-              //               height: 35),
-              //           const CustomText(
-              //               text: "صفحة الآيات",
-              //               withBackground: false,
-              //               fontSize: 14)
-              //         ],
-              //       )
-              //     ],
-              //   ),
-              // )
             ],
           ),
         ),

@@ -127,7 +127,7 @@ class _MainScreenState extends State<MainScreen> {
                 children: [
                   CustomText(
                     text:
-                        'مرحبًا ${usersProvider.selectedUser?.fullName ?? ''}\nهذه هي صحيفتك',
+                        'أحسنت ${usersProvider.selectedUser?.fullName ?? ''}',
                     structHeight: 3,
                     textAlign: TextAlign.center,
                     fontSize: 24,

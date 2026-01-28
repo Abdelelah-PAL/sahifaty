@@ -55,30 +55,30 @@ class BarChartWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 16),
         child: RotatedBox(
-          quarterTurns: 1,
+          quarterTurns: 3,
           child: BarChart(
             BarChartData(
               alignment: BarChartAlignment.spaceAround,
               maxY: 100,
               barTouchData: BarTouchData(
-                enabled: false, // Disable touch interaction since we show data always
+                enabled: false,
                 touchTooltipData: BarTouchTooltipData(
                   getTooltipColor: (_) => Colors.transparent,
                   tooltipPadding: EdgeInsets.zero,
                   tooltipMargin: 8,
-                  rotateAngle: -90,
+                  rotateAngle: 90,
                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
                     final evaluation = evaluationsController.getEvaluationById(
                         group.x, evaluationsProvider);
                     return BarTooltipItem(
-                      '',
-                      // '${rod.toY.toStringAsFixed(1)}%\n',
+                      // '',
+                      '${rod.toY.toStringAsFixed(1)}%\n',
                       const TextStyle(
                         color: Colors.blueGrey,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
-                      children: <TextSpan>[
+                      children: [
                         TextSpan(
                           text: '${evaluation?.count} آية',
                           style: const TextStyle(
@@ -103,9 +103,10 @@ class BarChartWidget extends StatelessWidget {
                       return SideTitleWidget(
                         meta: meta,
                         child: RotatedBox(
-                          quarterTurns: -1,
+                          quarterTurns: 1,
                           child: Text(
                             evaluation?.nameAr ?? '',
+                            textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -118,31 +119,13 @@ class BarChartWidget extends StatelessWidget {
                     reservedSize: 60, // Adjust as needed for label height
                   ),
                 ),
-                rightTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    getTitlesWidget: (double value, TitleMeta meta) {
-                      return SideTitleWidget(
-                        meta: meta,
-                        child: RotatedBox(
-                          quarterTurns: -1,
-                          child: Text(
-                            '${value.toInt()}%',
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 10,
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                    reservedSize: 30,
-                    interval: 20,
-                  ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
                 ),
                 leftTitles: const AxisTitles(
                   sideTitles: SideTitles(showTitles: false),
                 ),
+
                 topTitles: const AxisTitles(
                   sideTitles: SideTitles(showTitles: false),
                 ),
@@ -159,11 +142,12 @@ class BarChartWidget extends StatelessWidget {
               borderData: FlBorderData(
                 show: true,
                 border: const Border(
+                  top: BorderSide.none,
                   bottom: BorderSide(
-                      color: Colors.black, width: 1), // Becomes Left Border
-                  left: BorderSide.none, // Becomes Top Border
-                  right: BorderSide(
-                      color: Colors.black, width: 1), // Becomes Bottom Border
+                      color: Colors.black, width: 1),
+                  left: BorderSide(
+                      color: Colors.black, width: 1),
+                  right: BorderSide.none,
                 ),
               ),
               barGroups: barGroups,
