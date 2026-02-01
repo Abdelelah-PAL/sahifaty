@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/controllers/users_controller.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/evaluations_provider.dart';
+import '../../providers/general_provider.dart';
 import '../../providers/school_provider.dart';
 import '../../providers/users_provider.dart';
 import '../main_screen/main_screen.dart';
@@ -61,7 +63,42 @@ class SahifaScreen extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: [
                 ListTile(
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        final generalProvider =
+                            Provider.of<GeneralProvider>(context);
+                        return Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: AlertDialog(
+                              title: const Text('الإعدادات', textAlign: TextAlign.center,),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SwitchListTile(
+                                    title: const Text('الوضع الليلي'),
+                                    value: generalProvider.themeMode ==
+                                        ThemeMode.dark,
+                                    onChanged: (val) {
+                                      generalProvider.toggleTheme();
+                                    },
+                                  ),
+                                  const Divider(),
+                                   ListTile(
+                                    trailing: const Icon(Icons.logout, color: Colors.red),
+                                    title: const Text('تسجيل الخروج', style: TextStyle(color: Colors.red)),
+                                    onTap: () {
+                                      Navigator.pop(context); // Close dialog
+                                      UsersController().logout(usersProvider);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ));
+                      },
+                    );
+                  },
                   title: Row(
                     textDirection: TextDirection.rtl,
                     children: [

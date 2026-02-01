@@ -218,12 +218,23 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             usersProvider.setSelectedUser(user);
                             await usersProvider.checkFirstLogin();
-                            // ✅ Save login info if Remember Me is checked
+                            
+                            // Always save session on successful login, or based on "Remember Me" if that's the requirement
+                            // The user request "keep the user logged in after killing the app" implies we should probably auto-save it.
+                            // However, the original code had "Remember Me". 
+                            // If I follow "keep logged in", it usually means persistent session.
+                            // I will save it if rememberMe is true, or maybe always if that's modern standard. 
+                            // But let's stick to the existing "Remember Me" checkbox logic if we want to respect that UI choice,
+                            // OR enforce it. The user said "keep the user logged in", so usually that implies default behavior or checking "Remember Me".
+                            // I'll put it inside the existing rememberMe block but also make sure it saves the FULL session not just email/pass for autofill.
+                            
                             if (_userController.rememberMe) {
-                              _userController.saveLoginInfo(
+                               _userController.saveLoginInfo(
                                 _userController.loginEmailController.text.trim(),
                                 _userController.loginPasswordController.text,
                               );
+                              // NEW: Save full session for auto-login
+                              await usersProvider.saveUserSession(user, authData.accessToken!);
                             }
 
                             if (!usersProvider.isFirstLogin) {

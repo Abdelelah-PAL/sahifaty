@@ -45,7 +45,7 @@ class CustomText extends StatelessWidget {
         style: TextStyle(
           fontSize: fontSize ?? 18,
           height: textHeight ?? 1,
-          color: color ?? const Color(0xFF000000),
+          color: color ?? Theme.of(context).textTheme.bodyLarge?.color ?? const Color(0xFF000000),
           fontWeight: fontWeight ?? AppFonts.normal,
           fontFamily: 'roboto',
         ),

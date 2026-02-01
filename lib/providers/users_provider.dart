@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:sahifaty/models/auth_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -120,6 +121,11 @@ class UsersProvider with ChangeNotifier {
 
   Future<void> logout() async {
     await _usersService.logout();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userData');
+    await prefs.remove('accessToken');
+    selectedUser = null;
+    notifyListeners();
   }
 
   Future<void> sendPasswordResetEmail(email) async {
@@ -158,6 +164,27 @@ class UsersProvider with ChangeNotifier {
     selectedUser = user;
     notifyListeners();
   }
+
+  Future<bool> tryAutoLogin() async {
+      final prefs = await SharedPreferences.getInstance();
+      if (!prefs.containsKey('userData')) {
+        return false;
+      }
+
+      final extractedUserData =
+      json.decode(prefs.getString('userData')!) as Map<String, dynamic>;
+      
+      selectedUser = User.fromJson(extractedUserData);
+      notifyListeners();
+      return true;
+    }
+
+    Future<void> saveUserSession(User user, String accessToken) async {
+      final prefs = await SharedPreferences.getInstance();
+      final userData = json.encode(user.toMap());
+      await prefs.setString('userData', userData);
+      await prefs.setString('accessToken', accessToken);
+    } 
 
   Future<void> checkFirstLogin() async {
     final prefs = await SharedPreferences.getInstance();
