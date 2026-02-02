@@ -19,15 +19,11 @@ class LocalizationService extends Translations {
   static Map<String, String> enKeys = {};
 
   Future<void> init() async {
-    print("arString");
-
     final String arString = await rootBundle.loadString('assets/json/intl_ar.json');
     final String enString = await rootBundle.loadString('assets/json/intl_en.json');
-    print(arString);
 
     arKeys = Map<String, String>.from(json.decode(arString));
     enKeys = Map<String, String>.from(json.decode(enString));
-    print(arKeys);
   }
 
   @override
