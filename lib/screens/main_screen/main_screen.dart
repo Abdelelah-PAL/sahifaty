@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/screens/widgets/custom_hizbs_dropdown.dart';
 import '../../controllers/general_controller.dart';
@@ -7,12 +8,12 @@ import '../../core/utils/size_config.dart';
 import '../../providers/evaluations_provider.dart';
 import '../../providers/general_provider.dart';
 import '../../providers/users_provider.dart';
+import '../settings_screen/settings_screen.dart';
 import '../widgets/bar_chart_widget.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_parts_dropdown.dart';
 import '../widgets/custom_thirds_dropdown.dart';
 import '../widgets/custom_text.dart';
-import '../widgets/user_profile_badge.dart';
 import 'widgets/menu_item.dart';
 
 class MainScreen extends StatefulWidget {
@@ -62,58 +63,64 @@ class _MainScreenState extends State<MainScreen> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
-            appBar: AppBar(
-              backgroundColor: AppColors.backgroundColor,
-              leading: const CustomBackButton(),
-              actions: [
-                PopupMenuButton<String>(
-                  icon: const Icon(Icons.list_alt),
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                        value: '1',
-                        child: MenuItem(
-                          text: "أيقونات الأثلاث",
-                          onChanged: (v) {
-                            if (v) generalProvider.toggleThirdsMenuItem();
-                          },
-                          index: 1,
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: '2',
-                        child: MenuItem(
-                          text: "أيقونات الأجزاء",
-                          onChanged: (v) {
-                            if (v) generalProvider.togglePartsMenuItem();
-                          },
-                          index: 2,
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: '3',
-                        child: MenuItem(
-                          text: "أيقونات الأحزاب",
-                          onChanged: (v) {
-                            if (v) generalProvider.toggleHizbMenuItem();
-                          },
-                          index: 3,
-                        ),
-                      ),
-                      PopupMenuItem(
-                        value: '4',
-                        child: MenuItem(
-                          text: "أيقونات المواضيع",
-                          onChanged: (v) {
-                            if (v) generalProvider.toggleSubjectMenuItem();
-                          },
-                          index: 4,
-                        ),
-                      ),
-                    ];
-                  },
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: AppBar(
+                  backgroundColor: AppColors.backgroundColor,
+                  leading: const CustomBackButton(),
+                  actions: [
+                    PopupMenuButton<String>(
+                      icon: const Icon(Icons.list_alt),
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            value: '1',
+                            child: MenuItem(
+                              text: "thirds_icons".tr,
+                              onChanged: (v) {
+                                if (v) generalProvider.toggleThirdsMenuItem();
+                              },
+                              index: 1,
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: '2',
+                            child: MenuItem(
+                              text: "parts_icons".tr,
+                              onChanged: (v) {
+                                if (v) generalProvider.togglePartsMenuItem();
+                              },
+                              index: 2,
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: '3',
+                            child: MenuItem(
+                              text: "hizbs_icons".tr,
+                              onChanged: (v) {
+                                if (v) generalProvider.toggleHizbMenuItem();
+                              },
+                              index: 3,
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: '4',
+                            child: MenuItem(
+                              text: "topics_icons".tr,
+                              onChanged: (v) {
+                                if (v) generalProvider.toggleSubjectMenuItem();
+                              },
+                              index: 4,
+                            ),
+                          ),
+                        ];
+                      },
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
             body: SingleChildScrollView(
               padding: EdgeInsets.only(
@@ -127,7 +134,7 @@ class _MainScreenState extends State<MainScreen> {
                 children: [
                   CustomText(
                     text:
-                        'أحسنت ${usersProvider.selectedUser?.fullName ?? ''}',
+                        '${"well_done".tr} ${usersProvider.selectedUser?.fullName ?? ''}',
                     structHeight: 3,
                     textAlign: TextAlign.center,
                     fontSize: 24,

@@ -8,6 +8,7 @@ import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../quran_view/index_page.dart';
 import 'custom_text.dart';
+import 'package:quran/quran.dart' as quran;
 
 class CustomPartsDropdown extends StatefulWidget {
   final Map<String, dynamic> part;
@@ -114,7 +115,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
                               child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
-                                  surah.nameAr,
+                                  Get.locale?.languageCode == 'ar' ? quran.getSurahNameArabic(surah.id) : quran.getSurahName(surah.id),
                                   style: const TextStyle(
                                       fontSize: 14, color: Colors.black87),
                                 ),

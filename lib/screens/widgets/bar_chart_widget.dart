@@ -105,7 +105,7 @@ class BarChartWidget extends StatelessWidget {
                         child: RotatedBox(
                           quarterTurns: 1,
                           child: Text(
-                            evaluation?.nameAr ?? '',
+                            evaluationsController.getLocalizedName(evaluation?.evaluationId),
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.black,

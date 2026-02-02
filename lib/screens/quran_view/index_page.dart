@@ -121,7 +121,7 @@ class _IndexPageState extends State<IndexPage> {
                           color: color,
                           child: Center(
                             child: Text(
-                              evaluation.nameAr,
+                              EvaluationsController().getLocalizedName(evaluation.id),
                               style: TextStyle(
                                   color: _onColor(color),
                                   fontFamily: AppFonts.versesFont),
@@ -243,13 +243,19 @@ class _IndexPageState extends State<IndexPage> {
           final hasConnection = snapshot.data ?? false;
 
           return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                widget.filterTypeId == FilterTypes.hizbs
-                    ? "الحزب ${widget.hizb}"
-                    : widget.surah.nameAr,
+            appBar: PreferredSize(
+              preferredSize: const Size.fromHeight(kToolbarHeight),
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: AppBar(
+                  title: Text(
+                    widget.filterTypeId == FilterTypes.hizbs
+                        ? "${"hizb".tr} ${widget.hizb}"
+                        : widget.surah.nameAr,
+                  ),
+                  centerTitle: true,
+                ),
               ),
-              centerTitle: true,
             ),
             body: Padding(
               padding: EdgeInsets.symmetric(
@@ -288,7 +294,7 @@ class _IndexPageState extends State<IndexPage> {
 
                                   _loadAyat(userId, evalProvider);
                                 },
-                                child: const Text('التالي'),
+                                child: Text('next'.tr),
                               )
                             else
                               const SizedBox(),
@@ -310,7 +316,7 @@ class _IndexPageState extends State<IndexPage> {
 
                                   _loadAyat(userId, evalProvider);
                                 },
-                                child: const Text('السابق'),
+                                child: Text('previous'.tr),
                               )
                             else
                               const SizedBox(),
@@ -357,7 +363,7 @@ class _IndexPageState extends State<IndexPage> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              'سورة ${firstAyah.surah.nameAr}',
+              '${"surah_prefix".tr} ${firstAyah.surah.nameAr}',
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -376,7 +382,7 @@ class _IndexPageState extends State<IndexPage> {
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: Text(
-                'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
+                'basmalah'.tr,
                 style: TextStyle(
                   fontSize: 20,
                   height: 2,

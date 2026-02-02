@@ -11,6 +11,7 @@ import '../../providers/school_provider.dart';
 import '../../providers/users_provider.dart';
 import '../main_screen/main_screen.dart';
 import '../questions_screen/questions_screen.dart';
+import '../settings_screen/settings_screen.dart';
 import '../widgets/bar_chart_widget.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
@@ -32,27 +33,33 @@ class SahifaScreen extends StatelessWidget {
     final evaluatedPercentage =
         (100 - (uncategorized?.percentage ?? 0)).toStringAsFixed(2);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.backgroundColor,
-        automaticallyImplyLeading: usersProvider.isFirstLogin,
-        leadingWidth: usersProvider.isFirstLogin ? 56 : 140,
-        // adjust
-        leading: usersProvider.isFirstLogin
-            ? const CustomBackButton()
-            : const Padding(
-                padding: EdgeInsetsDirectional.only(start: 12),
-                child: UserProfileBadge(),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: AppBar(
+            backgroundColor: AppColors.backgroundColor,
+            automaticallyImplyLeading: usersProvider.isFirstLogin,
+            leadingWidth: usersProvider.isFirstLogin ? 56 : 140,
+            // adjust
+            leading: usersProvider.isFirstLogin
+                ? const CustomBackButton()
+                : const Padding(
+                    padding: EdgeInsetsDirectional.only(start: 12),
+                    child: UserProfileBadge(),
+                  ),
+            actions: [
+              Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
+                ),
               ),
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => Scaffold.of(context).openEndDrawer(),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
-      endDrawer: SizedBox(
+      drawer: SizedBox(
         width: SizeConfig.getProportionalWidth(225),
         child: Drawer(
           child: Padding(
@@ -64,40 +71,7 @@ class SahifaScreen extends StatelessWidget {
               children: [
                 ListTile(
                   onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        final generalProvider =
-                            Provider.of<GeneralProvider>(context);
-                        return Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: AlertDialog(
-                              title: const Text('الإعدادات', textAlign: TextAlign.center,),
-                              content: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SwitchListTile(
-                                    title: const Text('الوضع الليلي'),
-                                    value: generalProvider.themeMode ==
-                                        ThemeMode.dark,
-                                    onChanged: (val) {
-                                      generalProvider.toggleTheme();
-                                    },
-                                  ),
-                                  const Divider(),
-                                   ListTile(
-                                    trailing: const Icon(Icons.logout, color: Colors.red),
-                                    title: const Text('تسجيل الخروج', style: TextStyle(color: Colors.red)),
-                                    onTap: () {
-                                      Navigator.pop(context); // Close dialog
-                                      UsersController().logout(usersProvider);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ));
-                      },
-                    );
+                    Get.to(() => const SettingsScreen());
                   },
                   title: Row(
                     textDirection: TextDirection.rtl,
@@ -109,8 +83,8 @@ class SahifaScreen extends StatelessWidget {
                       SizedBox(
                         width: SizeConfig.getProportionalWidth(10),
                       ),
-                      const CustomText(
-                        text: "إعدادات",
+                       CustomText(
+                        text: "settings".tr,
                         withBackground: false,
                       ),
                     ],
@@ -133,8 +107,8 @@ class SahifaScreen extends StatelessWidget {
                       SizedBox(
                         width: SizeConfig.getProportionalWidth(10),
                       ),
-                      const CustomText(
-                        text: "الأسئلة السريعة",
+                       CustomText(
+                        text: "quick_questions".tr,
                         withBackground: false,
                       ),
                     ],
@@ -155,7 +129,7 @@ class SahifaScreen extends StatelessWidget {
           child: Column(
             children: [
               CustomText(
-                text: 'أحسنت ${usersProvider.selectedUser?.fullName ?? ''}',
+                text: '${"well_done".tr} ${usersProvider.selectedUser?.fullName ?? ''}',
                 structHeight: 3,
                 textAlign: TextAlign.center,
                 fontSize: 24,
@@ -168,9 +142,8 @@ class SahifaScreen extends StatelessWidget {
                 height: SizeConfig.getProportionalHeight(50),
               ),
               Text(
-                '$evaluatedPercentage% \n  من الآيات  مصنّفة في صحيفتك ',
+                "categorized_verses_msg".trParams({'percentage': evaluatedPercentage}),
                 textAlign: TextAlign.center,
-                locale: const Locale('ar'),
                 strutStyle: const StrutStyle(
                   forceStrutHeight: true,
                   height: 1.35,
@@ -186,7 +159,7 @@ class SahifaScreen extends StatelessWidget {
               ),
               CustomButton(
                   onPressed: () => {Get.to(const MainScreen())},
-                  text: "تصفّح الآيات",
+                  text: "browse_verses".tr,
                   width: 120,
                   height: 35),
             ],

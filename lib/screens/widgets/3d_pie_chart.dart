@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../controllers/general_controller.dart';
@@ -45,8 +46,8 @@ class _DonutChartState extends State<DonutChart> {
           color: color,
           value: value,
           title: '\u200F${value.toStringAsFixed(1)}%\n'
-              '\u200F${evaluation.nameAr}\n'
-              '\u200F${evaluation.count} آية',
+              '\u200F${evaluationsController.getLocalizedName(evaluation.evaluationId)}\n'
+              '\u200F${"verse_count".trParams({'count': evaluation.count.toString()})}',
           radius: radius,
           titleStyle: TextStyle(
             fontSize: fontSize,
@@ -56,7 +57,7 @@ class _DonutChartState extends State<DonutChart> {
           ),
           badgeWidget: isTouched
               ? _Badge(
-                  evaluation.nameAr,
+                  evaluationsController.getLocalizedName(evaluation.evaluationId),
                   size: 40,
                   borderColor: color,
                 )
@@ -101,9 +102,8 @@ class _DonutChartState extends State<DonutChart> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                touchedIndex != -1 && touchedIndex < sections.length
                     ? "${sections[touchedIndex].value.toStringAsFixed(1)}%"
-                    : "آيات القرآن",
+                    : "quran_verses".tr,
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -112,11 +112,10 @@ class _DonutChartState extends State<DonutChart> {
               ),
               if (touchedIndex != -1)
                 Text(
-                  evaluationsController
-                          .getEvaluationById(sectionEvaluationIds[touchedIndex],
-                              widget.evaluationsProvider)
-                          ?.nameAr ??
-                      "",
+                  evaluationsController.getLocalizedName(sectionEvaluationIds[touchedIndex])
+                          .isEmpty
+                          ? ""
+                          : evaluationsController.getLocalizedName(sectionEvaluationIds[touchedIndex]),
                   style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
             ],

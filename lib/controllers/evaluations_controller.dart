@@ -10,9 +10,16 @@ import '../models/ayat.dart';
 import '../models/chart_evaluation_data.dart';
 import '../models/user_evaluation.dart';
 
+import 'package:get/get.dart';
+
 class EvaluationsController {
   static final EvaluationsController _instance =
       EvaluationsController._internal();
+
+  String getLocalizedName(int? id) {
+    if (id == null) return '';
+    return 'eval_$id'.tr;
+  }
 
   factory EvaluationsController() => _instance;
 
@@ -35,7 +42,7 @@ class EvaluationsController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(
-          msg: 'تم تقييم الآية بنجاح!',
+          msg: 'eval_success_verse'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.green,
@@ -51,7 +58,7 @@ class EvaluationsController {
         await evaluationsProvider.evaluateAyah(userEvaluation);
 
         Fluttertoast.showToast(
-          msg: 'مشكلة في التقييم',
+          msg: 'eval_error'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.red,
@@ -61,7 +68,7 @@ class EvaluationsController {
       }
     } catch (error) {
       Fluttertoast.showToast(
-        msg: 'Something went wrong. Please try again.',
+        msg: 'generic_error'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.red,
@@ -90,7 +97,7 @@ class EvaluationsController {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         Fluttertoast.showToast(
-          msg: 'تم تقييم ${unitName}  بنجاح!',
+          msg: 'eval_success_unit'.trParams({'unit': unitName}),
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.green,
@@ -104,7 +111,7 @@ class EvaluationsController {
         // }
       } else {
         Fluttertoast.showToast(
-          msg: 'مشكلة في التقييم',
+          msg: 'eval_error'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.red,
@@ -114,7 +121,7 @@ class EvaluationsController {
       }
     } catch (error) {
       Fluttertoast.showToast(
-        msg: 'Something went wrong. Please try again.',
+        msg: 'generic_error'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         backgroundColor: Colors.red,

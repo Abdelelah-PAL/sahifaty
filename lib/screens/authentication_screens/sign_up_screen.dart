@@ -71,15 +71,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           padding: EdgeInsets.only(
                               top: SizeConfig.getProportionalHeight(10),
                               bottom: SizeConfig.getProportionalHeight(13)),
-                          child: const CustomText(
-                            text: "إنشاء حساب",
+                          child: CustomText(
+                            text: "create_account".tr,
                             fontSize: 24,
                             fontWeight: FontWeight.normal,
                             color: AppColors.blackFontColor,
                             withBackground: false,
                           )),
                       CustomAuthenticationTextField(
-                        hintText: 'أدخل البريد الإلكتروني',
+                        hintText: 'enter_email_hint'.tr,
                         obscureText: false,
                         textEditingController:
                         _userController.signUpEmailController,
@@ -88,7 +88,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
-                        hintText: 'اسم المستخدم',
+                        hintText: 'username_hint'.tr,
                         obscureText: false,
                         textEditingController:
                         _userController.signUpUsernameController,
@@ -97,7 +97,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
-                        hintText: 'أدخل كلمة المرور',
+                        hintText: 'password_hint'.tr,
                         obscureText: true,
                         textEditingController:
                         _userController.signUpPasswordController,
@@ -106,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
-                        hintText: 'تأكيد كلمة المرور',
+                        hintText: 'confirm_password_hint'.tr,
                         obscureText: true,
                         textEditingController:
                         _userController.signUpConfirmedPasswordController,
@@ -123,7 +123,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() {
                                 _userController.changeTextFieldsColors(false);
                               });
-                              throw Exception("جميع الحقول مطلوبة");
+                              throw Exception("all_fields_required".tr);
                             }
                             // ✅ Validate email format
                             if (!_userController.isEmailValid(
@@ -134,7 +134,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     .signUpEmailTextFieldBorderColor =
                                     AppColors.errorColor;
                               });
-                              throw Exception("أدخل بريدًا إلكترونيًا صحيحًا");
+                              throw Exception("invalid_email".tr);
                             }
                             // ✅ Check password validity
                             _userController.checkValidPassword();
@@ -142,7 +142,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() {
                                 _userController.changeTextFieldsColors(false);
                               });
-                              throw Exception("كلمة المرور غير صالحة");
+                              throw Exception("invalid_password".tr);
                             }
                             // ✅ Check password match
                             _userController.checkMatchedPassword();
@@ -150,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               setState(() {
                                 _userController.changeTextFieldsColors(false);
                               });
-                              throw Exception("كلمتا المرور غير متطابقتان");
+                              throw Exception("passwords_no_match".tr);
                             }
 
                             // ✅ If all good → register user
@@ -178,7 +178,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             String message;
 
                             if (e.toString().contains("email already in use")) {
-                              message = "البريد الإلكتروني مسجّل سابقًا";
+                              message = "email_taken".tr;
                             } else {
                               message =
                                   e.toString().replaceFirst('Exception: ', '');
@@ -196,12 +196,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         width: SizeConfig.getProportionalWidth(150),
                         height: SizeConfig.getProportionalHeight(50),
-                        text: "إنشاء حساب",
+                        text: "create_account".tr,
                       ),
                       SizeConfig.customSizedBox(null, 20, null),
                       CustomAuthFooter(
-                        headingText: "هل تملك حساب؟",
-                        tailText: "تسجيل الدخول",
+                        headingText: "already_have_account".tr,
+                        tailText: "login_action".tr,
                         onTap: () {
                           UsersProvider().resetSignUpErrorText();
                           Get.to(() =>

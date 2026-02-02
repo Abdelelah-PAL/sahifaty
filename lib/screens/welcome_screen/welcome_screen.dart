@@ -97,14 +97,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Center(
                   child: SizedBox(
                       width: SizeConfig.getProportionalWidth(300),
-                      child: const CustomText(
-                        text:
-                            'سنقوم بطرح بعض الأسئلة السريعة\nلتكوين صحيفتك المبدئية.\nستبنى هذه الصحيفة على مدى إلمامك بالقرآن الكريم',
+                      child: CustomText(
+                        text: "welcome_msg".tr,
                         fontSize: 18,
                         structHeight: 1.35,
                         structLeading: 0.0,
                         textHeight: 1.35,
                         withBackground: false,
+                        textAlign: TextAlign.center,
                       )),
                 ),
                 SizeConfig.customSizedBox(null, 5, null),
@@ -135,7 +135,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
                     Get.to(const QuestionsScreen());
                   },
-                  text: 'إبدأ التقييم',
+                  text: 'start_evaluation'.tr,
                   width: 106,
                   height: 36,
                 ),

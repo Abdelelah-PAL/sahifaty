@@ -79,28 +79,28 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: EdgeInsets.only(
                               top: SizeConfig.getProportionalHeight(10),
                               bottom: SizeConfig.getProportionalHeight(13)),
-                          child: const CustomText(
-                            text: "أهلًا بك مجدّدًا",
+                          child: CustomText(
+                            text: "welcome_back".tr,
                             fontSize: 24,
                             fontWeight: FontWeight.normal,
                             color: AppColors.blackFontColor,
                             withBackground: false,
                           )),
-                      const CustomAuthTextFieldHeader(
-                        text: 'البريد الإلكتروني',
+                      CustomAuthTextFieldHeader(
+                        text: 'email_label'.tr,
                       ),
                       CustomAuthenticationTextField(
-                          hintText: 'example@example.com',
+                          hintText: 'email_hint'.tr,
                           obscureText: false,
                           textEditingController:
                               _userController.loginEmailController,
                           borderColor:
                               _userController.loginPasswordTextFieldBorderColor),
-                      const CustomAuthTextFieldHeader(
-                        text: 'كلمة المرور',
+                      CustomAuthTextFieldHeader(
+                        text: 'password_label'.tr,
                       ),
                       CustomAuthenticationTextField(
-                        hintText: 'أدخل كلمة المرور',
+                        hintText: 'password_hint'.tr,
                         obscureText: true,
                         textEditingController:
                             _userController.loginPasswordController,
@@ -145,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 padding: EdgeInsets.only(
                                     left: SizeConfig.getProportionalWidth(10)),
                                 child: Text(
-                                  "تذكرني",
+                                  "remember_me".tr,
                                   style: TextStyle(
                                     fontFamily: AppFonts.primaryFont,
                                     fontSize: 15,
@@ -159,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () =>
                                 {Get.to(() => const ForgotPasswordScreen())},
                             child: Text(
-                              "نسيت كلمة المرور",
+                              "forgot_password".tr,
                               style: TextStyle(
                                 fontFamily: AppFonts.primaryFont,
                                 fontSize: 16,
@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       SizeConfig.customSizedBox(null, 30, null),
                       CustomButton(
-                        text: 'تسجيل الدخول',
+                        text: 'login'.tr,
                         width: SizeConfig.getProportionalWidth(150),
                         height: SizeConfig.getProportionalHeight(50),
                         onPressed: () async {
@@ -182,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {
                                 _userController.changeTextFieldsColors(true);
                               });
-                              throw Exception("جميع الحقول مطلوبة");
+                              throw Exception("all_fields_required".tr);
                             }
 
                             // ✅ Validate email format
@@ -193,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 _userController.loginEmailTextFieldBorderColor =
                                     AppColors.errorColor;
                               });
-                              throw Exception("أدخل بريدًا إلكترونيًا صحيحًا");
+                              throw Exception("invalid_email".tr);
                             }
 
                             // ✅ Indicate loading
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           } catch (e) {
                             String message;
                             if (e.toString().contains("invalid credentials")) {
-                              message = "خطأ في البريد الإلكتروني أو كلمة المرور";
+                              message = "invalid_credentials".tr;
                             } else {
                               message =
                                   e.toString().replaceFirst('Exception: ', '');
@@ -355,8 +355,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       // ),
                       // SizeConfig.customSizedBox(null, 20, null),
                       CustomAuthFooter(
-                        headingText: "لا تملك حساب؟",
-                        tailText: "قم بإنشاء حساب",
+                        headingText: "dont_have_account".tr,
+                        tailText: "create_account_action".tr,
                         onTap: () => {
                           UsersProvider().resetSignUpErrorText(),
                           Get.to(() => const SignUpScreen())

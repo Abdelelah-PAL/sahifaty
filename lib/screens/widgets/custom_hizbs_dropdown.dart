@@ -6,6 +6,7 @@ import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../quran_view/index_page.dart';
 import 'custom_text.dart';
+import 'package:quran/quran.dart' as quran;
 
 class CustomHizbsButton extends StatelessWidget {
   final Map<String, dynamic> hizb;
@@ -51,7 +52,7 @@ class CustomHizbsButton extends StatelessWidget {
             builder: (context, snapshot) {
               String displayText = hizb['name'];
               if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                final surahNames = snapshot.data!.map((e) => e.nameAr).join('، ');
+                final surahNames = snapshot.data!.map((e) => Get.locale?.languageCode == 'ar' ? quran.getSurahNameArabic(e.id) : quran.getSurahName(e.id)).join('، ');
                 displayText = '$displayText\n($surahNames)';
               }
               return CustomText(
