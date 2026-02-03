@@ -34,9 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         ),
       ),
-      body: Directionality(
-        textDirection: Get.locale?.languageCode == 'ar' ? TextDirection.rtl : TextDirection.ltr,
-        child: Padding(
+      body: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
               children: [
@@ -46,9 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   trailing: DropdownButton<String>(
-                    value: Locale(Get.locale?.languageCode ?? 'ar', 'AE')
-                                .languageCode ==
-                            'ar'
+                    value: (Get.locale?.languageCode ?? 'ar') == 'ar'
                         ? 'Arabic'
                         : 'English',
                     underline: const SizedBox(),
@@ -62,10 +58,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: Text("English"),
                       ),
                     ],
-                    onChanged: (String? val) {
+                    onChanged: (String? val) async {
                       if (val != null) {
-                        LocalizationService().changeLocale(val);
-                        setState(() {});
+                        await LocalizationService().changeLocale(val);
+                        if (mounted) {
+                          setState(() {});
+                        }
+                        print(val);
                       }
                     },
                   ),
@@ -104,7 +103,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
           ),
-        ),
       ),
     );
   }

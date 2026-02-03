@@ -30,13 +30,11 @@ class CustomText extends StatelessWidget {
       color: withBackground ? const Color(0xFF0B503D) : Colors.transparent,
       padding: const EdgeInsets.all(8),
       child: Text(
-        textDirection: TextDirection.rtl,
         text,
         // maxLines: null,
         // softWrap: true,
         // overflow: TextOverflow.visible,
         textAlign: textAlign ?? TextAlign.center,
-        locale: const Locale('ar'),
         strutStyle: StrutStyle(
           forceStrutHeight: true,
           height: structHeight,

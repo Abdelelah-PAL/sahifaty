@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:sahifaty/controllers/users_controller.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/evaluations_provider.dart';
-import '../../providers/general_provider.dart';
 import '../../providers/school_provider.dart';
 import '../../providers/users_provider.dart';
 import '../main_screen/main_screen.dart';
@@ -20,6 +18,71 @@ import '../widgets/user_profile_badge.dart';
 
 class SahifaScreen extends StatelessWidget {
   const SahifaScreen({super.key});
+  
+  Widget _buildDrawer() {
+    return SizedBox(
+        width: SizeConfig.getProportionalWidth(280), // Increased from 225
+        child: Drawer(
+          child: Padding(
+            padding: EdgeInsets.only(
+              top: SizeConfig.getProportionalHeight(100),
+            ),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                ListTile(
+                  onTap: () {
+                    Get.to(() => const SettingsScreen());
+                  },
+                  title: Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      const Icon(
+                        Icons.settings,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: SizeConfig.getProportionalWidth(10),
+                      ),
+                       CustomText(
+                        text: "settings".tr,
+                        withBackground: false,
+                      ),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  onTap: () async {
+                     final evaluationsProvider = Get.context!.read<EvaluationsProvider>();
+                     final schoolProvider = Get.context!.read<SchoolProvider>();
+                    await schoolProvider.getQuickQuestionsSchool();
+
+                    await evaluationsProvider.getAllEvaluations();
+                    Get.to(const QuestionsScreen());
+                  },
+                  title: Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      const Icon(
+                        Icons.question_answer_sharp,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: SizeConfig.getProportionalWidth(10),
+                      ),
+                       CustomText(
+                        text: "quick_questions".tr,
+                        withBackground: false,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,73 +115,21 @@ class SahifaScreen extends StatelessWidget {
               Builder(
                 builder: (context) => IconButton(
                   icon: const Icon(Icons.menu),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
+                  onPressed: () {
+                     if ((Get.locale?.languageCode ?? 'ar') == 'ar') {
+                        Scaffold.of(context).openDrawer();
+                     } else {
+                        Scaffold.of(context).openEndDrawer();
+                     }
+                  },
                 ),
               ),
             ],
           ),
         ),
       ),
-      drawer: SizedBox(
-        width: SizeConfig.getProportionalWidth(225),
-        child: Drawer(
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: SizeConfig.getProportionalHeight(100),
-            ),
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                ListTile(
-                  onTap: () {
-                    Get.to(() => const SettingsScreen());
-                  },
-                  title: Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      const Icon(
-                        Icons.settings,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: SizeConfig.getProportionalWidth(10),
-                      ),
-                       CustomText(
-                        text: "settings".tr,
-                        withBackground: false,
-                      ),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  onTap: () async {
-                    await schoolProvider.getQuickQuestionsSchool();
-
-                    await evaluationsProvider.getAllEvaluations();
-                    Get.to(const QuestionsScreen());
-                  },
-                  title: Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      const Icon(
-                        Icons.question_answer_sharp,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: SizeConfig.getProportionalWidth(10),
-                      ),
-                       CustomText(
-                        text: "quick_questions".tr,
-                        withBackground: false,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : _buildDrawer(),
+      drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? _buildDrawer() : null,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(

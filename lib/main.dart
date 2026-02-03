@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'controllers/general_controller.dart';
@@ -19,6 +20,7 @@ Future<void> main() async {
 
   // Initialize the LocalizationService before running the app
   await LocalizationService().init();
+  Locale initialLocale = await LocalizationService.getCurrentLocale();
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -35,13 +37,14 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => EvaluationsProvider()),
         ChangeNotifierProvider(create: (_) => SurahsProvider())
       ],
-      child: const MyApp(),
+      child: MyApp(initialLocale: initialLocale),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Locale initialLocale;
+  const MyApp({super.key, required this.initialLocale});
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +73,7 @@ class MyApp extends StatelessWidget {
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             translations: LocalizationService(),
-            locale: LocalizationService.locale,
+            locale: Get.locale ?? initialLocale,
             fallbackLocale: LocalizationService.fallbackLocale,
             themeMode: generalProvider.themeMode,
             theme: ThemeData(
