@@ -19,5 +19,7 @@ class AppColors {
   static const Color dropDownButtonColor = Color(0xFFE5E6EB);
   static const Color authDividerColor = Color(0xFF808080);
   static const Color ayatTextDefaultColor =Color(0xFF9E9E9E);
+  static const Color primaryPurple =Color(0xFF0F284A);
+
 
 }

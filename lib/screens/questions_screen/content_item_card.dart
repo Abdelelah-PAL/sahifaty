@@ -11,6 +11,7 @@ import 'package:sahifaty/models/surah.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/models/user_evaluation.dart';
+import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../models/school_level_content.dart';
 import '../widgets/custom_button.dart';
@@ -98,9 +99,6 @@ class _ContentItemCardState extends State<ContentItemCard> {
         widget.content.hizbQuarter != null) {
       ayahs = await ayatController
           .loadAyatByHizbQuarter(widget.content.hizbQuarter!);
-
-
-
     } else if (widget.content.type.contains('juz') &&
         widget.content.juz != null) {
       ayahs = await ayatController.loadAyatByJuz(widget.content.juz!);
@@ -147,9 +145,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
                       .getColorForEvaluation(evaluation.id),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                    color: EvaluationsController()
-                        .getColorForEvaluation(evaluation.id),
-                  ),
+                      color: EvaluationsController()
+                          .getColorForEvaluation(evaluation.id),
+                   ),
                 ),
                 child: ListTile(
                   title: Text(
@@ -184,7 +182,6 @@ class _ContentItemCardState extends State<ContentItemCard> {
         );
         return;
       }
-
 
       await EvaluationsController().sendMultipleEvaluations(
           ayahs, selectedEvaluation, evaluationsProvider, null, unitName);
@@ -447,6 +444,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                           surah.nameAr,
                                           textAlign: TextAlign.right,
                                           style: const TextStyle(
+                                              fontSize: 16,
                                               fontWeight: FontWeight.bold),
                                         ),
                                         subtitle: Text(
@@ -565,7 +563,8 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                           child: const Text("تقييم"),
                                         ),
                                         onTap: () {
-                                          _showJuzSurahAyahs(context, surah, juz);
+                                          _showJuzSurahAyahs(
+                                              context, surah, juz);
                                         },
                                       ),
                                     );
@@ -582,7 +581,8 @@ class _ContentItemCardState extends State<ContentItemCard> {
     }
   }
 
-  Future<void> _showJuzSurahAyahs(BuildContext context, Surah surah, int juz) async {
+  Future<void> _showJuzSurahAyahs(
+      BuildContext context, Surah surah, int juz) async {
     final evaluationsProvider = context.read<EvaluationsProvider>();
     final ayatController = AyatController();
 
@@ -804,116 +804,51 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 offset: Offset(0, 3),
               ),
             ],
-            border:
-                isCompleted ? Border.all(color: Colors.green, width: 2) : null,
+            // border:
+            //     isCompleted ? Border.all(color: Colors.green, width: 2) : null,
           ),
-          child: Column(
+          child: Row(
             children: [
               Row(
                 children: [
-                  Container(
-                    width: SizeConfig.getProportionalWidth(40),
-                    height: SizeConfig.getProportionalWidth(40),
-                    decoration: BoxDecoration(
-                      color: isCompleted
-                          ? Colors.green
-                          : Theme.of(context).primaryColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: isCompleted
-                        ? const Icon(Icons.check, color: Colors.white)
-                        : CustomText(
-                            text: '${widget.index + 1}',
-                            withBackground: false,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                  ),
-                  SizeConfig.customSizedBox(25, null, null),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(children: [
-                          if (widget.content.surahId != null) ...[
-                            CustomText(
-                              text:
-                              'سورة ${GeneralController().getSurahNameByNumber(widget.content.surahId!)}',
-                              withBackground: false,
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ],
-                          if (widget.content.startAyah != null &&
-                              widget.content.endAyah != null) ...[
-                            CustomText(
-                              text:
-                              'الآيات: ${widget.content.startAyah} - ${widget.content.endAyah}',
-                              withBackground: false,
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ],
-                          if (widget.content.type == "hizb" &&
-                              widget.content.hizb != null) ...[
-                            CustomText(
-                              text: 'الحزب ${widget.content.hizb}',
-                              withBackground: false,
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ],
-                          if (widget.content.type == "hizbQuarter" &&
-                              widget.content.hizbQuarter != null) ...[
-                            CustomText(
-                              text: 'ريع الحزب ${widget.content.hizbQuarter}',
-                              withBackground: false,
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ],
-                          if (widget.content.type == "juz" &&
-                              widget.content.juz != null) ...[
-                            CustomText(
-                              text: 'جزء ${widget.content.juz}',
-                              withBackground: false,
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ],
-                          // SizedBox(height: SizeConfig.getProportionalHeight(5)),
-                          // Container(
-                          //   padding: const EdgeInsets.symmetric(
-                          //       horizontal: 8, vertical: 4),
-                          //   decoration: BoxDecoration(
-                          //     color: isCompleted
-                          //         ? Colors.green.withOpacity(0.1)
-                          //         : Colors.grey.withOpacity(0.1),
-                          //     borderRadius: BorderRadius.circular(4),
-                          //     border: Border.all(
-                          //       color: isCompleted ? Colors.green : Colors.grey,
-                          //       width: 1,
-                          //     ),
-                          //   ),
-                          //   child: Text(
-                          //     isCompleted ? 'مكتمل' : 'غير مكتمل',
-                          //     style: TextStyle(
-                          //       color:
-                          //       isCompleted ? Colors.green : Colors.grey[700],
-                          //       fontSize: 12,
-                          //       fontWeight: FontWeight.bold,
-                          //     ),
-                          //   ),
-                          // ),
-                        ],)
-                      ],
-                    ),
+                  // Container(
+                  //   width: SizeConfig.getProportionalWidth(40),
+                  //   height: SizeConfig.getProportionalWidth(40),
+                  //   decoration: BoxDecoration(
+                  //     color: isCompleted
+                  //         ? Colors.green
+                  //         : Theme.of(context).primaryColor,
+                  //     shape: BoxShape.circle,
+                  //   ),
+                  //   child: isCompleted
+                  //       ? const Icon(Icons.check, color: Colors.white)
+                  //       : CustomText(
+                  //           text: '${widget.index + 1}',
+                  //           withBackground: false,
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.bold,
+                  //           color: Theme.of(context).primaryColor,
+                  //         ),
+                  // ),
+                  // SizeConfig.customSizedBox(25, null, null),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (widget.content.surahId != null) ...[
+                        CustomText(
+                          text:
+                              '${GeneralController().getSurahNameByNumber(widget.content.surahId!)} : ${widget.content.startAyah} - ${widget.content.endAyah}',
+                          withBackground: false,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.primaryPurple,
+                        ),
+                      ]
+                    ],
                   ),
                 ],
               ),
               if (widget.content.type != "ayat range") ...[
-                SizedBox(height: SizeConfig.getProportionalHeight(15)),
                 isEvaluating
                     ? const CircularProgressIndicator()
                     : Row(
@@ -921,14 +856,15 @@ class _ContentItemCardState extends State<ContentItemCard> {
                         children: [
                           CustomButton(
                             onPressed: () => _evaluateUnit(context),
-                            text: "تقييم $unitName",
-                            width: 120,
+                            text: "كامل",
+                            width: 90,
                             height: 35,
                           ),
+                          SizedBox(width: SizeConfig.getProportionalHeight(15)),
                           CustomButton(
                             onPressed: () => _showIndividualEvaluation(context),
-                            text: "تقييم الآيات",
-                            width: 120,
+                            text: "حسب الآية",
+                            width: 90,
                             height: 35,
                           ),
                         ],
@@ -949,7 +885,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
 
   void _setUnitName() {
     if (widget.content.type == "ayatRange") {
-      unitName = "نطاق الآيات";
+      unitName = "الآيات";
     } else if (widget.content.type == "surah") {
       unitName = "السورة";
     } else if (widget.content.type == "hizb") {

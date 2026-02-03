@@ -23,7 +23,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color backgroundColor =
-    isDisabled ? Colors.grey : AppColors.buttonColor;
+    isDisabled ? Colors.grey : AppColors.primaryPurple;
 
     return SizedBox(
       width: width,
@@ -48,7 +48,8 @@ class CustomButton extends StatelessWidget {
               ? CustomText(
             text: text!,
             withBackground: false,
-            fontSize: 14,
+            fontSize: 16,
+            fontWeight:  FontWeight.bold ,
             color: isDisabled ? Colors.black38 : Colors.white,
           )
               : null,

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sahifaty/core/constants/fonts.dart';
 
+import '../../core/constants/colors.dart';
+
 class CustomText extends StatelessWidget {
   const CustomText(
       {super.key,
@@ -27,7 +29,7 @@ class CustomText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: withBackground ? const Color(0xFF0B503D) : Colors.transparent,
+      color: withBackground ?  AppColors.primaryPurple : Colors.transparent,
       padding: const EdgeInsets.all(8),
       child: Text(
         text,

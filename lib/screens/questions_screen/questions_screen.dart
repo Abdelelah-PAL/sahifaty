@@ -38,9 +38,21 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () => Get.back(),
+        centerTitle: true,
+        title: CustomText(
+          text:
+              ' تقييم المستوى  ${GeneralController().getStringLevel(selectedIndex + 1)} (${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name!})',
+          fontSize: 16,
+          withBackground: true,
+          color: const Color(0xFFFFFFFF),
+        ),
+        leading: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+              onPressed: () => Get.back(),
+            ),
+          ],
         ),
       ),
       body: SafeArea(
@@ -50,38 +62,24 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
         bottom: true,
         child: Padding(
           padding: EdgeInsets.symmetric(
-              vertical: SizeConfig.getProportionalHeight(20),
+              vertical: SizeConfig.getProportionalHeight(0),
               horizontal: SizeConfig.getProportionalHeight(20)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizeConfig.customSizedBox(null, 50, null),
-              CustomText(
-                text:
-                    'المستوى ${GeneralController().getStringLevel(selectedIndex + 1)} : ${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name!}',
-                fontSize: 16,
-                withBackground: true,
-                color: const Color(0xFFFFFFFF),
-              ),
-
-              // PaginationBar removed as we are listing content items now
-              SizeConfig.customSizedBox(null, 30, null),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 25),
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    itemCount: schoolProvider.quickQuestionsSchool
-                        .levels[selectedIndex].content.length,
-                    itemBuilder: (context, index) {
-                      return ContentItemCard(
-                        content: schoolProvider.quickQuestionsSchool
-                            .levels[selectedIndex].content[index],
-                        index: index,
-                      );
-                    },
-                  ),
+                child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: schoolProvider.quickQuestionsSchool
+                      .levels[selectedIndex].content.length,
+                  itemBuilder: (context, index) {
+                    return ContentItemCard(
+                      content: schoolProvider.quickQuestionsSchool
+                          .levels[selectedIndex].content[index],
+                      index: index,
+                    );
+                  },
                 ),
               ),
               SizeConfig.customSizedBox(null, 15, null),
@@ -122,8 +120,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                     content: Text("أنت في المستوى الأول")));
                           }
                         },
-                        text: " السؤال السابق",
-                        width: 100,
+                        text: " المستوى السابق",
+                        width: 120,
                         height: 35,
                         isDisabled: false),
                     SizeConfig.customSizedBox(80, null, null),
@@ -145,8 +143,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                                 const SnackBar(content: Text("انتهت الأسئلة")));
                           }
                         },
-                        text: " السؤال التالي",
-                        width: 100,
+                        text: " المستوى التالي",
+                        width: 120,
                         height: 35,
                         isDisabled: false),
                   ],
