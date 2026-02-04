@@ -27,7 +27,7 @@ class FirstPieChartScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
-        leading: const CustomBackButton(),
+        // trailing: const CustomBackButton(),
       ),
       body: SingleChildScrollView(
         child: Center(

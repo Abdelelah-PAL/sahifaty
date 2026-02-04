@@ -49,34 +49,37 @@ class _CustomAuthenticationTextFieldState
         ),
         child: Padding(
           padding: EdgeInsets.only(right: SizeConfig.getProportionalWidth(10)),
-          child: TextField(
-              textAlign: TextAlign.left,
-              controller: widget.textEditingController,
-              obscureText: widget.obscureText && !showPassword,
-              decoration: InputDecoration(
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: SizeConfig.getProportionalWidth(10),
-                  vertical: SizeConfig.getProportionalWidth(5),
-                ),
-                suffixIcon: widget.obscureText
-                    ? IconButton(
-                        icon: !showPassword
-                            ? const Icon(Icons.visibility)
-                            : const Icon(Icons.visibility_off),
-                        onPressed: () {
-                          setState(() {
-                            showPassword = !showPassword;
-                          });
-                        },
-                      )
-                    : null,
-                hintText: widget.hintText ?? "",
-                hintStyle: TextStyle(
-                  color: AppColors.hintTextColor,
-                  fontFamily: AppFonts.primaryFont,
-                ),
-                border: InputBorder.none,
-              )),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: TextField(
+                textAlign: TextAlign.left,
+                controller: widget.textEditingController,
+                obscureText: widget.obscureText && !showPassword,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: SizeConfig.getProportionalWidth(10),
+                    vertical: SizeConfig.getProportionalWidth(5),
+                  ),
+                  suffixIcon: widget.obscureText
+                      ? IconButton(
+                          icon: !showPassword
+                              ? const Icon(Icons.visibility)
+                              : const Icon(Icons.visibility_off),
+                          onPressed: () {
+                            setState(() {
+                              showPassword = !showPassword;
+                            });
+                          },
+                        )
+                      : null,
+                  hintText: widget.hintText ?? "",
+                  hintStyle: TextStyle(
+                    color: AppColors.hintTextColor,
+                    fontFamily: AppFonts.primaryFont,
+                  ),
+                  border: InputBorder.none,
+                )),
+          ),
         ),
       ),
     );

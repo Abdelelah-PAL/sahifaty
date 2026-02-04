@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/controllers/ayat_controller.dart';
 import 'package:sahifaty/controllers/evaluations_controller.dart';
@@ -133,7 +134,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
     final selectedEvaluation = await showDialog<Evaluation>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('اختر التقييم', textAlign: TextAlign.center),
+        title: Text('choose_evaluation'.tr, textAlign: TextAlign.center),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -151,7 +152,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 ),
                 child: ListTile(
                   title: Text(
-                    evaluation.nameAr,
+                    'eval_${evaluation.id}'.tr,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -178,7 +179,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
 
       if (ayahs.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('لم يتم العثور على آيات للتقييم')),
+           SnackBar(content: Text('no_verses_found_to_evaluate'.tr)),
         );
         return;
       }
@@ -199,7 +200,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
       _checkCompletion();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('حدث خطأ أثناء التقييم: $e')),
+        SnackBar(content: Text('error_during_evaluation'.trParams({'error': e.toString()}))),
       );
     } finally {
       setState(() {
@@ -234,10 +235,10 @@ class _ContentItemCardState extends State<ContentItemCard> {
               builder: (BuildContext context, StateSetter setModalState) {
             return Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.all(16.0),
+                 Padding(
+                  padding: const EdgeInsets.all(16.0),
                   child: CustomText(
-                    text: 'تقييم الآيات',
+                    text: 'verses_evaluation'.tr,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     withBackground: false,
@@ -245,7 +246,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 ),
                 Expanded(
                   child: ayahs.isEmpty
-                      ? const Center(child: Text("لا توجد آيات لعرضها"))
+                      ? Center(child: Text("no_verses_to_display".tr))
                       : ListView.builder(
                           controller: scrollController,
                           itemCount: ayahs.length,
@@ -281,7 +282,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text('آية ${ayah.ayahNo}'),
+                                        Text('${'ayah_label'.tr} ${ayah.ayahNo}'),
                                         ElevatedButton(
                                           onPressed: () async {
                                             final selectedEvaluation =
@@ -322,7 +323,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                                         ),
                                                         child: ListTile(
                                                           title: Text(
-                                                            evaluation.nameAr,
+                                                            'eval_${evaluation.id}'.tr,
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style:
@@ -369,7 +370,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                               _checkCompletion(); // Update unit status
                                             }
                                           },
-                                          child: const Text('تقييم'),
+                                          child: Text('evaluate'.tr),
                                         ),
                                       ],
                                     ),
@@ -387,7 +388,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('حدث خطأ أثناء تحميل الآيات: $e')),
+        SnackBar(content: Text('error_loading_verses'.trParams({'error': e.toString()}))),
       );
     }
   }
@@ -416,10 +417,10 @@ class _ContentItemCardState extends State<ContentItemCard> {
                     builder: (BuildContext context, StateSetter setModalState) {
                   return Column(
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.all(16.0),
+                       Padding(
+                        padding: const EdgeInsets.all(16.0),
                         child: CustomText(
-                          text: 'سور الجزء',
+                          text: 'juz_surahs'.tr,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           withBackground: false,
@@ -427,7 +428,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                       ),
                       Expanded(
                           child: surahs.isEmpty
-                              ? const Center(child: Text("لا توجد سور للعرض"))
+                              ? Center(child: Text("no_surahs_to_display".tr))
                               : ListView.builder(
                                   controller: scrollController,
                                   itemCount: surahs.length,
@@ -448,7 +449,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         subtitle: Text(
-                                          "سورة رقم ${surah.id}",
+                                          "${'surah_number'.tr} ${surah.id}",
                                           textAlign: TextAlign.right,
                                         ),
                                         trailing: ElevatedButton(
@@ -536,7 +537,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                                   selectedEvaluation,
                                                   evaluationsProvider,
                                                   null,
-                                                  "سورة ${surah.nameAr}",
+                                                  "${'surah_label'.tr} ${surah.nameAr}",
                                                 );
 
                                                 // Update card color in StatefulBuilder
@@ -552,9 +553,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                               } else {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
-                                                  const SnackBar(
+                                                   SnackBar(
                                                     content: Text(
-                                                        'لا توجد آيات لهذه السورة في هذا الجزء'),
+                                                        'no_verses_for_surah_in_juz'.tr),
                                                   ),
                                                 );
                                               }
@@ -576,13 +577,12 @@ class _ContentItemCardState extends State<ContentItemCard> {
               }));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('حدث خطأ أثناء تحميل السور: $e')),
+        SnackBar(content: Text('error_loading_surahs'.trParams({'error': e.toString()}))),
       );
     }
   }
 
-  Future<void> _showJuzSurahAyahs(
-      BuildContext context, Surah surah, int juz) async {
+  Future<void> _showJuzSurahAyahs(BuildContext context, Surah surah, int juz) async {
     final evaluationsProvider = context.read<EvaluationsProvider>();
     final ayatController = AyatController();
 
@@ -624,7 +624,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: CustomText(
-                    text: 'آيات سورة ${surah.nameAr} (جزء $juz)',
+                    text: 'surah_verses_juz_title'.trParams({'surah': surah.nameAr, 'juz': juz.toString()}),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     withBackground: false,
@@ -632,7 +632,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 ),
                 Expanded(
                   child: ayahs.isEmpty
-                      ? const Center(child: Text("لا توجد آيات لعرضها"))
+                      ? Center(child: Text("no_verses_to_display".tr))
                       : ListView.builder(
                           controller: scrollController,
                           itemCount: ayahs.length,
@@ -790,9 +790,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
         child: Container(
           margin: EdgeInsets.symmetric(
             vertical: SizeConfig.getProportionalHeight(10),
-            horizontal: SizeConfig.getProportionalWidth(5),
+            horizontal: SizeConfig.getProportionalWidth(2),
           ),
-          padding: EdgeInsets.all(SizeConfig.getProportionalHeight(15)),
+          padding: EdgeInsets.symmetric(horizontal: 0, vertical: SizeConfig.getProportionalHeight(15)),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
@@ -804,50 +804,20 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 offset: Offset(0, 3),
               ),
             ],
-            // border:
-            //     isCompleted ? Border.all(color: Colors.green, width: 2) : null,
           ),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  // Container(
-                  //   width: SizeConfig.getProportionalWidth(40),
-                  //   height: SizeConfig.getProportionalWidth(40),
-                  //   decoration: BoxDecoration(
-                  //     color: isCompleted
-                  //         ? Colors.green
-                  //         : Theme.of(context).primaryColor,
-                  //     shape: BoxShape.circle,
-                  //   ),
-                  //   child: isCompleted
-                  //       ? const Icon(Icons.check, color: Colors.white)
-                  //       : CustomText(
-                  //           text: '${widget.index + 1}',
-                  //           withBackground: false,
-                  //           fontSize: 16,
-                  //           fontWeight: FontWeight.bold,
-                  //           color: Theme.of(context).primaryColor,
-                  //         ),
-                  // ),
-                  // SizeConfig.customSizedBox(25, null, null),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (widget.content.surahId != null) ...[
-                        CustomText(
-                          text:
-                              '${GeneralController().getSurahNameByNumber(widget.content.surahId!)} : ${widget.content.startAyah} - ${widget.content.endAyah}',
-                          withBackground: false,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.primaryPurple,
-                        ),
-                      ]
-                    ],
-                  ),
-                ],
-              ),
+              if (widget.content.surahId != null) ...[
+                CustomText(
+                  text:
+                      '${GeneralController().getSurahNameArabic(widget.content.surahId!)} : ${widget.content.startAyah} - ${widget.content.endAyah}',
+                  withBackground: false,
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primaryPurple,
+                ),
+              ],
               if (widget.content.type != "ayat range") ...[
                 isEvaluating
                     ? const CircularProgressIndicator()
@@ -856,24 +826,25 @@ class _ContentItemCardState extends State<ContentItemCard> {
                         children: [
                           CustomButton(
                             onPressed: () => _evaluateUnit(context),
-                            text: "كامل",
+                            text: "full".tr,
                             width: 90,
                             height: 35,
                           ),
-                          SizedBox(width: SizeConfig.getProportionalHeight(15)),
+                          SizedBox(width: SizeConfig.getProportionalHeight(5)),
                           CustomButton(
                             onPressed: () => _showIndividualEvaluation(context),
-                            text: "حسب الآية",
+                            text: "by_ayah".tr,
                             width: 90,
                             height: 35,
                           ),
                         ],
                       ),
-              ] else ...[
+              ]
+              else ...[
                 SizedBox(height: SizeConfig.getProportionalHeight(15)),
                 CustomButton(
                   onPressed: () => _showIndividualEvaluation(context),
-                  text: "تقييم الآيات",
+                  text: "verses_evaluation".tr,
                   width: 150,
                   height: 35,
                 ),
@@ -885,17 +856,17 @@ class _ContentItemCardState extends State<ContentItemCard> {
 
   void _setUnitName() {
     if (widget.content.type == "ayatRange") {
-      unitName = "الآيات";
+      unitName = "verses_definite".tr;
     } else if (widget.content.type == "surah") {
-      unitName = "السورة";
+      unitName = "surah_definite".tr;
     } else if (widget.content.type == "hizb") {
-      unitName = "الحزب";
+      unitName = "hizb".tr;
     } else if (widget.content.type == "hizbQuarter") {
-      unitName = "ربع الحزب";
+      unitName = "hizb_quarter".tr;
     } else if (widget.content.type == "juz") {
-      unitName = "الجزء";
+      unitName = "juz_prefix".tr;
     } else {
-      unitName = "الوحدة";
+      unitName = "unit".tr;
     }
   }
 }

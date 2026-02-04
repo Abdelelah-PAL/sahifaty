@@ -43,7 +43,7 @@ class CustomText extends StatelessWidget {
           leading: structLeading,
         ),
         style: TextStyle(
-          fontSize: fontSize ?? 18,
+          fontSize: fontSize ?? 16,
           height: textHeight ?? 1,
           color: color ?? Theme.of(context).textTheme.bodyLarge?.color ?? const Color(0xFF000000),
           fontWeight: fontWeight ?? AppFonts.normal,

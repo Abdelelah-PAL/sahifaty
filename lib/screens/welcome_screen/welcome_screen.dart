@@ -78,10 +78,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.backgroundColor,
-        leading: const CustomBackButton(),
-        leadingWidth: 56 , // adjust
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: AppBar(
+            backgroundColor: AppColors.backgroundColor,
+            leading: const CustomBackButton(),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Center(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/auth_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UsersServices with ChangeNotifier {
   final String _baseURL = 'https://sahifati.org';
@@ -114,6 +115,39 @@ class UsersServices with ChangeNotifier {
 
   Future<void> sendPasswordResetEmail(email) async {
     try {} catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> deleteAccount() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('accessToken');
+      
+      if (token == null) {
+        throw 'No authentication token found';
+      }
+
+      Map<String, String> headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      };
+
+      var response = await http
+          .delete(
+            Uri.parse('$_baseURL/auth/delete-account'),
+            headers: headers,
+          )
+          .timeout(_timeout);
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return true;
+      } else {
+        final responseData = json.decode(response.body);
+        return responseData['message'] ?? 'Failed to delete account';
+      }
+    } catch (ex) {
       rethrow;
     }
   }

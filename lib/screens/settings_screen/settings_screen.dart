@@ -101,6 +101,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     // No need to pop as logout usually navigates to login
                   },
                 ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.delete_forever, color: Colors.red),
+                  title: Text(
+                    'delete_account'.tr,
+                    style: const TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onTap: () async {
+                    // Show confirmation dialog
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('delete_account_confirm_title'.tr),
+                          content: Text('delete_account_confirm_message'.tr),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text('cancel'.tr),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.red,
+                              ),
+                              child: Text('confirm'.tr),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+
+                    if (confirmed == true && context.mounted) {
+                      try {
+                        final usersProvider =
+                            Provider.of<UsersProvider>(context, listen: false);
+                        await usersProvider.deleteAccount();
+                        
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('delete_account_success'.tr),
+                              backgroundColor: Colors.green,
+                            ),
+                          );
+                        }
+                      } catch (e) {
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('delete_account_error'.tr),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                        }
+                      }
+                    }
+                  },
+                ),
               ],
           ),
       ),

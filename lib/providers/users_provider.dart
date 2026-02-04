@@ -194,4 +194,21 @@ class UsersProvider with ChangeNotifier {
     isFirstLogin = email == '' && password == '';
     notifyListeners();
   }
+
+  Future<void> deleteAccount() async {
+    setLoading();
+    try {
+      final result = await _usersService.deleteAccount();
+      if (result == true) {
+        // Clear all user data
+        await logout();
+      } else {
+        throw result;
+      }
+    } catch (ex) {
+      rethrow;
+    } finally {
+      resetLoading();
+    }
+  }
 }

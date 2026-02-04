@@ -45,17 +45,16 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
     return Scaffold(
         appBar: PreferredSize(
-            preferredSize:
-                Size.fromHeight(SizeConfig.getProperVerticalSpace(10)),
-            child:  Padding(
-              padding: EdgeInsets.only(top: SizeConfig.getProperVerticalSpace(20)),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                   CustomBackButton(),
-                ],
-              ),
-            )),
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: AppBar(
+              backgroundColor: AppColors.backgroundColor,
+              elevation: 0,
+              leading: const CustomBackButton(),
+            ),
+          ),
+        ),
         backgroundColor: AppColors.backgroundColor,
         resizeToAvoidBottomInset: false,
         body: GestureDetector(

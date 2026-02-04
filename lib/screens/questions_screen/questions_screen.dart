@@ -7,6 +7,7 @@ import '../../providers/evaluations_provider.dart';
 import '../../providers/school_provider.dart';
 import '../../providers/users_provider.dart';
 import '../sahifa_screen/sahifa_screen.dart';
+import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import 'content_item_card.dart';
@@ -35,24 +36,24 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     EvaluationsProvider evaluationsProvider =
         Provider.of<EvaluationsProvider>(context);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: CustomText(
-          text:
-              ' تقييم المستوى  ${GeneralController().getStringLevel(selectedIndex + 1)} (${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name!})',
-          fontSize: 16,
-          withBackground: true,
-          color: const Color(0xFFFFFFFF),
-        ),
-        leading: Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-              onPressed: () => Get.back(),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight),
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            title: CustomText(
+              text:
+                  '${'level_assessment'.tr} ${GeneralController().getStringLevel(selectedIndex + 1)} (${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name!})',
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+              withBackground: true,
+              color: const Color(0xFFFFFFFF),
             ),
-          ],
+            leading: const CustomBackButton(),
+          ),
         ),
       ),
       body: SafeArea(
@@ -85,7 +86,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
               SizeConfig.customSizedBox(null, 15, null),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: SizeConfig.getProportionalWidth(25)),
+                  horizontal: SizeConfig.getProportionalWidth(5),
+                  vertical: SizeConfig.getProportionalWidth(10),
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -97,7 +100,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                             .getQuranChartData(usersProvider.selectedUser!.id);
                         Get.to(const SahifaScreen());
                       },
-                      text: "تخطّي",
+                      text: "skip".tr,
                       width: 60,
                       height: 35,
                       isDisabled: false,
@@ -116,15 +119,15 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("أنت في المستوى الأول")));
+                                     SnackBar(
+                                    content: Text("you_are_at_first_level".tr)));
                           }
                         },
-                        text: " المستوى السابق",
+                        text: "previous_level".tr,
                         width: 120,
                         height: 35,
                         isDisabled: false),
-                    SizeConfig.customSizedBox(80, null, null),
+                    SizeConfig.customSizedBox(50, null, null),
                     CustomButton(
                         onPressed: () {
                           if (selectedIndex + 1 <
@@ -140,10 +143,10 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("انتهت الأسئلة")));
+                                 SnackBar(content: Text("questions_finished".tr)));
                           }
                         },
-                        text: " المستوى التالي",
+                        text: "next_level".tr,
                         width: 120,
                         height: 35,
                         isDisabled: false),

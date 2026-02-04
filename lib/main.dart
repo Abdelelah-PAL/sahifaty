@@ -75,7 +75,7 @@ class MyApp extends StatelessWidget {
             translations: LocalizationService(),
             locale: Get.locale ?? initialLocale,
             fallbackLocale: LocalizationService.fallbackLocale,
-            themeMode: generalProvider.themeMode,
+            themeMode: ThemeMode.light,
             theme: ThemeData(
               scaffoldBackgroundColor: AppColors.backgroundColor,
               brightness: Brightness.light,

@@ -113,5 +113,10 @@ class GeneralController {
     if (number < 1 || number > 114) return 'surah_not_found'.tr; // Need key or hardcode? 'Not Found'
     return Get.locale?.languageCode == 'ar' ? quran.getSurahNameArabic(number) : quran.getSurahName(number);
   }
+
+  String getSurahNameArabic(int number) {
+    if (number < 1 || number > 114) return "";
+    return quran.getSurahNameArabic(number);
+  }
  }
 

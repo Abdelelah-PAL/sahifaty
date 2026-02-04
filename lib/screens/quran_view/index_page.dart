@@ -14,6 +14,7 @@ import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
 import '../../models/surah.dart';
+import '../../providers/general_provider.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage(
@@ -242,97 +243,138 @@ class _IndexPageState extends State<IndexPage> {
         builder: (context, snapshot) {
           final hasConnection = snapshot.data ?? false;
 
-          return Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight),
-              child: Directionality(
-                textDirection: TextDirection.ltr,
-                child: AppBar(
-                  title: Text(
-                    widget.filterTypeId == FilterTypes.hizbs
-                        ? "${"hizb".tr} ${widget.hizb}"
-                        : widget.surah.nameAr,
-                  ),
-                  centerTitle: true,
-                ),
-              ),
-            ),
-            body: Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: SizeConfig.getProportionalHeight(5),
-                horizontal: SizeConfig.getProportionalWidth(10),
-              ),
-              child: SingleChildScrollView(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    ..._buildAyatWidgets(evaluationProvider, hasConnection),
-
-                    // ORIGINAL PAGINATION BUTTONS (UNCHANGED)
-                    if (_currentHizbQuarter != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            if (_currentHizbQuarter! < _maxHizbQuarter!)
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _currentHizbQuarter =
-                                        _currentHizbQuarter! + 1;
-                                  });
-
-                                  final userId = context
-                                      .read<UsersProvider>()
-                                      .selectedUser!
-                                      .id;
-
-                                  final evalProvider =
-                                      context.read<EvaluationsProvider>();
-
-                                  _loadAyat(userId, evalProvider);
-                                },
-                                child: Text('next'.tr),
-                              )
-                            else
-                              const SizedBox(),
-                            if (_currentHizbQuarter! > _minHizbQuarter!)
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _currentHizbQuarter =
-                                        _currentHizbQuarter! - 1;
-                                  });
-
-                                  final userId = context
-                                      .read<UsersProvider>()
-                                      .selectedUser!
-                                      .id;
-
-                                  final evalProvider =
-                                      context.read<EvaluationsProvider>();
-
-                                  _loadAyat(userId, evalProvider);
-                                },
-                                child: Text('previous'.tr),
-                              )
-                            else
-                              const SizedBox(),
-                          ],
+          return Consumer<GeneralProvider>(
+            builder: (context, generalProvider, _) {
+              final isDarkMode = generalProvider.themeMode == ThemeMode.dark;
+              
+              return Theme(
+                data: isDarkMode
+                    ? ThemeData(
+                        scaffoldBackgroundColor: const Color(0xFF121212),
+                        brightness: Brightness.dark,
+                        textTheme: const TextTheme(
+                          bodyLarge: TextStyle(color: Colors.white),
+                        ),
+                        colorScheme: const ColorScheme.dark(
+                          surface: Color(0xFF1E1E1E),
+                          primary: Color(0xFF121212),
+                          secondary: AppColors.buttonColor,
+                        ),
+                        appBarTheme: const AppBarTheme(
+                          backgroundColor: Color(0xFF121212),
+                          foregroundColor: Colors.white,
                         ),
                       )
-                  ],
+                    : ThemeData(
+                        scaffoldBackgroundColor: AppColors.backgroundColor,
+                        brightness: Brightness.light,
+                        textTheme: const TextTheme(
+                          bodyLarge: TextStyle(color: AppColors.blackFontColor),
+                        ),
+                        colorScheme: const ColorScheme.light(
+                          surface: AppColors.backgroundColor,
+                          primary: AppColors.backgroundColor,
+                          secondary: AppColors.buttonColor,
+                        ),
+                        appBarTheme: const AppBarTheme(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: Colors.black,
+                        ),
+                      ),
+                child: Scaffold(
+                  appBar: PreferredSize(
+                    preferredSize: const Size.fromHeight(kToolbarHeight),
+                    child: Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: AppBar(
+                        title: Text(
+                          widget.filterTypeId == FilterTypes.hizbs
+                              ? "${"hizb".tr} ${widget.hizb}"
+                              : widget.surah.nameAr,
+                        ),
+                        centerTitle: true,
+                      ),
+                    ),
+                  ),
+                  body: Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: SizeConfig.getProportionalHeight(5),
+                      horizontal: SizeConfig.getProportionalWidth(10),
+                    ),
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          ..._buildAyatWidgets(evaluationProvider, hasConnection, isDarkMode),
+
+                          // ORIGINAL PAGINATION BUTTONS (UNCHANGED)
+                          if (_currentHizbQuarter != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  if (_currentHizbQuarter! < _maxHizbQuarter!)
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _currentHizbQuarter =
+                                              _currentHizbQuarter! + 1;
+                                        });
+
+                                        final userId = context
+                                            .read<UsersProvider>()
+                                            .selectedUser!
+                                            .id;
+
+                                        final evalProvider =
+                                            context.read<EvaluationsProvider>();
+
+                                        _loadAyat(userId, evalProvider);
+                                      },
+                                      child: Text('next'.tr),
+                                    )
+                                  else
+                                    const SizedBox(),
+                                  if (_currentHizbQuarter! > _minHizbQuarter!)
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          _currentHizbQuarter =
+                                              _currentHizbQuarter! - 1;
+                                        });
+
+                                        final userId = context
+                                            .read<UsersProvider>()
+                                            .selectedUser!
+                                            .id;
+
+                                        final evalProvider =
+                                            context.read<EvaluationsProvider>();
+
+                                        _loadAyat(userId, evalProvider);
+                                      },
+                                      child: Text('previous'.tr),
+                                    )
+                                  else
+                                    const SizedBox(),
+                                ],
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           );
         });
   }
 
   List<Widget> _buildAyatWidgets(
-      EvaluationsProvider evaluationProvider, bool hasConnection) {
+      EvaluationsProvider evaluationProvider, bool hasConnection, bool isDarkMode) {
     List<Widget> widgets = [];
     if (widget.ayat.isEmpty) return widgets;
 
@@ -364,10 +406,10 @@ class _IndexPageState extends State<IndexPage> {
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
               '${"surah_prefix".tr} ${firstAyah.surah.nameAr}',
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: isDarkMode ? Colors.white : Colors.black87,
               ),
               textAlign: TextAlign.center,
             ),
@@ -386,7 +428,7 @@ class _IndexPageState extends State<IndexPage> {
                 style: TextStyle(
                   fontSize: 20,
                   height: 2,
-                  color: AppColors.blackFontColor,
+                  color: isDarkMode ? Colors.white : AppColors.blackFontColor,
                   fontFamily: AppFonts.versesFont,
                 ),
               ),

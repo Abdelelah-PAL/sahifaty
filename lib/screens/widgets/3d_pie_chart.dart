@@ -101,9 +101,7 @@ class _DonutChartState extends State<DonutChart> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                    ? "${sections[touchedIndex].value.toStringAsFixed(1)}%"
-                    : "quran_verses".tr,
+              Text("${sections[touchedIndex].value.toStringAsFixed(1)}%",
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
