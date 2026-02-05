@@ -12,7 +12,8 @@ import 'providers/school_provider.dart';
 import 'providers/surahs_provider.dart';
 import 'providers/users_provider.dart';
 import 'screens/main_screen/main_screen.dart';
-import 'screens/splash_screen/splash_screen.dart';
+import 'screens/authentication_screens/login_screen.dart';
+import 'screens/sahifa_screen/sahifa_screen.dart';
 import 'services/localization_service.dart';
 
 Future<void> main() async {
@@ -100,8 +101,53 @@ class MyApp extends StatelessWidget {
                 secondary: AppColors.buttonColor,
               ),
             ),
-            home: hasConnection ? const SplashScreen() : const MainScreen(comesFirst: true),
+            home: hasConnection ? const InitialScreen() : const MainScreen(comesFirst: true),
           );
         });
   }
 }
+
+class InitialScreen extends StatefulWidget {
+  const InitialScreen({super.key});
+
+  @override
+  State<InitialScreen> createState() => _InitialScreenState();
+}
+
+class _InitialScreenState extends State<InitialScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _checkSession();
+  }
+
+  Future<void> _checkSession() async {
+    final usersProvider = Provider.of<UsersProvider>(context, listen: false);
+    final evaluationsProvider =
+        Provider.of<EvaluationsProvider>(context, listen: false);
+
+    final bool isLoggedIn = await usersProvider.tryAutoLogin();
+
+    if (isLoggedIn && usersProvider.selectedUser != null) {
+      try {
+        await evaluationsProvider
+            .getQuranChartData(usersProvider.selectedUser!.id!);
+        Get.off(() => const SahifaScreen(firstScreen: true,));
+      } catch (e) {
+        Get.off(() => const LoginScreen(firstScreen: true));
+      }
+    } else {
+      Get.off(() => const LoginScreen(firstScreen: true));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+

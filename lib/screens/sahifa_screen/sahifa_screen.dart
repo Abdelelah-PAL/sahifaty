@@ -17,7 +17,8 @@ import '../widgets/custom_text.dart';
 import '../widgets/user_profile_badge.dart';
 
 class SahifaScreen extends StatelessWidget {
-  const SahifaScreen({super.key});
+  const SahifaScreen({super.key, required this.firstScreen});
+  final bool firstScreen;
   
   Widget _buildDrawer() {
     return SizedBox(
@@ -86,6 +87,9 @@ class SahifaScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (firstScreen) {
+      SizeConfig().init(context);
+    }
     UsersProvider usersProvider = Provider.of<UsersProvider>(context);
     EvaluationsProvider evaluationsProvider =
         Provider.of<EvaluationsProvider>(context);

@@ -38,7 +38,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/logo.png"
+  image_path: "assets/images/clean_logo.png"
 
 flutter:
   uses-material-design: true
@@ -56,4 +56,3 @@ flutter:
     - family: Amiri
       fonts:
         - asset: assets/fonts/Amiri.ttf
-

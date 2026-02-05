@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/core/constants/assets.dart';
 import 'package:sahifaty/models/user.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,11 +70,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: SingleChildScrollView(
                     child: Column(children: [
                       SizeConfig.customSizedBox(
-                          1.5, 3.5, SvgPicture.asset(
-                        'assets/images/logo.jpg',
-                        width: 100,
-                        height: 100,
-                      )),
+                          1.5,
+                          3.5,
+                          Image.asset(
+                            Assets.logo,
+                            width: 100,
+                            height: 100,
+                          )),
                       SizeConfig.customSizedBox(null, 15, null),
                       Padding(
                           padding: EdgeInsets.only(
@@ -94,8 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscureText: false,
                           textEditingController:
                               _userController.loginEmailController,
-                          borderColor:
-                              _userController.loginPasswordTextFieldBorderColor),
+                          borderColor: _userController
+                              .loginPasswordTextFieldBorderColor),
                       CustomAuthTextFieldHeader(
                         text: 'password_label'.tr,
                       ),
@@ -138,7 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                           color: AppColors.textFieldBorderColor,
                                           width: 2),
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4)),
+                                          borderRadius:
+                                              BorderRadius.circular(4)),
                                     ),
                                   )),
                               Padding(
@@ -209,7 +213,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
 
                             final prefs = await SharedPreferences.getInstance();
-                            prefs.setString('accessToken', authData.accessToken!);
+                            prefs.setString(
+                                'accessToken', authData.accessToken!);
 
                             User user = User(
                                 id: authData.user!.id,
@@ -218,29 +223,31 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             usersProvider.setSelectedUser(user);
                             await usersProvider.checkFirstLogin();
-                            
+
                             // Always save session on successful login, or based on "Remember Me" if that's the requirement
                             // The user request "keep the user logged in after killing the app" implies we should probably auto-save it.
-                            // However, the original code had "Remember Me". 
+                            // However, the original code had "Remember Me".
                             // If I follow "keep logged in", it usually means persistent session.
-                            // I will save it if rememberMe is true, or maybe always if that's modern standard. 
+                            // I will save it if rememberMe is true, or maybe always if that's modern standard.
                             // But let's stick to the existing "Remember Me" checkbox logic if we want to respect that UI choice,
                             // OR enforce it. The user said "keep the user logged in", so usually that implies default behavior or checking "Remember Me".
                             // I'll put it inside the existing rememberMe block but also make sure it saves the FULL session not just email/pass for autofill.
-                            
+
                             if (_userController.rememberMe) {
-                               _userController.saveLoginInfo(
-                                _userController.loginEmailController.text.trim(),
+                              _userController.saveLoginInfo(
+                                _userController.loginEmailController.text
+                                    .trim(),
                                 _userController.loginPasswordController.text,
                               );
                               // NEW: Save full session for auto-login
-                              await usersProvider.saveUserSession(user, authData.accessToken!);
+                              await usersProvider.saveUserSession(
+                                  user, authData.accessToken!);
                             }
 
                             if (!usersProvider.isFirstLogin) {
                               await evaluationsProvider.getQuranChartData(
                                   usersProvider.selectedUser!.id);
-                              Get.to(() => const SahifaScreen());
+                              Get.to(() => const SahifaScreen(firstScreen: false,));
                             } else {
                               Get.to(() => const WelcomeScreen());
                             }
@@ -363,7 +370,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       SizeConfig.customSizedBox(null, 25, null),
-                      const CustomText(text:'1.0.2', withBackground: false, textAlign: TextAlign.center,)
+                      const CustomText(
+                        text: '1.0.2',
+                        withBackground: false,
+                        textAlign: TextAlign.center,
+                      )
                     ]),
                   )),
             ),

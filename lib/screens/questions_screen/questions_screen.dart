@@ -98,7 +98,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                             context.read<UsersProvider>();
                         await evaluationsProvider
                             .getQuranChartData(usersProvider.selectedUser!.id);
-                        Get.to(const SahifaScreen());
+                        Get.to(const SahifaScreen(firstScreen: false,));
                       },
                       text: "skip".tr,
                       width: 60,

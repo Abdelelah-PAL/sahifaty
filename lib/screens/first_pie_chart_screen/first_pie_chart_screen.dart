@@ -7,10 +7,8 @@ import 'package:sahifaty/providers/evaluations_provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../sahifa_screen/sahifa_screen.dart';
-import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
-import '../widgets/user_profile_badge.dart';
 
 class FirstPieChartScreen extends StatelessWidget {
   const FirstPieChartScreen({super.key});
@@ -95,7 +93,7 @@ class FirstPieChartScreen extends StatelessWidget {
                 ),
                 SizedBox(height: SizeConfig.getProportionalHeight(50)),
                 CustomButton(
-                  onPressed: () => {Get.to( const SahifaScreen())},
+                  onPressed: () => {Get.to( const SahifaScreen(firstScreen: false,))},
                   text: 'اذهب إلى صحيفتي',
                   width: 155,
                   height: 35,

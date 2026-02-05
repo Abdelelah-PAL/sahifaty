@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/providers/school_provider.dart';
+import 'package:sahifaty/providers/evaluations_provider.dart';
+import 'package:sahifaty/providers/users_provider.dart';
+import '../../controllers/evaluations_controller.dart';
 import '../../core/utils/size_config.dart';
 import '../../core/constants/colors.dart';
 import '../questions_screen/questions_screen.dart';
@@ -19,6 +22,24 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  Future<void> _loadData() async {
+    final usersProvider = context.read<UsersProvider>();
+    final evaluationsProvider = context.read<EvaluationsProvider>();
+
+    if (usersProvider.selectedUser != null) {
+      await evaluationsProvider
+          .getQuranChartData(usersProvider.selectedUser!.id!);
+    }
+  }
+
   @override
   // Widget build(BuildContext context) {
   //   return Scaffold(
@@ -84,7 +105,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
           textDirection: TextDirection.ltr,
           child: AppBar(
             backgroundColor: AppColors.backgroundColor,
-            leading: const CustomBackButton(),
           ),
         ),
       ),
@@ -113,22 +133,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       )),
                 ),
                 SizeConfig.customSizedBox(null, 5, null),
-                SizedBox(
-                    width: 100,
-                    height: 100,
-                    child: PieChart(
-                       PieChartData(
-                      sectionsSpace: 1,
-                      centerSpaceRadius: 30,
-                           sections:[
-                          PieChartSectionData(
-                            value: 100,
-                            color: AppColors.uncategorizedColor,
-                            radius: 150,
-                          ),
-                        ]
-                       )
-                    )),
+                Consumer<EvaluationsProvider>(
+                  builder: (context, evaluationsProvider, child) {
+                    List<PieChartSectionData> sections = [];
+
+                    if (evaluationsProvider.chartEvaluationData.isEmpty) {
+                      sections = [
+                        PieChartSectionData(
+                          value: 100,
+                          color: AppColors.uncategorizedColor,
+                          radius: 150,
+                        ),
+                      ];
+                    } else {
+                      sections = EvaluationsController()
+                          .buildChartSections(evaluationsProvider);
+                    }
+
+                    return SizedBox(
+                        width: SizeConfig.getProportionalWidth(300),
+                        height: SizeConfig.getProportionalHeight(300),
+                        child: PieChart(PieChartData(
+                          sectionsSpace: 1,
+                          centerSpaceRadius: 0,
+                          sections: sections,
+                        )));
+                  },
+                ),
                 SizeConfig.customSizedBox(null, 5, null),
                 SizedBox(height: SizeConfig.getProportionalHeight(50)),
                 CustomButton(
@@ -136,7 +167,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     final schoolProvider = context.read<SchoolProvider>();
 
                     await schoolProvider.getQuickQuestionsSchool();
-
 
                     Get.to(const QuestionsScreen());
                   },

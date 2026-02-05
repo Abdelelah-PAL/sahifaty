@@ -6,7 +6,7 @@ class Assets {
 
   /// Images
   static String quran = "$rootImages/quran.png";
-  static String logo = "$rootImages/logo.jpg";
+  static String logo = "$rootImages/logo.png";
 
 
   /// Icons

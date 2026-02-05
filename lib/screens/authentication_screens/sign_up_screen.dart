@@ -61,8 +61,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: [
                       SizeConfig.customSizedBox(
-                          1.5, 3.5, SvgPicture.asset(
-                        'assets/images/logo.jpg',
+                          1.5, 3.5, Image.asset(
+                        Assets.logo,
                         width: 100,
                         height: 100,
                       )),

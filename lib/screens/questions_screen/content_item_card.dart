@@ -258,124 +258,126 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                   .getColorForEvaluation(
                                       ayah.userEvaluation!.evaluation!.id);
                             }
-
                             return Card(
                               color: cardColor,
                               margin: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Text(
-                                      ayah.text,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontFamily: 'UthmanicHafs',
-                                      ),
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    ayah.text,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontFamily: 'UthmanicHafs',
                                     ),
-                                    const SizedBox(height: 10),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('${'ayah_label'.tr} ${ayah.ayahNo}'),
-                                        ElevatedButton(
-                                          onPressed: () async {
-                                            final selectedEvaluation =
-                                                await showDialog<Evaluation>(
-                                              context: context,
-                                              builder: (context) => AlertDialog(
-                                                title: const Text(
-                                                    'اختر التقييم',
-                                                    textAlign:
-                                                        TextAlign.center),
-                                                content: SingleChildScrollView(
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children:
-                                                        evaluationsProvider
-                                                            .evaluations
-                                                            .map((evaluation) {
-                                                      return Container(
-                                                        margin: const EdgeInsets
-                                                            .symmetric(
-                                                            vertical: 4),
-                                                        decoration:
-                                                            BoxDecoration(
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('${'ayah_label'.tr} ${ayah.ayahNo}'),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          final selectedEvaluation =
+                                              await showDialog<Evaluation>(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title:   CustomText(
+                                                 text:  'choose_evaluation'.tr,
+                                                  color: AppColors.blackFontColor,
+                                                  withBackground: false,
+                                                  textAlign:
+                                                      TextAlign.center),
+                                              content: SingleChildScrollView(
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children:
+                                                      evaluationsProvider
+                                                          .evaluations
+                                                          .map((evaluation) {
+                                                    return Container(
+                                                      margin: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 4),
+                                                      decoration:
+                                                          BoxDecoration(
+                                                        color: EvaluationsController()
+                                                            .getColorForEvaluation(
+                                                                evaluation
+                                                                    .id),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                        border: Border.all(
                                                           color: EvaluationsController()
                                                               .getColorForEvaluation(
                                                                   evaluation
                                                                       .id),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(8),
-                                                          border: Border.all(
-                                                            color: EvaluationsController()
-                                                                .getColorForEvaluation(
-                                                                    evaluation
-                                                                        .id),
+                                                        ),
+                                                      ),
+                                                      child: ListTile(
+                                                        title: Text(
+                                                          'eval_${evaluation.id}'.tr,
+                                                          textAlign: TextAlign
+                                                              .center,
+                                                          style:
+                                                              const TextStyle(
+                                                            color:
+                                                                Colors.white,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold,
                                                           ),
                                                         ),
-                                                        child: ListTile(
-                                                          title: Text(
-                                                            'eval_${evaluation.id}'.tr,
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style:
-                                                                const TextStyle(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                          onTap: () =>
-                                                              Navigator.pop(
-                                                                  context,
-                                                                  evaluation),
-                                                        ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
+                                                        onTap: () =>
+                                                            Navigator.pop(
+                                                                context,
+                                                                evaluation),
+                                                      ),
+                                                    );
+                                                  }).toList(),
                                                 ),
                                               ),
+                                            ),
+                                          );
+
+                                          if (selectedEvaluation != null) {
+                                            await EvaluationsController()
+                                                .sendEvaluation(
+                                              ayah,
+                                              selectedEvaluation,
+                                              evaluationsProvider,
+                                              null,
                                             );
 
-                                            if (selectedEvaluation != null) {
-                                              await EvaluationsController()
-                                                  .sendEvaluation(
-                                                ayah,
-                                                selectedEvaluation,
-                                                evaluationsProvider,
-                                                null,
+                                            setModalState(() {
+                                              ayah.userEvaluation =
+                                                  UserEvaluation(
+                                                evaluation:
+                                                    selectedEvaluation,
+                                                evaluationId:
+                                                    selectedEvaluation.id,
+                                                ayahId: ayah.id,
                                               );
+                                            });
 
-                                              setModalState(() {
-                                                ayah.userEvaluation =
-                                                    UserEvaluation(
-                                                  evaluation:
-                                                      selectedEvaluation,
-                                                  evaluationId:
-                                                      selectedEvaluation.id,
-                                                  ayahId: ayah.id,
-                                                );
-                                              });
-
-                                              _checkCompletion(); // Update unit status
-                                            }
-                                          },
-                                          child: Text('evaluate'.tr),
+                                            _checkCompletion(); // Update unit status
+                                          }
+                                        },
+                                        child: CustomText(
+                                            text: 'evaluate'.tr,
+                                          withBackground: false,
+                                          color: AppColors.blackFontColor,
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             );
                           },
@@ -821,24 +823,27 @@ class _ContentItemCardState extends State<ContentItemCard> {
               if (widget.content.type != "ayat range") ...[
                 isEvaluating
                     ? const CircularProgressIndicator()
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CustomButton(
-                            onPressed: () => _evaluateUnit(context),
-                            text: "full".tr,
-                            width: 90,
-                            height: 35,
-                          ),
-                          SizedBox(width: SizeConfig.getProportionalHeight(5)),
-                          CustomButton(
-                            onPressed: () => _showIndividualEvaluation(context),
-                            text: "by_ayah".tr,
-                            width: 90,
-                            height: 35,
-                          ),
-                        ],
-                      ),
+                    : Padding(
+                  padding: EdgeInsets.only(left: SizeConfig.getProportionalWidth(3.5)),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            CustomButton(
+                              onPressed: () => _evaluateUnit(context),
+                              text: "full".tr,
+                              width: 90,
+                              height: 35,
+                            ),
+                            SizedBox(width: SizeConfig.getProportionalHeight(5)),
+                            CustomButton(
+                              onPressed: () => _showIndividualEvaluation(context),
+                              text: "by_ayah".tr,
+                              width: 90,
+                              height: 35,
+                            ),
+                          ],
+                        ),
+                    ),
               ]
               else ...[
                 SizedBox(height: SizeConfig.getProportionalHeight(15)),
