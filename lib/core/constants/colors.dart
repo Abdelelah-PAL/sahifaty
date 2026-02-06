@@ -10,8 +10,8 @@ class AppColors {
   static const Color successColor = Color(0xFF0FA958);
   static const Color defaultBorderColor =  Color(0xD3D3D3D3);
   static const Color buttonColor = Color(0xFF0B503D);
-  static const Color uncategorizedColor = Color(0xFFC6C7C9);
-  static const Color strongColor = Color(0xFF27C840);
+  static const Color uncategorizedColor = Color(0xFF424242);
+  static const Color strongColor = Color(0xFF0F284A);
   static const Color revisionColor = Color(0xFF547DBE);
   static const Color desireColor = Color(0XFF2B8EFF);
   static const Color easyColor = Color(0xFF548134);

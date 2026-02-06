@@ -99,5 +99,6 @@
     "delete_account_success": "تم حذف الحساب بنجاح",
     "delete_account_error": "حدث خطأ أثناء حذف الحساب",
     "cancel": "إلغاء",
-    "confirm": "تأكيد"
+    "confirm": "تأكيد",
+    "feedback": "ارسال تغذية راجعة و ملاحظات من خلال صفحة"
 }

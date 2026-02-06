@@ -247,7 +247,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (!usersProvider.isFirstLogin) {
                               await evaluationsProvider.getQuranChartData(
                                   usersProvider.selectedUser!.id);
-                              Get.to(() => const SahifaScreen(firstScreen: false,));
+                              Get.to(() => const SahifaScreen(
+                                    firstScreen: false,
+                                  ));
                             } else {
                               Get.to(() => const WelcomeScreen());
                             }
@@ -369,12 +371,31 @@ class _LoginScreenState extends State<LoginScreen> {
                           Get.to(() => const SignUpScreen())
                         },
                       ),
-                      SizeConfig.customSizedBox(null, 25, null),
-                      const CustomText(
-                        text: '1.0.2',
-                        withBackground: false,
-                        textAlign: TextAlign.center,
+                      SizeConfig.customSizedBox(null, 50, null),
+                      SizedBox(
+                        height: 40,
+                        child: Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            // Left logo
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Image.asset(
+                                Assets.organization1STDLogo,
+                                height: 50,
+                              ),
+                            ),
+
+                            // Center text (true center of screen)
+                            const CustomText(
+                              text: 'beta 2.0.3',
+                              withBackground: false,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
                       )
+
                     ]),
                   )),
             ),

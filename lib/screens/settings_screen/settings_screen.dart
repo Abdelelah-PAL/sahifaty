@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:sahifaty/core/utils/size_config.dart';
 import '../../core/constants/colors.dart';
 import '../../services/localization_service.dart';
 import '../widgets/custom_back_button.dart';
@@ -29,13 +31,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
              backgroundColor: AppColors.backgroundColor,
              elevation: 0,
              leading: const CustomBackButton(),
-             title: Text("settings".tr, style: TextStyle(color: AppColors.blackFontColor),),
+             title: Text("settings".tr, style: const TextStyle(color: AppColors.blackFontColor),),
              centerTitle: true,
           ),
         ),
       ),
       body: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(25.0),
           child: Column(
               children: [
                 ListTile(
@@ -163,6 +165,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     }
                   },
                 ),
+                SizeConfig.customSizedBox(null, 2.5, null),
+
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: SizeConfig.getProportionalHeight(10),
+                  ),
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "${'feedback'.tr} ",
+                        ),
+                        TextSpan(
+                          text: "  info@sahifati.org",
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              // TODO: open email client
+                              print('Email tapped');
+                            },
+                        ),
+                      ],
+                    ),
+                  ),
+                )
               ],
           ),
       ),

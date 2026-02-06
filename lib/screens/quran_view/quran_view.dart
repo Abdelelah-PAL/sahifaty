@@ -48,7 +48,7 @@ class QuranViewer extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 6),
                       child: Text(
                         '${quran.getVerse(surahNumber, verse)} ﴿$verse﴾',
-                        style: const TextStyle(fontSize: 22, height: 1.7),
+                        style: const TextStyle(fontSize: 24, height: 1.7),
                         textAlign: TextAlign.justify,
                       ),
                     ),

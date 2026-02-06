@@ -99,5 +99,6 @@
     "delete_account_success": "Account deleted successfully",
     "delete_account_error": "An error occurred while deleting the account",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "feedback": "You can send a feedback by contacting"
 }
