@@ -22,12 +22,14 @@ class IndexPage extends StatefulWidget {
       required this.surah,
       required this.filterTypeId,
       this.hizb,
-      this.hizbQuarter});
+      this.hizbQuarter,
+      this.juz});
 
   final Surah surah;
   final int filterTypeId;
   final int? hizb;
   final int? hizbQuarter;
+  final int? juz;
 
   List<Ayat> ayat = [];
 
@@ -162,6 +164,12 @@ class _IndexPageState extends State<IndexPage> {
         _currentHizbQuarter = widget.hizbQuarter;
         _minHizbQuarter = 1;
         _maxHizbQuarter = 240;
+      } else if (widget.filterTypeId == FilterTypes.parts &&
+          widget.juz != null) {
+        // Start from the beginning of the Juz (Part)
+        _minHizbQuarter = (widget.juz! - 1) * 8 + 1;
+        _maxHizbQuarter = widget.juz! * 8;
+        _currentHizbQuarter = _minHizbQuarter;
       } else {
         List<Ayat> initialAyat;
         if (widget.filterTypeId == FilterTypes.parts ||
@@ -202,7 +210,9 @@ class _IndexPageState extends State<IndexPage> {
     // ---------------------------------------------
 
     List<int> ayatIds = ayat.map((ayah) => ayah.id!).toList();
-
+    if (evaluationsProvider.evaluations.isEmpty) {
+      await evaluationsProvider.getAllEvaluations();
+    }
     await evaluationsProvider.getAllUserEvaluations(userId, ayatIds);
     _lastDisplayedSurahId = null;
 
@@ -311,54 +321,60 @@ class _IndexPageState extends State<IndexPage> {
                           // ORIGINAL PAGINATION BUTTONS (UNCHANGED)
                           if (_currentHizbQuarter != null)
                             Padding(
-                              padding: const EdgeInsets.only(top: 20),
+                              padding: const EdgeInsets.only(top: 20, bottom: 20),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  if (_currentHizbQuarter! < _maxHizbQuarter!)
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _currentHizbQuarter =
-                                              _currentHizbQuarter! + 1;
-                                        });
-
-                                        final userId = context
-                                            .read<UsersProvider>()
-                                            .selectedUser!
-                                            .id;
-
-                                        final evalProvider =
-                                            context.read<EvaluationsProvider>();
-
-                                        _loadAyat(userId, evalProvider);
-                                      },
-                                      child: Text('next'.tr),
-                                    )
-                                  else
-                                    const SizedBox(),
                                   if (_currentHizbQuarter! > _minHizbQuarter!)
                                     ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.primaryPurple,
+                                        foregroundColor: Colors.white,
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(12),
+                                      ),
                                       onPressed: () {
                                         setState(() {
                                           _currentHizbQuarter =
                                               _currentHizbQuarter! - 1;
                                         });
-
                                         final userId = context
                                             .read<UsersProvider>()
                                             .selectedUser!
                                             .id;
-
                                         final evalProvider =
                                             context.read<EvaluationsProvider>();
-
                                         _loadAyat(userId, evalProvider);
                                       },
-                                      child: Text('previous'.tr),
+                                      child: const Icon(Icons.arrow_back_ios_new, size: 20),
                                     )
                                   else
-                                    const SizedBox(),
+                                    const SizedBox(width: 48),
+                                  if (_currentHizbQuarter! < _maxHizbQuarter!)
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: AppColors.primaryPurple,
+                                        foregroundColor: Colors.white,
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(12),
+                                      ),
+                                      onPressed: () {
+                                        setState(() {
+                                          _currentHizbQuarter =
+                                              _currentHizbQuarter! + 1;
+                                        });
+                                        final userId = context
+                                            .read<UsersProvider>()
+                                            .selectedUser!
+                                            .id;
+                                        final evalProvider =
+                                            context.read<EvaluationsProvider>();
+                                        _loadAyat(userId, evalProvider);
+                                      },
+                                      child: const Icon(Icons.arrow_forward_ios, size: 20),
+                                    )
+                                  else
+                                    const SizedBox(width: 48),
                                 ],
                               ),
                             )

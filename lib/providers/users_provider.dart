@@ -198,7 +198,7 @@ class UsersProvider with ChangeNotifier {
   Future<void> deleteAccount() async {
     setLoading();
     try {
-      final result = await _usersService.deleteAccount();
+      final result = await _usersService.deleteAccount(selectedUser!.id);
       if (result == true) {
         // Clear all user data
         await logout();

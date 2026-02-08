@@ -93,7 +93,6 @@ class SahifaScreen extends StatelessWidget {
     UsersProvider usersProvider = Provider.of<UsersProvider>(context);
     EvaluationsProvider evaluationsProvider =
         Provider.of<EvaluationsProvider>(context);
-    final schoolProvider = context.read<SchoolProvider>();
 
     final uncategorized =
         EvaluationsController().getEvaluationById(0, evaluationsProvider);
@@ -137,7 +136,7 @@ class SahifaScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(
-              left: SizeConfig.getProportionalWidth(50),
+              left: SizeConfig.getProportionalWidth(75),
               right: SizeConfig.getProportionalWidth(50),
               top: SizeConfig.getProportionalHeight(50),
               bottom: SizeConfig.getProportionalHeight(55)),

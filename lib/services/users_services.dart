@@ -119,7 +119,7 @@ class UsersServices with ChangeNotifier {
     }
   }
 
-  Future<dynamic> deleteAccount() async {
+  Future<dynamic> deleteAccount(int userId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('accessToken');
@@ -136,7 +136,7 @@ class UsersServices with ChangeNotifier {
 
       var response = await http
           .delete(
-            Uri.parse('$_baseURL/auth/delete-account'),
+            Uri.parse('$_baseURL/users/$userId'),
             headers: headers,
           )
           .timeout(_timeout);
@@ -145,6 +145,7 @@ class UsersServices with ChangeNotifier {
         return true;
       } else {
         final responseData = json.decode(response.body);
+        print(responseData);
         return responseData['message'] ?? 'Failed to delete account';
       }
     } catch (ex) {

@@ -98,7 +98,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                             context.read<UsersProvider>();
                         await evaluationsProvider
                             .getQuranChartData(usersProvider.selectedUser!.id);
-                        Get.to(const SahifaScreen(firstScreen: false,));
+                        Get.to(const SahifaScreen(
+                          firstScreen: false,
+                        ));
                       },
                       text: "skip".tr,
                       width: 60,
@@ -119,8 +121,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                             });
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                                     SnackBar(
-                                    content: Text("you_are_at_first_level".tr)));
+                                SnackBar(
+                                    content:
+                                        Text("you_are_at_first_level".tr)));
                           }
                         },
                         text: "previous_level".tr,
@@ -142,8 +145,8 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
                               selectedIndex = selectedIndex + 1;
                             });
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                 SnackBar(content: Text("questions_finished".tr)));
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text("questions_finished".tr)));
                           }
                         },
                         text: "next_level".tr,

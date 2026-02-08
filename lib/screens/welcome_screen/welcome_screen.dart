@@ -37,6 +37,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     if (usersProvider.selectedUser != null) {
       await evaluationsProvider
           .getQuranChartData(usersProvider.selectedUser!.id!);
+      await evaluationsProvider.getAllEvaluations();
+
     }
   }
 

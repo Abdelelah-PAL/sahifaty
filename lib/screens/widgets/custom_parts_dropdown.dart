@@ -105,6 +105,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
                               Get.to(IndexPage(
                                 surah: surah,
                                 filterTypeId: FilterTypes.parts,
+                                juz: widget.part['id'],
                               ));
                               _removeOverlay();
                               widget.onToggle();

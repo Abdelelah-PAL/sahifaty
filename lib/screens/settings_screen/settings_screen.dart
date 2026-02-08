@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import '../../providers/general_provider.dart';
 import '../../providers/users_provider.dart';
 import '../../controllers/users_controller.dart';
+import 'privacy_policy_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -84,6 +85,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         generalProvider.toggleTheme();
                       },
                     );
+                  },
+                ),
+                const Divider(),
+                ListTile(
+                  leading: const Icon(Icons.privacy_tip, color: AppColors.primaryPurple),
+                  title: Text(
+                    'privacy_policy_title'.tr,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                  onTap: () {
+                    Get.to(() => const PrivacyPolicyScreen());
                   },
                 ),
                 const Divider(),
@@ -165,7 +180,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     }
                   },
                 ),
-                SizeConfig.customSizedBox(null, 2.5, null),
+
+                const Divider(),
+                SizeConfig.customSizedBox(null, 4, null),
 
                 Padding(
                   padding: EdgeInsets.only(
