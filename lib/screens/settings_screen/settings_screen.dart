@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sahifaty/core/utils/size_config.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/colors.dart';
 import '../../services/localization_service.dart';
 import '../widgets/custom_back_button.dart';
@@ -20,6 +21,41 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  late TapGestureRecognizer _emailRecognizer;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailRecognizer = TapGestureRecognizer()..onTap = _launchEmail;
+  }
+
+  @override
+  void dispose() {
+    _emailRecognizer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _launchEmail() async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'info@sahifati.org',
+      query: 'subject=Feedback',
+    );
+    try {
+      if (!await launchUrl(emailLaunchUri)) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Could not open email client'.tr),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,11 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             color: Colors.red,
                             fontWeight: FontWeight.w600,
                           ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              // TODO: open email client
-                              print('Email tapped');
-                            },
+                          recognizer: _emailRecognizer,
                         ),
                       ],
                     ),
