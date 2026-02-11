@@ -9,6 +9,8 @@ import 'package:sahifaty/screens/quran_view/index_page.dart';
 import '../../controllers/surahs_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
+import '../../providers/evaluations_provider.dart';
+import '../../providers/users_provider.dart';
 import 'custom_text.dart';
 import 'package:quran/quran.dart' as quran;
 
@@ -52,7 +54,7 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     );
   }
 
-  void _showOverlay(SurahsProvider surahsProvider) {
+  void _showOverlay(SurahsProvider surahsProvider, EvaluationsProvider evaluationsProvider, UsersProvider usersProvider) {
     if (_overlayEntry != null) return;
 
     final renderBox = context.findRenderObject() as RenderBox;
@@ -115,6 +117,8 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                           offset,
                           size,
                           surahsProvider,
+                          evaluationsProvider,
+                          usersProvider,
                           surahs,
                         );
                       },
@@ -151,6 +155,8 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     Offset parentOffset,
     Size buttonSize,
     SurahsProvider surahsProvider,
+    EvaluationsProvider evaluationsProvider,
+    UsersProvider usersProvider,
     List<Surah> surahs,
   ) {
     _removeSideOverlay();
@@ -166,15 +172,14 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     const overlayHeight = 200.0;
 
 // LEFT
-    double calculatedLeft =
-        parentOffset.dx - 180 + (_controller.value * 100);
+    double calculatedLeft = parentOffset.dx - 180 + (_controller.value * 100);
     calculatedLeft = calculatedLeft.clamp(0, screenWidth - overlayWidth);
 // TOP
     double calculatedTop = topPosition;
     calculatedTop = calculatedTop.clamp(0, screenHeight - overlayHeight);
 
     _sideOverlayEntry = OverlayEntry(
-      builder: (context) =>Positioned(
+      builder: (context) => Positioned(
         top: calculatedTop,
         left: calculatedLeft,
         width: overlayWidth,
@@ -197,7 +202,13 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                     _removeSideOverlay();
                     _removeOverlay();
                     _controller.value = 0.0;
-                    Get.to(IndexPage(surah: sura, filterTypeId: FilterTypes.thirds,));
+                    Get.to(IndexPage(
+                      surah: sura,
+                      filterTypeId: FilterTypes.thirds,
+                    ))?.then((_) {
+                      evaluationsProvider
+                          .getQuranChartData(usersProvider.selectedUser!.id);
+                    });
                   },
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -205,7 +216,9 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: CustomText(
-                        text: Get.locale?.languageCode == 'ar' ? quran.getSurahNameArabic(sura.id) : quran.getSurahName(sura.id),
+                        text: Get.locale?.languageCode == 'ar'
+                            ? quran.getSurahNameArabic(sura.id)
+                            : quran.getSurahName(sura.id),
                         fontSize: 13,
                         withBackground: false,
                         color: Colors.black87,
@@ -252,13 +265,14 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
     if (!mounted) return;
 
     final surahsProvider = Provider.of<SurahsProvider>(context, listen: false);
-
+    EvaluationsProvider evaluationsProvider = Provider.of<EvaluationsProvider>(context);
+    UsersProvider usersProvider = Provider.of<UsersProvider>(context);
     if (_overlayEntry != null) return;
 
     if (widget.isOpen) {
       _toggleAnimation();
       WidgetsBinding.instance
-          .addPostFrameCallback((_) => _showOverlay(surahsProvider));
+          .addPostFrameCallback((_) => _showOverlay(surahsProvider, evaluationsProvider, usersProvider));
     } else {
       _toggleAnimation();
       _removeOverlay();
