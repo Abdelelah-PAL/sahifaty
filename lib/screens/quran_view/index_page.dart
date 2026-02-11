@@ -9,12 +9,14 @@ import 'package:sahifaty/controllers/filter_types.dart';
 import 'package:sahifaty/models/ayat.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
+import 'package:sahifaty/screens/main_screen/main_screen.dart';
 import '../../controllers/general_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
 import '../../models/surah.dart';
 import '../../providers/general_provider.dart';
+import '../widgets/custom_back_button.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage(
@@ -303,6 +305,7 @@ class _IndexPageState extends State<IndexPage> {
                               : widget.surah.nameAr,
                         ),
                         centerTitle: true,
+                        leading: CustomBackButton(onPressed: () => Get.off(const MainScreen()),),
                       ),
                     ),
                   ),

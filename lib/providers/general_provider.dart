@@ -52,8 +52,6 @@ class GeneralProvider with ChangeNotifier {
       partsMenuItem = false;
       subjectsMenuItem = false;
     }
-    print(hizbsMenuItem);
-    print(subjectsMenuItem);
     notifyListeners();
   }
 

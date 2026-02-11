@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:sahifaty/models/surah.dart';
 import 'package:sahifaty/services/surahs_services.dart';
 
+import '../controllers/surahs_controller.dart';
+
 class SurahsProvider with ChangeNotifier {
   List<Surah> surahsByJuz = [];
   int totalSurahs = 1;
   bool isLoading = false;
   final SurahsServices _surahsServices = SurahsServices();
+  final Map<int, List<Surah>> hizbSurahs = {};
 
   Future<void> getSurahsByJuz(int juz) async {
     setLoading();
@@ -20,6 +23,23 @@ class SurahsProvider with ChangeNotifier {
     resetLoading();
   }
 
+  Future<void> loadAllHizbSurahs(List<Map<String, dynamic>> hizbs) async {
+    notifyListeners();
+    isLoading = true;
+
+    final futures = hizbs.map((hizb) async {
+      final surahs =
+      await SurahsController().loadSurahsByHizb(hizb['id']);
+      hizbSurahs[hizb['id']] = surahs;
+    });
+
+    await Future.wait(futures);
+
+    isLoading = false;
+
+    notifyListeners();
+
+  }
   void setLoading() {
     isLoading = true;
     notifyListeners();

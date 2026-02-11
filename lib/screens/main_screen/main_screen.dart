@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/controllers/filter_types.dart';
 import 'package:sahifaty/screens/widgets/custom_hizbs_dropdown.dart';
 import '../../controllers/general_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/evaluations_provider.dart';
 import '../../providers/general_provider.dart';
+import '../../providers/surahs_provider.dart';
 import '../../providers/users_provider.dart';
-import '../settings_screen/settings_screen.dart';
 import '../widgets/bar_chart_widget.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_parts_dropdown.dart';
@@ -57,6 +58,7 @@ class _MainScreenState extends State<MainScreen> {
     final generalProvider = Provider.of<GeneralProvider>(context);
     final usersProvider = Provider.of<UsersProvider>(context);
     final evaluationsProvider = Provider.of<EvaluationsProvider>(context);
+    final surahsProvider = Provider.of<SurahsProvider>(context);
 
     return evaluationsProvider.isLoading == true
         ? const Center(
@@ -100,21 +102,37 @@ class _MainScreenState extends State<MainScreen> {
                             child: MenuItem(
                               text: "hizbs_icons".tr,
                               onChanged: (v) {
-                                if (v) generalProvider.toggleHizbMenuItem();
+                                if (!v) return;
+
+                                // 1️⃣Switch view
+                                generalProvider.toggleHizbMenuItem();
+
+                                // 2️ Close popup first
+                                Navigator.pop(context);
+
+                                // 3️⃣ Start loading after frame
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  context
+                                      .read<SurahsProvider>()
+                                      .loadAllHizbSurahs(
+                                          GeneralController().hizbList);
+                                });
                               },
                               index: 3,
                             ),
                           ),
-                          PopupMenuItem(
-                            value: '4',
-                            child: MenuItem(
-                              text: "topics_icons".tr,
-                              onChanged: (v) {
-                                if (v) generalProvider.toggleSubjectMenuItem();
-                              },
-                              index: 4,
-                            ),
-                          ),
+
+                          // PopupMenuItem(
+                          //   value: '4',
+                          //   child: MenuItem(
+                          //     text: "topics_icons".tr,
+                          //     onChanged: (v) {
+                          //       if (v) generalProvider.toggleSubjectMenuItem();
+                          //     },
+                          //     index: 4,
+                          //   ),
+                          // ),
                         ];
                       },
                     ),
@@ -149,34 +167,37 @@ class _MainScreenState extends State<MainScreen> {
 
                   SizedBox(height: SizeConfig.getProportionalHeight(20)),
 
-                  // ✅ Dynamically build dropdowns (no nested ListView)
-                  ...List.generate(
-                    generalProvider.mainScreenView == 1
-                        ? 3
-                        : generalProvider.mainScreenView == 2
-                            ? 30
-                            : generalProvider.mainScreenView == 3
-                                ? 60
-                                : 0,
-                    (index) => Padding(
-                      padding: const EdgeInsets.only(bottom: 25),
-                      child: generalProvider.mainScreenView == 1
-                          ? CustomThirdsDropdown(
-                              third: index + 1,
-                              isOpen: openIndex == index,
-                              onToggle: () => toggle(index),
-                            )
+                  if (generalProvider.mainScreenView == FilterTypes.hizbs &&
+                      surahsProvider.isLoading)
+                    const CircularProgressIndicator()
+                  else
+                    ...List.generate(
+                      generalProvider.mainScreenView == 1
+                          ? 3
                           : generalProvider.mainScreenView == 2
-                              ? CustomPartsDropdown(
-                                  part: GeneralController().parts[index],
-                                  isOpen: openIndex == index,
-                                  onToggle: () => toggle(index),
-                                )
-                              : CustomHizbsButton(
-                                  hizb: GeneralController().hizbList[index],
-                                ),
+                              ? 30
+                              : generalProvider.mainScreenView == 3
+                                  ? 60
+                                  : 0,
+                      (index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 25),
+                        child: generalProvider.mainScreenView == 1
+                            ? CustomThirdsDropdown(
+                                third: index + 1,
+                                isOpen: openIndex == index,
+                                onToggle: () => toggle(index),
+                              )
+                            : generalProvider.mainScreenView == 2
+                                ? CustomPartsDropdown(
+                                    part: GeneralController().parts[index],
+                                    isOpen: openIndex == index,
+                                    onToggle: () => toggle(index),
+                                  )
+                                : CustomHizbsButton(
+                                    hizb: GeneralController().hizbList[index],
+                                  ),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),

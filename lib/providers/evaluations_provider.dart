@@ -52,12 +52,17 @@ class EvaluationsProvider with ChangeNotifier {
   Future<void> getQuranChartData(int userId) async {
     try {
       setLoading();
+      chartEvaluationData.clear();
+      print(chartEvaluationData.length);
       final response = await _evaluationsServices.getQuranChartData(userId);
 
       totalCount = response['total'];
       chartEvaluationData = (response['evaluations'] as List)
           .map<ChartEvaluationData>((e) => ChartEvaluationData.fromJson(e))
           .toList();
+      print(chartEvaluationData.length);
+
+      notifyListeners();
     } catch (e) {
       if (kDebugMode) {
         print("Error fetching chart data: $e");

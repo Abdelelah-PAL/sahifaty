@@ -3,7 +3,9 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/controllers/filter_types.dart';
 import 'package:sahifaty/controllers/surahs_controller.dart';
+import 'package:sahifaty/providers/evaluations_provider.dart';
 import 'package:sahifaty/providers/surahs_provider.dart';
+import 'package:sahifaty/providers/users_provider.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../quran_view/index_page.dart';
@@ -42,7 +44,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
     );
   }
 
-  void _showOverlay(SurahsProvider surahsProvider) async {
+  void _showOverlay(SurahsProvider surahsProvider, EvaluationsProvider evaluationsProvider, UsersProvider usersProvider) async {
     if (_overlayEntry != null) return;
 
     // Start fetching surahs for the selected part
@@ -106,7 +108,10 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
                                 surah: surah,
                                 filterTypeId: FilterTypes.parts,
                                 juz: widget.part['id'],
-                              ));
+                              ))?.then((_) {
+                                evaluationsProvider.getQuranChartData(
+                                    usersProvider.selectedUser!.id);
+                              });
                               _removeOverlay();
                               widget.onToggle();
                             },
@@ -148,12 +153,16 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
   void didUpdateWidget(covariant CustomPartsDropdown oldWidget) {
     super.didUpdateWidget(oldWidget);
     SurahsProvider surahsProvider = Provider.of<SurahsProvider>(context);
+    EvaluationsProvider evaluationsProvider = Provider.of<EvaluationsProvider>(context);
+    UsersProvider usersProvider = Provider.of<UsersProvider>(context);
+
+
     // Avoid triggering overlay changes during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
       if (widget.isOpen && _overlayEntry == null) {
-        _showOverlay(surahsProvider);
+        _showOverlay(surahsProvider, evaluationsProvider, usersProvider);
       } else if (!widget.isOpen && _overlayEntry != null) {
         _removeOverlay();
       }
