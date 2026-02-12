@@ -53,14 +53,12 @@ class EvaluationsProvider with ChangeNotifier {
     try {
       setLoading();
       chartEvaluationData.clear();
-      print(chartEvaluationData.length);
       final response = await _evaluationsServices.getQuranChartData(userId);
 
       totalCount = response['total'];
       chartEvaluationData = (response['evaluations'] as List)
           .map<ChartEvaluationData>((e) => ChartEvaluationData.fromJson(e))
           .toList();
-      print(chartEvaluationData.length);
 
       notifyListeners();
     } catch (e) {
