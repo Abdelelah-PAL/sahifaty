@@ -161,6 +161,7 @@ class _MainScreenState extends State<MainScreen> {
                   ),
 
                   if (!widget.comesFirst)
+
                     BarChartWidget(evaluationsProvider: evaluationsProvider)
                   else
                     SizedBox(height: SizeConfig.getProportionalHeight(250)),
@@ -169,25 +170,28 @@ class _MainScreenState extends State<MainScreen> {
 
                   if (generalProvider.mainScreenView == FilterTypes.hizbs &&
                       surahsProvider.isLoading)
-                    const CircularProgressIndicator()
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 50.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
                   else
                     ...List.generate(
-                      generalProvider.mainScreenView == 1
+                      generalProvider.mainScreenView == FilterTypes.thirds
                           ? 3
-                          : generalProvider.mainScreenView == 2
+                          : generalProvider.mainScreenView == FilterTypes.parts
                               ? 30
-                              : generalProvider.mainScreenView == 3
+                              : generalProvider.mainScreenView == FilterTypes.hizbs
                                   ? 60
                                   : 0,
                       (index) => Padding(
                         padding: const EdgeInsets.only(bottom: 25),
-                        child: generalProvider.mainScreenView == 1
+                        child: generalProvider.mainScreenView == FilterTypes.thirds
                             ? CustomThirdsDropdown(
                                 third: index + 1,
                                 isOpen: openIndex == index,
                                 onToggle: () => toggle(index),
                               )
-                            : generalProvider.mainScreenView == 2
+                            : generalProvider.mainScreenView == FilterTypes.parts
                                 ? CustomPartsDropdown(
                                     part: GeneralController().parts[index],
                                     isOpen: openIndex == index,
