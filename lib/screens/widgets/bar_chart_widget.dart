@@ -26,7 +26,9 @@ class BarChartWidget extends StatelessWidget {
 
       if (evaluation == null) continue;
 
-      final value = evaluation.percentage?.toDouble() ?? 0;
+      final raw = evaluation.percentage ?? 0;
+      final value = (raw * 100).round() / 100;
+
       if (value > maxY) maxY = value;
 
       final color = generalController.dropdownOptions[i]['color'] as Color;

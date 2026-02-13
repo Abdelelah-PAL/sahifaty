@@ -163,7 +163,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   },
                 ),
                 SizeConfig.customSizedBox(null, 5, null),
-                SizedBox(height: SizeConfig.getProportionalHeight(50)),
                 CustomButton(
                   onPressed: () async {
                     final schoolProvider = context.read<SchoolProvider>();
