@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sahifaty/models/surah.dart';
 import 'package:sahifaty/services/surahs_services.dart';
 
@@ -24,21 +26,35 @@ class SurahsProvider with ChangeNotifier {
   }
 
   Future<void> loadAllHizbSurahs(List<Map<String, dynamic>> hizbs) async {
-    notifyListeners();
+    if (hizbSurahs.length == hizbs.length) return;
+
     isLoading = true;
-
-    final futures = hizbs.map((hizb) async {
-      final surahs =
-      await SurahsController().loadSurahsByHizb(hizb['id']);
-      hizbSurahs[hizb['id']] = surahs;
-    });
-
-    await Future.wait(futures);
-
-    isLoading = false;
-
     notifyListeners();
 
+    try {
+      final String response = await rootBundle.loadString('assets/json/data.json');
+      final Map<String, dynamic> jsonData = json.decode(response);
+      final List<dynamic> ayahs = jsonData['data'];
+
+      for (var hizb in hizbs) {
+        int hizbId = hizb['id'];
+        final List<Surah> allSurahs = ayahs
+            .where((item) => item['hizb'] == hizbId)
+            .map((item) => Surah.fromJson(item['surah']))
+            .toList();
+
+        final uniqueSurahs = {
+          for (var surah in allSurahs) surah.id: surah,
+        }.values.toList();
+
+        hizbSurahs[hizbId] = uniqueSurahs;
+      }
+    } catch (e) {
+      debugPrint('Error loading hizbs: $e');
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
   }
   void setLoading() {
     isLoading = true;

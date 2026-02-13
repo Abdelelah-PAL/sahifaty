@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/models/auth_data.dart';
+import 'package:sahifaty/models/user.dart';
 import 'package:sahifaty/screens/welcome_screen/welcome_screen.dart';
 import 'package:sahifaty/screens/widgets/custom_button.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../controllers/users_controller.dart';
 import '../../core/constants/assets.dart';
 import '../../core/constants/colors.dart';
@@ -42,7 +41,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    UsersProvider authenticationProvider = Provider.of<UsersProvider>(context);
+    UsersProvider usersProvider = Provider.of<UsersProvider>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -61,11 +60,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   child: Column(
                     children: [
                       SizeConfig.customSizedBox(
-                          1.5, 3.5, Image.asset(
-                        Assets.logo,
-                        width: 100,
-                        height: 100,
-                      )),
+                          1.5,
+                          3.5,
+                          Image.asset(
+                            Assets.logo,
+                            width: 100,
+                            height: 100,
+                          )),
                       SizeConfig.customSizedBox(null, 100, null),
                       Padding(
                           padding: EdgeInsets.only(
@@ -82,36 +83,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         hintText: 'enter_email_hint'.tr,
                         obscureText: false,
                         textEditingController:
-                        _userController.signUpEmailController,
+                            _userController.signUpEmailController,
                         borderColor:
-                        _userController.signUpEmailTextFieldBorderColor,
+                            _userController.signUpEmailTextFieldBorderColor,
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
                         hintText: 'username_hint'.tr,
                         obscureText: false,
                         textEditingController:
-                        _userController.signUpUsernameController,
+                            _userController.signUpUsernameController,
                         borderColor:
-                        _userController.signUpEmailTextFieldBorderColor,
+                            _userController.signUpEmailTextFieldBorderColor,
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
                         hintText: 'password_hint'.tr,
                         obscureText: true,
                         textEditingController:
-                        _userController.signUpPasswordController,
+                            _userController.signUpPasswordController,
                         borderColor:
-                        _userController.signUpPasswordTextFieldBorderColor,
+                            _userController.signUpPasswordTextFieldBorderColor,
                       ),
                       SizeConfig.customSizedBox(null, 50, null),
                       CustomAuthenticationTextField(
                         hintText: 'confirm_password_hint'.tr,
                         obscureText: true,
                         textEditingController:
-                        _userController.signUpConfirmedPasswordController,
+                            _userController.signUpConfirmedPasswordController,
                         borderColor:
-                        _userController.confirmPasswordTextFieldBorderColor,
+                            _userController.confirmPasswordTextFieldBorderColor,
                       ),
                       SizeConfig.customSizedBox(null, 20, null),
                       CustomButton(
@@ -131,7 +132,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             )) {
                               setState(() {
                                 _userController
-                                    .signUpEmailTextFieldBorderColor =
+                                        .signUpEmailTextFieldBorderColor =
                                     AppColors.errorColor;
                               });
                               throw Exception("invalid_email".tr);
@@ -167,11 +168,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                             UsersController().clearTextFields();
 
-                            final prefs = await SharedPreferences.getInstance();
-                            prefs.setString(
-                                'accessToken', authData.accessToken!);
-                            // prefs.setString('refresh_token', authData.refreshToken!);
+                            User user = User(
+                                id: authData.user!.id,
+                                fullName: authData.user!.fullName,
+                                email: authData.user!.email);
+                            usersProvider.setSelectedUser(user);
 
+                            await usersProvider.saveUserSession(
+                                user, authData.accessToken!);
                             Get.to(() => const WelcomeScreen());
                           } catch (e) {
                             // ✅ All validation & register errors handled here
@@ -204,17 +208,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         tailText: "login_action".tr,
                         onTap: () {
                           UsersProvider().resetSignUpErrorText();
-                          Get.to(() =>
-                          const LoginScreen(
-                            firstScreen: false,
-                          ));
+                          Get.to(() => const LoginScreen(
+                                firstScreen: false,
+                              ));
                         },
                       )
                     ],
                   ),
                 ),
               ),
-              if (authenticationProvider.isLoading)
+              if (usersProvider.isLoading)
                 const Positioned.fill(
                   child: Center(
                     child: CircularProgressIndicator(),
