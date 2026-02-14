@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quran/quran.dart' as quran;
+import '../widgets/no_pop_scope.dart';
 
 void main() => runApp(const MyApp());
 
@@ -19,8 +20,9 @@ class QuranViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Quran Viewer")),
+    return NoPopScope(
+      child: Scaffold(
+        appBar: AppBar(title: const Text("Quran Viewer")),
       body: PageView.builder(
         itemCount: quran.totalSurahCount,
         itemBuilder: (context, surahIndex) {
@@ -57,6 +59,7 @@ class QuranViewer extends StatelessWidget {
             ),
           );
         },
+        ),
       ),
     );
   }

@@ -131,7 +131,7 @@ class _InitialScreenState extends State<InitialScreen> {
     if (isLoggedIn && usersProvider.selectedUser != null) {
       try {
         await evaluationsProvider
-            .getQuranChartData(usersProvider.selectedUser!.id!);
+            .getQuranChartData(usersProvider.selectedUser!.id);
         Get.off(() => const SahifaScreen(firstScreen: true,));
       } catch (e) {
         Get.off(() => const LoginScreen(firstScreen: true));

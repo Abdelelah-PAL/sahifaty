@@ -17,6 +17,7 @@ import '../../core/utils/size_config.dart';
 import '../../models/surah.dart';
 import '../../providers/general_provider.dart';
 import '../widgets/custom_back_button.dart';
+import '../widgets/no_pop_scope.dart';
 
 class IndexPage extends StatefulWidget {
   IndexPage(
@@ -245,8 +246,10 @@ class _IndexPageState extends State<IndexPage> {
     final evaluationProvider = Provider.of<EvaluationsProvider>(context);
 
     if (evaluationProvider.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+      return const NoPopScope(
+        child: Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
       );
     }
 
@@ -293,8 +296,9 @@ class _IndexPageState extends State<IndexPage> {
                           foregroundColor: Colors.black,
                         ),
                       ),
-                child: Scaffold(
-                  appBar: PreferredSize(
+                child: NoPopScope(
+                  child: Scaffold(
+                    appBar: PreferredSize(
                     preferredSize: const Size.fromHeight(kToolbarHeight),
                     child: Directionality(
                       textDirection: TextDirection.ltr,
@@ -384,6 +388,7 @@ class _IndexPageState extends State<IndexPage> {
                         ],
                       ),
                     ),
+                  ),
                   ),
                 ),
               );

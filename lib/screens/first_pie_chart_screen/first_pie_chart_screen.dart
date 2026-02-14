@@ -9,6 +9,7 @@ import '../../core/utils/size_config.dart';
 import '../sahifa_screen/sahifa_screen.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/no_pop_scope.dart';
 
 class FirstPieChartScreen extends StatelessWidget {
   const FirstPieChartScreen({super.key});
@@ -22,7 +23,8 @@ class FirstPieChartScreen extends StatelessWidget {
     final evaluatedPercentage =
         (100 - (uncategorized?.percentage ?? 0)).toStringAsFixed(2);
 
-    return Scaffold(
+    return NoPopScope(
+      child: Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
         // trailing: const CustomBackButton(),
@@ -102,6 +104,7 @@ class FirstPieChartScreen extends StatelessWidget {
             ),
           ),
         ),
+      ),
       ),
     );
   }

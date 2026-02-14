@@ -15,6 +15,7 @@ import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/user_profile_badge.dart';
+import '../widgets/no_pop_scope.dart';
 
 class SahifaScreen extends StatelessWidget {
   const SahifaScreen({super.key, required this.firstScreen});
@@ -98,8 +99,9 @@ class SahifaScreen extends StatelessWidget {
         EvaluationsController().getEvaluationById(0, evaluationsProvider);
     final evaluatedPercentage =
         (100 - (uncategorized?.percentage ?? 0)).toStringAsFixed(2);
-    return Scaffold(
-      appBar: PreferredSize(
+    return NoPopScope(
+      child: Scaffold(
+        appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Directionality(
           textDirection: TextDirection.ltr,
@@ -178,6 +180,7 @@ class SahifaScreen extends StatelessWidget {
                   height: 35),
             ],
           ),
+        ),
         ),
       ),
     );

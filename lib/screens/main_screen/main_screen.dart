@@ -16,6 +16,7 @@ import '../widgets/custom_parts_dropdown.dart';
 import '../widgets/custom_thirds_dropdown.dart';
 import '../widgets/custom_text.dart';
 import 'widgets/menu_item.dart';
+import '../widgets/no_pop_scope.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key, this.comesFirst = false});
@@ -64,8 +65,9 @@ class _MainScreenState extends State<MainScreen> {
         ? const Center(
             child: CircularProgressIndicator(),
           )
-        : Scaffold(
-            appBar: PreferredSize(
+        : NoPopScope(
+            child: Scaffold(
+              appBar: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight),
               child: Directionality(
                 textDirection: TextDirection.ltr,
@@ -204,6 +206,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                 ],
               ),
+            ),
             ),
           );
   }

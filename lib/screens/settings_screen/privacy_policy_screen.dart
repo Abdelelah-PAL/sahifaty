@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../core/constants/colors.dart';
 import '../widgets/custom_back_button.dart';
+import '../widgets/no_pop_scope.dart';
 
 class PrivacyPolicyScreen extends StatelessWidget {
   const PrivacyPolicyScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+    return NoPopScope(
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Directionality(
@@ -93,6 +95,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             const SizedBox(height: 30),
           ],
         ),
+      ),
       ),
     );
   }

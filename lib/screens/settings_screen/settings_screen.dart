@@ -12,6 +12,7 @@ import '../../providers/general_provider.dart';
 import '../../providers/users_provider.dart';
 import '../../controllers/users_controller.dart';
 import 'privacy_policy_screen.dart';
+import '../widgets/no_pop_scope.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -58,9 +59,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: PreferredSize(
+    return NoPopScope(
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Directionality(
           textDirection: TextDirection.ltr,
@@ -250,6 +252,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 )
               ],
           ),
+        ),
       ),
     );
   }

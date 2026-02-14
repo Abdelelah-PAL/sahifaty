@@ -8,6 +8,7 @@ import '../../providers/users_provider.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/no_pop_scope.dart';
 import 'widgets/custom_auth_textfield.dart';
 import 'widgets/custom_auth_textfield_header.dart';
 
@@ -43,19 +44,20 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     // );
     var authenticationProvider = Provider.of<UsersProvider>(context);
 
-    return Scaffold(
+    return NoPopScope(
+      child: Scaffold(
+        backgroundColor: Colors.white,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight),
           child: Directionality(
             textDirection: TextDirection.ltr,
             child: AppBar(
-              backgroundColor: AppColors.backgroundColor,
+              backgroundColor: Colors.white,
               elevation: 0,
               leading: const CustomBackButton(),
             ),
           ),
         ),
-        backgroundColor: AppColors.backgroundColor,
         resizeToAvoidBottomInset: false,
         body: GestureDetector(
           behavior: HitTestBehavior.opaque,
@@ -110,6 +112,6 @@ class ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       Fluttertoast.showToast(msg: "لقد تم إرسال رمز تحقق إلى بريدك الإلكتروني");
                     }),
               ])),
-        ));
+        )));
   }
 }

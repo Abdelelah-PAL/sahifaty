@@ -10,6 +10,7 @@ import '../sahifa_screen/sahifa_screen.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/no_pop_scope.dart';
 import 'content_item_card.dart';
 
 class QuestionsScreen extends StatefulWidget {
@@ -35,8 +36,9 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     SchoolProvider schoolProvider = Provider.of<SchoolProvider>(context);
     EvaluationsProvider evaluationsProvider =
         Provider.of<EvaluationsProvider>(context);
-    return Scaffold(
-      appBar: PreferredSize(
+    return NoPopScope(
+      child: Scaffold(
+        appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight),
         child: Directionality(
           textDirection: TextDirection.ltr,
@@ -159,6 +161,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

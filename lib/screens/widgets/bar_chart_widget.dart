@@ -74,7 +74,7 @@ class BarChartWidget extends StatelessWidget {
                         group.x, evaluationsProvider);
                     return BarTooltipItem(
                       // '',
-                      '${rod.toY.toStringAsFixed(1)}%\n',
+                      '${rod.toY.toStringAsFixed(2)}%\n',
                       const TextStyle(
                         color: Colors.blueGrey,
                         fontWeight: FontWeight.bold,

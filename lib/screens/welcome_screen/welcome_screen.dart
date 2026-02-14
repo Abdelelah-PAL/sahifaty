@@ -13,6 +13,7 @@ import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/user_profile_badge.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/no_pop_scope.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -100,22 +101,23 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   // }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight),
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: AppBar(
-            backgroundColor: AppColors.backgroundColor,
+    return NoPopScope(
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: Directionality(
+            textDirection: TextDirection.ltr,
+            child: AppBar(
+              backgroundColor: AppColors.backgroundColor,
+            ),
           ),
         ),
-      ),
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
             padding: EdgeInsets.only(
               top: SizeConfig.getProportionalHeight(50),
-              bottom: SizeConfig.getProportionalHeight(55),
+              bottom: SizeConfig.getProportionalHeight(20),
               right: SizeConfig.getProportionalWidth(10),
               left: SizeConfig.getProportionalWidth(10),
             ),
@@ -134,7 +136,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         textAlign: TextAlign.center,
                       )),
                 ),
-                SizeConfig.customSizedBox(null, 5, null),
+                SizeConfig.customSizedBox(null, 10, null),
                 Consumer<EvaluationsProvider>(
                   builder: (context, evaluationsProvider, child) {
                     List<PieChartSectionData> sections = [];
@@ -162,7 +164,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         )));
                   },
                 ),
-                SizeConfig.customSizedBox(null, 5, null),
+                SizeConfig.customSizedBox(null, 10, null),
                 CustomButton(
                   onPressed: () async {
                     final schoolProvider = context.read<SchoolProvider>();
@@ -178,6 +180,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ],
             ),
           ),
+        ),
         ),
       ),
     );

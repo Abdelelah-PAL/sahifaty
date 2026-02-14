@@ -16,6 +16,7 @@ import '../sahifa_screen/sahifa_screen.dart';
 import '../welcome_screen/welcome_screen.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/no_pop_scope.dart';
 import 'forget_password_screen.dart';
 import 'sign_up_screen.dart';
 import 'widgets/custom_auth_footer.dart';
@@ -54,125 +55,130 @@ class _LoginScreenState extends State<LoginScreen> {
     UsersProvider usersProvider = Provider.of<UsersProvider>(context);
     EvaluationsProvider evaluationsProvider =
         Provider.of<EvaluationsProvider>(context);
-
-    return Scaffold(
-        backgroundColor: AppColors.backgroundColor,
+    final Size size = MediaQuery.of(context).size;
+    return NoPopScope(
+      child: Scaffold(
+        backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
-        body: Stack(
-          children: [
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => FocusScope.of(context).unfocus(),
-              child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: SizeConfig.getProportionalWidth(25),
-                      vertical: SizeConfig.getProportionalWidth(45)),
-                  child: SingleChildScrollView(
-                    child: Column(children: [
-                      SizeConfig.customSizedBox(
-                          1.5,
-                          3.5,
-                          Image.asset(
-                            Assets.logo,
-                            width: 100,
-                            height: 100,
-                          )),
-                      SizeConfig.customSizedBox(null, 15, null),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: SizeConfig.getProportionalHeight(10),
-                              bottom: SizeConfig.getProportionalHeight(13)),
-                          child: CustomText(
-                            text: "welcome_back".tr,
-                            fontSize: 24,
-                            fontWeight: FontWeight.normal,
-                            color: AppColors.blackFontColor,
-                            withBackground: false,
-                          )),
-                      CustomAuthTextFieldHeader(
-                        text: 'email_label'.tr,
-                      ),
-                      CustomAuthenticationTextField(
-                          hintText: 'email_hint'.tr,
-                          obscureText: false,
-                          textEditingController:
-                              _userController.loginEmailController,
-                          borderColor: _userController
-                              .loginPasswordTextFieldBorderColor),
-                      CustomAuthTextFieldHeader(
-                        text: 'password_label'.tr,
-                      ),
-                      CustomAuthenticationTextField(
-                        hintText: 'password_hint'.tr,
-                        obscureText: true,
-                        textEditingController:
-                            _userController.loginPasswordController,
-                        borderColor:
-                            _userController.loginPasswordTextFieldBorderColor,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+        body: SingleChildScrollView(
+          child: SizedBox(
+            height: size.height,
+            width: size.width,
+            child: Stack(
+              children: [
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => FocusScope.of(context).unfocus(),
+                  child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: SizeConfig.getProportionalWidth(25),
+                          vertical: SizeConfig.getProportionalWidth(45)),
+                      child: SingleChildScrollView(
+                        child: Column(children: [
+                          SizeConfig.customSizedBox(
+                              1.5,
+                              3.5,
+                              Image.asset(
+                                Assets.logo,
+                                width: 100,
+                                height: 100,
+                              )),
+                          SizeConfig.customSizedBox(null, 15, null),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: SizeConfig.getProportionalHeight(10),
+                                  bottom: SizeConfig.getProportionalHeight(13)),
+                              child: CustomText(
+                                text: "welcome_back".tr,
+                                fontSize: 24,
+                                fontWeight: FontWeight.normal,
+                                color: AppColors.blackFontColor,
+                                withBackground: false,
+                              )),
+                          CustomAuthTextFieldHeader(
+                            text: 'email_label'.tr,
+                          ),
+                          CustomAuthenticationTextField(
+                              hintText: 'email_hint'.tr,
+                              obscureText: false,
+                              textEditingController:
+                                  _userController.loginEmailController,
+                              borderColor: _userController
+                                  .loginPasswordTextFieldBorderColor),
+                          CustomAuthTextFieldHeader(
+                            text: 'password_label'.tr,
+                          ),
+                          CustomAuthenticationTextField(
+                            hintText: 'password_hint'.tr,
+                            obscureText: true,
+                            textEditingController:
+                                _userController.loginPasswordController,
+                            borderColor:
+                                _userController.loginPasswordTextFieldBorderColor,
+                          ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: AppColors.textFieldBorderColor,
-                                      width: 2,
-                                    ),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  width: SizeConfig.getProportionalWidth(20),
-                                  height: SizeConfig.getProportionalHeight(20),
-                                  child: Theme(
-                                    data: Theme.of(context).copyWith(
-                                      checkboxTheme:
-                                          const CheckboxThemeData(), // reset it
-                                    ),
-                                    child: Checkbox(
-                                      value: _userController.rememberMe,
-                                      activeColor: Colors.grey,
-                                      checkColor: AppColors.backgroundColor,
-                                      onChanged: (v) => setState(() =>
-                                          _userController.toggleRememberMe()),
-                                      side: const BorderSide(
+                              Row(
+                                children: [
+                                  Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
                                           color: AppColors.textFieldBorderColor,
-                                          width: 2),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4)),
+                                          width: 2,
+                                        ),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      width: SizeConfig.getProportionalWidth(20),
+                                      height: SizeConfig.getProportionalHeight(20),
+                                      child: Theme(
+                                        data: Theme.of(context).copyWith(
+                                          checkboxTheme:
+                                              const CheckboxThemeData(), // reset it
+                                        ),
+                                        child: Checkbox(
+                                          value: _userController.rememberMe,
+                                          activeColor: Colors.grey,
+                                          checkColor: AppColors.backgroundColor,
+                                          onChanged: (v) => setState(() =>
+                                              _userController.toggleRememberMe()),
+                                          side: const BorderSide(
+                                              color: AppColors.textFieldBorderColor,
+                                              width: 2),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4)),
+                                        ),
+                                      )),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        left: SizeConfig.getProportionalWidth(10)),
+                                    child: Text(
+                                      "remember_me".tr,
+                                      style: TextStyle(
+                                        fontFamily: AppFonts.primaryFont,
+                                        fontSize: 15,
+                                        color: AppColors.blackFontColor,
+                                      ),
                                     ),
-                                  )),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: SizeConfig.getProportionalWidth(10)),
+                                  ),
+                                ],
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    {Get.to(() => const ForgotPasswordScreen())},
                                 child: Text(
-                                  "remember_me".tr,
+                                  "forgot_password".tr,
                                   style: TextStyle(
                                     fontFamily: AppFonts.primaryFont,
-                                    fontSize: 15,
-                                    color: AppColors.blackFontColor,
+                                    fontSize: 16,
+                                    color: AppColors.errorColor,
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          TextButton(
-                            onPressed: () =>
-                                {Get.to(() => const ForgotPasswordScreen())},
-                            child: Text(
-                              "forgot_password".tr,
-                              style: TextStyle(
-                                fontFamily: AppFonts.primaryFont,
-                                fontSize: 16,
-                                color: AppColors.errorColor,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                       SizeConfig.customSizedBox(null, 30, null),
                       CustomButton(
                         text: 'login'.tr,
@@ -402,6 +408,6 @@ class _LoginScreenState extends State<LoginScreen> {
             if (usersProvider.isLoading)
               const Center(child: CircularProgressIndicator()),
           ],
-        ));
+        )))));
   }
 }
