@@ -258,8 +258,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                   .getColorForEvaluation(
                                       ayah.userEvaluation!.evaluation!.id);
                             }
+
                             return Card(
-                              color: cardColor,
+                              color: cardColor ?? AppColors.uncategorizedColor,
                               margin: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
                               child: Column(
@@ -270,6 +271,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                     ayah.text,
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
+                                      color: AppColors.whiteFontColor,
                                       fontSize: 18,
                                       fontFamily: 'UthmanicHafs',
                                     ),

@@ -1,11 +1,53 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/colors.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/no_pop_scope.dart';
 
-class PrivacyPolicyScreen extends StatelessWidget {
+class PrivacyPolicyScreen extends StatefulWidget {
   const PrivacyPolicyScreen({super.key});
+
+  @override
+  State<PrivacyPolicyScreen> createState() => _PrivacyPolicyScreenState();
+}
+
+class _PrivacyPolicyScreenState extends State<PrivacyPolicyScreen> {
+  late TapGestureRecognizer _emailRecognizer;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailRecognizer = TapGestureRecognizer()..onTap = _launchEmail;
+  }
+
+  @override
+  void dispose() {
+    _emailRecognizer.dispose();
+    super.dispose();
+  }
+
+  Future<void> _launchEmail() async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'info@sahifati.com',
+      query: 'subject=Privacy Policy Inquiry',
+    );
+    try {
+      if (!await launchUrl(emailLaunchUri)) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Could not open email client'.tr),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +133,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             _buildSection(
               "privacy_policy_section_7_title".tr,
               "privacy_policy_section_7_content".tr,
+              isContact: true,
             ),
             const SizedBox(height: 30),
           ],
@@ -100,7 +143,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(String title, String content) {
+  Widget _buildSection(String title, String content, {bool isContact = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 25.0),
       child: Column(
@@ -116,14 +159,38 @@ class PrivacyPolicyScreen extends StatelessWidget {
           ),
           if (content.isNotEmpty) ...[
             const SizedBox(height: 10),
-            Text(
-              content,
-              style: const TextStyle(
-                fontSize: 15,
-                height: 1.6,
-                color: AppColors.blackFontColor,
+            if (isContact)
+              RichText(
+                text: TextSpan(
+                  style: const TextStyle(
+                    fontSize: 15,
+                    height: 1.6,
+                    color: AppColors.blackFontColor,
+                  ),
+                  children: [
+                    TextSpan(text: content),
+                    const TextSpan(text: "\n"),
+                    TextSpan(
+                      text: "info@sahifati.com",
+                      style: const TextStyle(
+                        color: Colors.red,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      recognizer: _emailRecognizer,
+                    ),
+                  ],
+                ),
+              )
+            else
+              Text(
+                content,
+                style: const TextStyle(
+                  fontSize: 15,
+                  height: 1.6,
+                  color: AppColors.blackFontColor,
+                ),
               ),
-            ),
           ],
         ],
       ),

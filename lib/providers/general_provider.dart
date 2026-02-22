@@ -22,13 +22,20 @@ class GeneralProvider with ChangeNotifier {
   }
 
   void toggleThirdsMenuItem() {
-    if (!partsMenuItem && !hizbsMenuItem) return;
     thirdsMenuItem = !thirdsMenuItem;
     if (thirdsMenuItem) {
       mainScreenView = FilterTypes.thirds;
       partsMenuItem = false;
       hizbsMenuItem = false;
       subjectsMenuItem = false;
+    } else {
+      // If turned off, fallback to something else if nothing is active
+      if (!partsMenuItem && !hizbsMenuItem && !subjectsMenuItem) {
+        // Default to thirds if everything is off? Or keep it off?
+        // Let's fallback to Parts if we turned off Thirds, just to keep a view active
+        partsMenuItem = true;
+        mainScreenView = FilterTypes.parts;
+      }
     }
     notifyListeners();
   }
@@ -40,6 +47,11 @@ class GeneralProvider with ChangeNotifier {
       thirdsMenuItem = false;
       hizbsMenuItem = false;
       subjectsMenuItem = false;
+    } else {
+      if (!thirdsMenuItem && !hizbsMenuItem && !subjectsMenuItem) {
+        thirdsMenuItem = true;
+        mainScreenView = FilterTypes.thirds;
+      }
     }
     notifyListeners();
   }
@@ -51,6 +63,11 @@ class GeneralProvider with ChangeNotifier {
       thirdsMenuItem = false;
       partsMenuItem = false;
       subjectsMenuItem = false;
+    } else {
+      if (!thirdsMenuItem && !partsMenuItem && !subjectsMenuItem) {
+        thirdsMenuItem = true;
+        mainScreenView = FilterTypes.thirds;
+      }
     }
     notifyListeners();
   }
@@ -62,6 +79,11 @@ class GeneralProvider with ChangeNotifier {
       thirdsMenuItem = false;
       partsMenuItem = false;
       hizbsMenuItem = false;
+    } else {
+      if (!thirdsMenuItem && !partsMenuItem && !hizbsMenuItem) {
+        thirdsMenuItem = true;
+        mainScreenView = FilterTypes.thirds;
+      }
     }
     notifyListeners();
   }

@@ -189,7 +189,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
             vertical: SizeConfig.getProportionalHeight(4),
           ),
           decoration: BoxDecoration(
-            color: AppColors.buttonColor,
+            color: AppColors.primaryPurple,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: Colors.grey),
           ),

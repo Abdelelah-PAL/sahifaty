@@ -58,7 +58,7 @@ class CustomHizbsButton extends StatelessWidget {
           vertical: SizeConfig.getProportionalHeight(4),
         ),
         decoration: BoxDecoration(
-          color: AppColors.buttonColor,
+          color: AppColors.primaryPurple,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey),
         ),
@@ -69,6 +69,8 @@ class CustomHizbsButton extends StatelessWidget {
             color: Colors.white,
             withBackground: false,
             textAlign: TextAlign.center,
+            maxLines: 6,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ),

@@ -6,11 +6,9 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/colors.dart';
 import '../../services/localization_service.dart';
 import '../widgets/custom_back_button.dart';
-import '../widgets/custom_text.dart';
 import 'package:provider/provider.dart';
 import '../../providers/general_provider.dart';
 import '../../providers/users_provider.dart';
-import '../../controllers/users_controller.dart';
 import 'privacy_policy_screen.dart';
 import '../widgets/no_pop_scope.dart';
 
@@ -39,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _launchEmail() async {
     final Uri emailLaunchUri = Uri(
       scheme: 'mailto',
-      path: 'info@sahifati.org',
+      path: 'info@sahifati.com',
       query: 'subject=Feedback',
     );
     try {
@@ -105,7 +103,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         if (mounted) {
                           setState(() {});
                         }
-                        print(val);
                       }
                     },
                   ),
@@ -137,23 +134,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     Get.to(() => const PrivacyPolicyScreen());
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: Text(
-                    'logout'.tr,
-                    style: const TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onTap: () {
-                    final usersProvider =
-                        Provider.of<UsersProvider>(context, listen: false);
-                    UsersController().logout(usersProvider);
-                    // No need to pop as logout usually navigates to login
                   },
                 ),
                 const Divider(),
@@ -238,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           text: "${'feedback'.tr} ",
                         ),
                         TextSpan(
-                          text: "  info@sahifati.org",
+                          text: "  info@sahifati.com",
                           style: const TextStyle(
                             decoration: TextDecoration.underline,
                             color: Colors.red,

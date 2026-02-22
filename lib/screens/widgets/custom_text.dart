@@ -14,7 +14,9 @@ class CustomText extends StatelessWidget {
       required this.withBackground,
       this.color,
       this.fontWeight,
-      this.textAlign});
+      this.textAlign,
+      this.maxLines,
+      this.overflow});
 
   final String text;
   final double? structHeight;
@@ -25,6 +27,8 @@ class CustomText extends StatelessWidget {
   final Color? color;
   final FontWeight? fontWeight;
   final TextAlign? textAlign;
+  final int? maxLines;
+  final TextOverflow? overflow;
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +37,9 @@ class CustomText extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: Text(
         text,
-        // maxLines: null,
-        // softWrap: true,
-        // overflow: TextOverflow.visible,
+        maxLines: maxLines,
+        softWrap: true,
+        overflow: overflow,
         textAlign: textAlign ?? TextAlign.center,
         strutStyle: StrutStyle(
           forceStrutHeight: true,

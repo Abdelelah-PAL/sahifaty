@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:sahifaty/controllers/ayat_controller.dart';
 import 'package:sahifaty/controllers/evaluations_controller.dart';
 import 'package:sahifaty/controllers/filter_types.dart';
@@ -40,7 +41,7 @@ class IndexPage extends StatefulWidget {
   State<IndexPage> createState() => _IndexPageState();
 }
 
-class _IndexPageState extends State<IndexPage> {
+class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
   final gc = GeneralController();
   OverlayEntry? _menuEntry;
   final Map<int, Color> _selectedColors = {};
@@ -155,6 +156,8 @@ class _IndexPageState extends State<IndexPage> {
       DeviceOrientation.portraitDown,
     ]);
     _removeMenu();
+    WakelockPlus.disable();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -198,18 +201,15 @@ class _IndexPageState extends State<IndexPage> {
         await AyatController().loadAyatByHizbQuarter(_currentHizbQuarter!);
 
     // ---------------------------------------------
-    // FILTER AYAT BY SELECTED SURAH
+    // FILTER AYAT BY JUZ/THIRD RANGE
     // ---------------------------------------------
     if (widget.filterTypeId == FilterTypes.parts ||
         widget.filterTypeId == FilterTypes.thirds) {
-      ayat = ayat.where((a) => a.surah.id == widget.surah.id).toList();
-
-      // 🔥 DO NOT START A NEW SURAH IN THIS PAGE
-      if (ayat.isEmpty || ayat.last.ayahNo == widget.surah.ayahCount) {
-        _maxHizbQuarter = _currentHizbQuarter!;
+      if (widget.juz != null || widget.filterTypeId == FilterTypes.thirds) {
+        // We already set current/min/max hizb quarters above.
+        // The ayat list 'ayat' from loadAyatByHizbQuarter is correct.
       }
     }
-
     // ---------------------------------------------
 
     List<int> ayatIds = ayat.map((ayah) => ayah.id!).toList();
@@ -225,6 +225,13 @@ class _IndexPageState extends State<IndexPage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      WakelockPlus.enable();
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([
@@ -233,7 +240,10 @@ class _IndexPageState extends State<IndexPage> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
+    WakelockPlus.enable();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      WakelockPlus.enable();
       int userId = context.read<UsersProvider>().selectedUser!.id;
       EvaluationsProvider evaluationsProvider =
           context.read<EvaluationsProvider>();
@@ -419,12 +429,10 @@ class _IndexPageState extends State<IndexPage> {
     for (var group in groups) {
       final firstAyah = group.first;
 
-      // 🔥 Show surah title only when entering a NEW surah
-      final showBasmalah = firstAyah.ayahNo == 1 &&
-          firstAyah.surah.id != 1 &&
-          firstAyah.surah.id != 9;
+      // Show surah title and Basmalah logic
+      final isNewSurah = firstAyah.surah.id != _lastDisplayedSurahId;
 
-      if (showBasmalah) {
+      if (isNewSurah) {
         widgets.add(
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -440,25 +448,28 @@ class _IndexPageState extends State<IndexPage> {
           ),
         );
 
-        // Update last displayed surah
         _lastDisplayedSurahId = firstAyah.surah.id;
 
-        widgets.add(
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
-              child: Text(
-                'basmalah'.tr,
-                style: TextStyle(
-                  fontSize: 20,
-                  height: 2,
-                  color: isDarkMode ? Colors.white : AppColors.blackFontColor,
-                  fontFamily: AppFonts.versesFont,
+        if (firstAyah.ayahNo == 1 &&
+            firstAyah.surah.id != 1 &&
+            firstAyah.surah.id != 9) {
+          widgets.add(
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Text(
+                  'basmalah'.tr,
+                  style: TextStyle(
+                    fontSize: 20,
+                    height: 2,
+                    color: isDarkMode ? Colors.white : AppColors.blackFontColor,
+                    fontFamily: AppFonts.versesFont,
+                  ),
                 ),
               ),
             ),
-          ),
-        );
+          );
+        }
       }
 
       widgets.add(
@@ -468,13 +479,15 @@ class _IndexPageState extends State<IndexPage> {
               final userEvaluation = evaluationProvider.userEvaluations
                   .firstWhereOrNull((e) => e.ayah!.id == ayah.id);
 
+              final defaultColor = isDarkMode ? Colors.white : AppColors.blackFontColor;
+
               Color color = hasConnection
                   ? _selectedColors[ayah.id!] ??
                       (userEvaluation?.evaluation != null
                           ? gc.getColorFromCategory(
                               userEvaluation!.evaluation!.id!)
-                          : Colors.grey)
-                  : AppColors.ayatTextDefaultColor;
+                          : defaultColor)
+                  : defaultColor;
 
               return TextSpan(
                 text: '${ayah.text} ',

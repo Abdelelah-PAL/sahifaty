@@ -184,7 +184,7 @@ class EvaluationsController {
       case 5:
         return AppColors.hardColor; // صعب
       default:
-        return Colors.grey.shade400; // fallback color
+        return AppColors.uncategorizedColor; // fallback color
     }
   }
 }

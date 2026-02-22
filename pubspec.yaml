@@ -1,6 +1,6 @@
 name: sahifaty
 
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: ^3.5.4
@@ -26,6 +26,7 @@ dependencies:
   flutter_facebook_auth: ^7.1.2
   flutter_svg: ^2.2.3
   url_launcher: ^6.3.2
+  wakelock_plus: ^1.2.11
 
 
 dev_dependencies:

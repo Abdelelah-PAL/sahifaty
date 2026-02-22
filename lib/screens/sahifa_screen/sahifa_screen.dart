@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/evaluations_controller.dart';
+import '../../controllers/users_controller.dart';
 import '../../core/constants/colors.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/evaluations_provider.dart';
@@ -21,7 +22,7 @@ class SahifaScreen extends StatelessWidget {
   const SahifaScreen({super.key, required this.firstScreen});
   final bool firstScreen;
   
-  Widget _buildDrawer() {
+  Widget _buildDrawer(BuildContext context) {
     return SizedBox(
         width: SizeConfig.getProportionalWidth(280), // Increased from 225
         child: Drawer(
@@ -75,6 +76,34 @@ class SahifaScreen extends StatelessWidget {
                        CustomText(
                         text: "quick_questions".tr,
                         withBackground: false,
+                      ),
+                    ],
+                  ),
+                ),
+                ListTile(
+                  onTap: () {
+                    final usersProvider =
+                        Provider.of<UsersProvider>(context, listen: false);
+                    UsersController().logout(usersProvider);
+                    // No need to pop as logout usually navigates to login
+                  },
+                  title: Row(
+                    textDirection: TextDirection.rtl,
+                    children: [
+                      const Icon(
+                        Icons.logout,
+                        color: Colors.red,
+                        size: 30,
+                      ),
+                      SizedBox(
+                        width: SizeConfig.getProportionalWidth(10),
+                      ),
+                      Text(
+                        'logout'.tr,
+                        style: const TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ],
                   ),
@@ -133,8 +162,8 @@ class SahifaScreen extends StatelessWidget {
           ),
         ),
       ),
-      endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : _buildDrawer(),
-      drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? _buildDrawer() : null,
+      endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : _buildDrawer(context),
+      drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? _buildDrawer(context) : null,
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(

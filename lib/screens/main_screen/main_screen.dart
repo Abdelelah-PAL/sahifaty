@@ -84,7 +84,7 @@ class _MainScreenState extends State<MainScreen> {
                             child: MenuItem(
                               text: "thirds_icons".tr,
                               onChanged: (v) {
-                                if (v) generalProvider.toggleThirdsMenuItem();
+                                generalProvider.toggleThirdsMenuItem();
                               },
                               index: 1,
                             ),
@@ -94,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
                             child: MenuItem(
                               text: "parts_icons".tr,
                               onChanged: (v) {
-                                if (v) generalProvider.togglePartsMenuItem();
+                                generalProvider.togglePartsMenuItem();
                               },
                               index: 2,
                             ),
@@ -104,22 +104,22 @@ class _MainScreenState extends State<MainScreen> {
                             child: MenuItem(
                               text: "hizbs_icons".tr,
                               onChanged: (v) {
-                                if (!v) return;
-
                                 // 1️⃣Switch view
                                 generalProvider.toggleHizbMenuItem();
 
                                 // 2️ Close popup first
-                                Navigator.pop(context);
+                                if (generalProvider.hizbsMenuItem) {
+                                  Navigator.pop(context);
 
-                                // 3️⃣ Start loading after frame
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((_) {
-                                  context
-                                      .read<SurahsProvider>()
-                                      .loadAllHizbSurahs(
-                                          GeneralController().hizbList);
-                                });
+                                  // 3️⃣ Start loading after frame
+                                  WidgetsBinding.instance
+                                      .addPostFrameCallback((_) {
+                                    context
+                                        .read<SurahsProvider>()
+                                        .loadAllHizbSurahs(
+                                            GeneralController().hizbList);
+                                  });
+                                }
                               },
                               index: 3,
                             ),
@@ -145,7 +145,7 @@ class _MainScreenState extends State<MainScreen> {
             body: SingleChildScrollView(
               padding: EdgeInsets.only(
                 left: SizeConfig.getProportionalWidth(75),
-                right: SizeConfig.getProportionalWidth(75),
+                right: SizeConfig.getProportionalWidth(35),
                 top: SizeConfig.getProportionalHeight(20),
                 bottom: SizeConfig.getProportionalHeight(55),
               ),
@@ -176,15 +176,28 @@ class _MainScreenState extends State<MainScreen> {
                       padding: EdgeInsets.symmetric(vertical: 50.0),
                       child: Center(child: CircularProgressIndicator()),
                     )
+                  else if (generalProvider.mainScreenView == FilterTypes.hizbs)
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
+                        childAspectRatio: 1.2,
+                      ),
+                      itemCount: 60,
+                      itemBuilder: (context, index) => CustomHizbsButton(
+                        hizb: GeneralController().hizbList[index],
+                      ),
+                    )
                   else
                     ...List.generate(
                       generalProvider.mainScreenView == FilterTypes.thirds
                           ? 3
                           : generalProvider.mainScreenView == FilterTypes.parts
                               ? 30
-                              : generalProvider.mainScreenView == FilterTypes.hizbs
-                                  ? 60
-                                  : 0,
+                              : 0,
                       (index) => Padding(
                         padding: const EdgeInsets.only(bottom: 25),
                         child: generalProvider.mainScreenView == FilterTypes.thirds
@@ -193,15 +206,11 @@ class _MainScreenState extends State<MainScreen> {
                                 isOpen: openIndex == index,
                                 onToggle: () => toggle(index),
                               )
-                            : generalProvider.mainScreenView == FilterTypes.parts
-                                ? CustomPartsDropdown(
-                                    part: GeneralController().parts[index],
-                                    isOpen: openIndex == index,
-                                    onToggle: () => toggle(index),
-                                  )
-                                : CustomHizbsButton(
-                                    hizb: GeneralController().hizbList[index],
-                                  ),
+                            : CustomPartsDropdown(
+                                part: GeneralController().parts[index],
+                                isOpen: openIndex == index,
+                                onToggle: () => toggle(index),
+                              ),
                       ),
                     ),
                 ],

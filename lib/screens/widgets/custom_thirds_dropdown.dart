@@ -305,7 +305,7 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                   vertical: SizeConfig.getProportionalWidth(4),
                 ),
                 decoration: BoxDecoration(
-                  color: AppColors.buttonColor,
+                  color: AppColors.primaryPurple,
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.grey),
                 ),
