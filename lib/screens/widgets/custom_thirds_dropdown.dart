@@ -113,6 +113,7 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
 
                         _showSideOverlay(
                           option['name'],
+                          option['id'],
                           index,
                           offset,
                           size,
@@ -150,7 +151,8 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
   }
 
   void _showSideOverlay(
-    String option,
+    String optionName,
+    int juzId,
     int index,
     Offset parentOffset,
     Size buttonSize,
@@ -205,6 +207,7 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
                     Get.to(IndexPage(
                       surah: sura,
                       filterTypeId: FilterTypes.thirds,
+                      juz: juzId,
                     ))?.then((_) {
                       evaluationsProvider
                           .getQuranChartData(usersProvider.selectedUser!.id);

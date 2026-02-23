@@ -10,6 +10,7 @@ import '../sahifa_screen/sahifa_screen.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
+import '../widgets/global_drawer.dart';
 import '../widgets/no_pop_scope.dart';
 import 'content_item_card.dart';
 
@@ -55,9 +56,25 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
               color: const Color(0xFFFFFFFF),
             ),
             leading: const CustomBackButton(),
+            actions: [
+              Builder(
+                builder: (context) => IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    if ((Get.locale?.languageCode ?? 'ar') == 'ar') {
+                      Scaffold.of(context).openDrawer();
+                    } else {
+                      Scaffold.of(context).openEndDrawer();
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ),
       ),
+      drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? const GlobalDrawer() : null,
+      endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : const GlobalDrawer(),
       body: SafeArea(
         top: false,
         left: false,

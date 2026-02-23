@@ -16,104 +16,13 @@ import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/user_profile_badge.dart';
+import '../widgets/global_drawer.dart';
 import '../widgets/no_pop_scope.dart';
 
 class SahifaScreen extends StatelessWidget {
   const SahifaScreen({super.key, required this.firstScreen});
   final bool firstScreen;
   
-  Widget _buildDrawer(BuildContext context) {
-    return SizedBox(
-        width: SizeConfig.getProportionalWidth(280), // Increased from 225
-        child: Drawer(
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: SizeConfig.getProportionalHeight(100),
-            ),
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                ListTile(
-                  onTap: () {
-                    Get.to(() => const SettingsScreen());
-                  },
-                  title: Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      const Icon(
-                        Icons.settings,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: SizeConfig.getProportionalWidth(10),
-                      ),
-                       CustomText(
-                        text: "settings".tr,
-                        withBackground: false,
-                      ),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  onTap: () async {
-                     final evaluationsProvider = Get.context!.read<EvaluationsProvider>();
-                     final schoolProvider = Get.context!.read<SchoolProvider>();
-                    await schoolProvider.getQuickQuestionsSchool();
-
-                    await evaluationsProvider.getAllEvaluations();
-                    Get.to(const QuestionsScreen());
-                  },
-                  title: Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      const Icon(
-                        Icons.question_answer_sharp,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: SizeConfig.getProportionalWidth(10),
-                      ),
-                       CustomText(
-                        text: "quick_questions".tr,
-                        withBackground: false,
-                      ),
-                    ],
-                  ),
-                ),
-                ListTile(
-                  onTap: () {
-                    final usersProvider =
-                        Provider.of<UsersProvider>(context, listen: false);
-                    UsersController().logout(usersProvider);
-                    // No need to pop as logout usually navigates to login
-                  },
-                  title: Row(
-                    textDirection: TextDirection.rtl,
-                    children: [
-                      const Icon(
-                        Icons.logout,
-                        color: Colors.red,
-                        size: 30,
-                      ),
-                      SizedBox(
-                        width: SizeConfig.getProportionalWidth(10),
-                      ),
-                      Text(
-                        'logout'.tr,
-                        style: const TextStyle(
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -150,11 +59,11 @@ class SahifaScreen extends StatelessWidget {
                 builder: (context) => IconButton(
                   icon: const Icon(Icons.menu),
                   onPressed: () {
-                     if ((Get.locale?.languageCode ?? 'ar') == 'ar') {
-                        Scaffold.of(context).openDrawer();
-                     } else {
-                        Scaffold.of(context).openEndDrawer();
-                     }
+                    if ((Get.locale?.languageCode ?? 'ar') == 'ar') {
+                      Scaffold.of(context).openDrawer();
+                    } else {
+                      Scaffold.of(context).openEndDrawer();
+                    }
                   },
                 ),
               ),
@@ -162,8 +71,8 @@ class SahifaScreen extends StatelessWidget {
           ),
         ),
       ),
-      endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : _buildDrawer(context),
-      drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? _buildDrawer(context) : null,
+      drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? const GlobalDrawer() : null,
+      endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : const GlobalDrawer(),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.only(

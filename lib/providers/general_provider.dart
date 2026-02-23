@@ -87,4 +87,13 @@ class GeneralProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void setView(int view) {
+    mainScreenView = view;
+    thirdsMenuItem = view == FilterTypes.thirds;
+    partsMenuItem = view == FilterTypes.parts;
+    hizbsMenuItem = view == FilterTypes.hizbs;
+    subjectsMenuItem = view == FilterTypes.subjects;
+    notifyListeners();
+  }
 }

@@ -56,15 +56,12 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
     final size = renderBox.size;
 // Screen height
     final screenHeight = MediaQuery.of(context).size.height;
+    const double maxDropdownHeight = 200.0;
 
-// How much space remains below this widget
-    final spaceBelow = screenHeight - (offset.dy + size.height);
+    double dropdownTop = offset.dy + size.height + 4;
 
-// If little space below → open upwards
-    final bool openUpward = spaceBelow < 260; // 260 = max dropdown height
-
-    final double dropdownTop =
-        openUpward ? offset.dy - 50 : offset.dy + size.height + 4;
+    // If it would go off-screen at the bottom, clamp it to the bottom of the screen
+    dropdownTop = dropdownTop.clamp(0, screenHeight - maxDropdownHeight - 10);
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [

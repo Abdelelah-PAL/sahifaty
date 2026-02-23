@@ -146,9 +146,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
                       .getColorForEvaluation(evaluation.id),
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(
-                      color: EvaluationsController()
-                          .getColorForEvaluation(evaluation.id),
-                   ),
+                    color: EvaluationsController()
+                        .getColorForEvaluation(evaluation.id),
+                  ),
                 ),
                 child: ListTile(
                   title: Text(
@@ -179,7 +179,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
 
       if (ayahs.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(content: Text('no_verses_found_to_evaluate'.tr)),
+          SnackBar(content: Text('no_verses_found_to_evaluate'.tr)),
         );
         return;
       }
@@ -200,7 +200,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
       _checkCompletion();
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('error_during_evaluation'.trParams({'error': e.toString()}))),
+        SnackBar(
+            content: Text(
+                'error_during_evaluation'.trParams({'error': e.toString()}))),
       );
     } finally {
       setState(() {
@@ -235,7 +237,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
               builder: (BuildContext context, StateSetter setModalState) {
             return Column(
               children: [
-                 Padding(
+                Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: CustomText(
                     text: 'verses_evaluation'.tr,
@@ -264,8 +266,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                               margin: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 8),
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.stretch,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Text(
                                     ayah.text,
@@ -281,37 +282,40 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('${'ayah_label'.tr} ${ayah.ayahNo}'),
+                                      CustomText(
+                                        text:
+                                            '${'ayah_label'.tr} ${ayah.ayahNo}',
+                                        withBackground: false,
+                                        fontSize: 18,
+                                        color: AppColors.whiteFontColor,
+                                      ),
                                       ElevatedButton(
                                         onPressed: () async {
                                           final selectedEvaluation =
                                               await showDialog<Evaluation>(
                                             context: context,
                                             builder: (context) => AlertDialog(
-                                              title:   CustomText(
-                                                 text:  'choose_evaluation'.tr,
-                                                  color: AppColors.blackFontColor,
+                                              title: CustomText(
+                                                  text: 'choose_evaluation'.tr,
+                                                  color:
+                                                      AppColors.blackFontColor,
                                                   withBackground: false,
-                                                  textAlign:
-                                                      TextAlign.center),
+                                                  textAlign: TextAlign.center),
                                               content: SingleChildScrollView(
                                                 child: Column(
                                                   mainAxisSize:
                                                       MainAxisSize.min,
-                                                  children:
-                                                      evaluationsProvider
-                                                          .evaluations
-                                                          .map((evaluation) {
+                                                  children: evaluationsProvider
+                                                      .evaluations
+                                                      .map((evaluation) {
                                                     return Container(
                                                       margin: const EdgeInsets
                                                           .symmetric(
                                                           vertical: 4),
-                                                      decoration:
-                                                          BoxDecoration(
+                                                      decoration: BoxDecoration(
                                                         color: EvaluationsController()
                                                             .getColorForEvaluation(
-                                                                evaluation
-                                                                    .id),
+                                                                evaluation.id),
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(8),
@@ -324,16 +328,15 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                                       ),
                                                       child: ListTile(
                                                         title: Text(
-                                                          'eval_${evaluation.id}'.tr,
-                                                          textAlign: TextAlign
-                                                              .center,
+                                                          'eval_${evaluation.id}'
+                                                              .tr,
+                                                          textAlign:
+                                                              TextAlign.center,
                                                           style:
                                                               const TextStyle(
-                                                            color:
-                                                                Colors.white,
+                                                            color: Colors.white,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .bold,
+                                                                FontWeight.bold,
                                                           ),
                                                         ),
                                                         onTap: () =>
@@ -360,8 +363,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                             setModalState(() {
                                               ayah.userEvaluation =
                                                   UserEvaluation(
-                                                evaluation:
-                                                    selectedEvaluation,
+                                                evaluation: selectedEvaluation,
                                                 evaluationId:
                                                     selectedEvaluation.id,
                                                 ayahId: ayah.id,
@@ -372,7 +374,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                           }
                                         },
                                         child: CustomText(
-                                            text: 'evaluate'.tr,
+                                          text: 'evaluate'.tr,
                                           withBackground: false,
                                           color: AppColors.blackFontColor,
                                         ),
@@ -392,7 +394,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('error_loading_verses'.trParams({'error': e.toString()}))),
+        SnackBar(
+            content:
+                Text('error_loading_verses'.trParams({'error': e.toString()}))),
       );
     }
   }
@@ -421,7 +425,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                     builder: (BuildContext context, StateSetter setModalState) {
                   return Column(
                     children: [
-                       Padding(
+                      Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: CustomText(
                           text: 'juz_surahs'.tr,
@@ -557,9 +561,10 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                               } else {
                                                 ScaffoldMessenger.of(context)
                                                     .showSnackBar(
-                                                   SnackBar(
+                                                  SnackBar(
                                                     content: Text(
-                                                        'no_verses_for_surah_in_juz'.tr),
+                                                        'no_verses_for_surah_in_juz'
+                                                            .tr),
                                                   ),
                                                 );
                                               }
@@ -581,12 +586,15 @@ class _ContentItemCardState extends State<ContentItemCard> {
               }));
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('error_loading_surahs'.trParams({'error': e.toString()}))),
+        SnackBar(
+            content:
+                Text('error_loading_surahs'.trParams({'error': e.toString()}))),
       );
     }
   }
 
-  Future<void> _showJuzSurahAyahs(BuildContext context, Surah surah, int juz) async {
+  Future<void> _showJuzSurahAyahs(
+      BuildContext context, Surah surah, int juz) async {
     final evaluationsProvider = context.read<EvaluationsProvider>();
     final ayatController = AyatController();
 
@@ -628,7 +636,8 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: CustomText(
-                    text: 'surah_verses_juz_title'.trParams({'surah': surah.nameAr, 'juz': juz.toString()}),
+                    text: 'surah_verses_juz_title'.trParams(
+                        {'surah': surah.nameAr, 'juz': juz.toString()}),
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     withBackground: false,
@@ -796,7 +805,8 @@ class _ContentItemCardState extends State<ContentItemCard> {
             vertical: SizeConfig.getProportionalHeight(10),
             horizontal: SizeConfig.getProportionalWidth(2),
           ),
-          padding: EdgeInsets.symmetric(horizontal: 0, vertical: SizeConfig.getProportionalHeight(15)),
+          padding: EdgeInsets.symmetric(
+              horizontal: 0, vertical: SizeConfig.getProportionalHeight(15)),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(15),
@@ -826,8 +836,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 isEvaluating
                     ? const CircularProgressIndicator()
                     : Padding(
-                  padding: EdgeInsets.only(left: SizeConfig.getProportionalWidth(3.5)),
-                      child: Row(
+                        padding: EdgeInsets.only(
+                            left: SizeConfig.getProportionalWidth(3.5)),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             CustomButton(
@@ -836,18 +847,19 @@ class _ContentItemCardState extends State<ContentItemCard> {
                               width: 90,
                               height: 35,
                             ),
-                            SizedBox(width: SizeConfig.getProportionalHeight(5)),
+                            SizedBox(
+                                width: SizeConfig.getProportionalHeight(5)),
                             CustomButton(
-                              onPressed: () => _showIndividualEvaluation(context),
+                              onPressed: () =>
+                                  _showIndividualEvaluation(context),
                               text: "by_ayah".tr,
                               width: 90,
                               height: 35,
                             ),
                           ],
                         ),
-                    ),
-              ]
-              else ...[
+                      ),
+              ] else ...[
                 SizedBox(height: SizeConfig.getProportionalHeight(15)),
                 CustomButton(
                   onPressed: () => _showIndividualEvaluation(context),

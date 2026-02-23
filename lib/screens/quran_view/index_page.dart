@@ -17,6 +17,7 @@ import '../../core/constants/fonts.dart';
 import '../../core/utils/size_config.dart';
 import '../../models/surah.dart';
 import '../../providers/general_provider.dart';
+import '../widgets/global_drawer.dart';
 import '../widgets/custom_back_button.dart';
 import '../widgets/no_pop_scope.dart';
 
@@ -170,12 +171,22 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
         _currentHizbQuarter = widget.hizbQuarter;
         _minHizbQuarter = 1;
         _maxHizbQuarter = 240;
-      } else if (widget.filterTypeId == FilterTypes.parts &&
+      } else if ((widget.filterTypeId == FilterTypes.parts ||
+              widget.filterTypeId == FilterTypes.thirds) &&
           widget.juz != null) {
         // Start from the beginning of the Juz (Part)
         _minHizbQuarter = (widget.juz! - 1) * 8 + 1;
         _maxHizbQuarter = widget.juz! * 8;
-        _currentHizbQuarter = _minHizbQuarter;
+
+        // Find surah's starting quarter within this Juz
+        List<Ayat> surahAyat =
+            await AyatController().loadAyatBySurah(widget.surah.id);
+        if (surahAyat.isNotEmpty) {
+          int surahStart = surahAyat.first.hizbQuarter!;
+          _currentHizbQuarter = surahStart.clamp(_minHizbQuarter!, _maxHizbQuarter!);
+        } else {
+          _currentHizbQuarter = _minHizbQuarter;
+        }
       } else {
         List<Ayat> initialAyat;
         if (widget.filterTypeId == FilterTypes.parts ||
@@ -199,6 +210,13 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
 
     List<Ayat> ayat =
         await AyatController().loadAyatByHizbQuarter(_currentHizbQuarter!);
+
+    // If navigating via Parts or Thirds filter, remove ayats from previous surahs in the same quarter
+    // This ensures that if a quarter starts with Al-Fatihah but Al-Baqarah was selected, Al-Baqarah appears at the top.
+    if (widget.filterTypeId == FilterTypes.parts ||
+        widget.filterTypeId == FilterTypes.thirds) {
+      ayat = ayat.where((a) => a.surah.id >= widget.surah.id).toList();
+    }
 
     // ---------------------------------------------
     // FILTER AYAT BY JUZ/THIRD RANGE
@@ -320,9 +338,25 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                         ),
                         centerTitle: true,
                         leading: CustomBackButton(onPressed: () => Get.off(const MainScreen()),),
+                        actions: [
+                          Builder(
+                            builder: (context) => IconButton(
+                              icon: const Icon(Icons.menu),
+                              onPressed: () {
+                                if ((Get.locale?.languageCode ?? 'ar') == 'ar') {
+                                  Scaffold.of(context).openDrawer();
+                                } else {
+                                  Scaffold.of(context).openEndDrawer();
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
+                  drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? const GlobalDrawer() : null,
+                  endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : const GlobalDrawer(),
                   body: Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: SizeConfig.getProportionalHeight(5),

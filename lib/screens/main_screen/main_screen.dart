@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/controllers/filter_types.dart';
+import 'package:sahifaty/screens/sahifa_screen/sahifa_screen.dart';
 import 'package:sahifaty/screens/widgets/custom_hizbs_dropdown.dart';
 import '../../controllers/general_controller.dart';
 import '../../core/constants/colors.dart';
@@ -15,7 +17,7 @@ import '../widgets/custom_back_button.dart';
 import '../widgets/custom_parts_dropdown.dart';
 import '../widgets/custom_thirds_dropdown.dart';
 import '../widgets/custom_text.dart';
-import 'widgets/menu_item.dart';
+import '../widgets/global_drawer.dart';
 import '../widgets/no_pop_scope.dart';
 
 class MainScreen extends StatefulWidget {
@@ -73,75 +75,28 @@ class _MainScreenState extends State<MainScreen> {
                 textDirection: TextDirection.ltr,
                 child: AppBar(
                   backgroundColor: AppColors.backgroundColor,
-                  leading: const CustomBackButton(),
+                  leading:  CustomBackButton(
+                    onPressed: () => Get.off(const SahifaScreen(firstScreen: false)),
+                  ),
                   actions: [
-                    PopupMenuButton<String>(
-                      icon: const Icon(Icons.list_alt),
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem(
-                            value: '1',
-                            child: MenuItem(
-                              text: "thirds_icons".tr,
-                              onChanged: (v) {
-                                generalProvider.toggleThirdsMenuItem();
-                              },
-                              index: 1,
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: '2',
-                            child: MenuItem(
-                              text: "parts_icons".tr,
-                              onChanged: (v) {
-                                generalProvider.togglePartsMenuItem();
-                              },
-                              index: 2,
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: '3',
-                            child: MenuItem(
-                              text: "hizbs_icons".tr,
-                              onChanged: (v) {
-                                // 1️⃣Switch view
-                                generalProvider.toggleHizbMenuItem();
-
-                                // 2️ Close popup first
-                                if (generalProvider.hizbsMenuItem) {
-                                  Navigator.pop(context);
-
-                                  // 3️⃣ Start loading after frame
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((_) {
-                                    context
-                                        .read<SurahsProvider>()
-                                        .loadAllHizbSurahs(
-                                            GeneralController().hizbList);
-                                  });
-                                }
-                              },
-                              index: 3,
-                            ),
-                          ),
-
-                          // PopupMenuItem(
-                          //   value: '4',
-                          //   child: MenuItem(
-                          //     text: "topics_icons".tr,
-                          //     onChanged: (v) {
-                          //       if (v) generalProvider.toggleSubjectMenuItem();
-                          //     },
-                          //     index: 4,
-                          //   ),
-                          // ),
-                        ];
-                      },
+                    Builder(
+                      builder: (context) => IconButton(
+                        icon: const Icon(Icons.menu),
+                        onPressed: () {
+                          if ((Get.locale?.languageCode ?? 'ar') == 'ar') {
+                            Scaffold.of(context).openDrawer();
+                          } else {
+                            Scaffold.of(context).openEndDrawer();
+                          }
+                        },
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
+            drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? const GlobalDrawer() : null,
+            endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : const GlobalDrawer(),
             body: SingleChildScrollView(
               padding: EdgeInsets.only(
                 left: SizeConfig.getProportionalWidth(75),
@@ -160,6 +115,50 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     withBackground: false,
+                  ),
+
+                  SizedBox(height: SizeConfig.getProportionalHeight(20)),
+
+                  // SEGMENTED FILTER
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                      border: Border.all(color: Colors.grey.shade300),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 5,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: Row(
+                        children: [
+                          _buildSegmentItem(
+                            context,
+                            "thirds_icons".tr,
+                            FilterTypes.thirds,
+                            generalProvider,
+                          ),
+                          _buildSegmentItem(
+                            context,
+                            "parts_icons".tr,
+                            FilterTypes.parts,
+                            generalProvider,
+                          ),
+                          _buildSegmentItem(
+                            context,
+                            "hizbs_icons".tr,
+                            FilterTypes.hizbs,
+                            generalProvider,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
 
                   if (!widget.comesFirst)
@@ -218,5 +217,39 @@ class _MainScreenState extends State<MainScreen> {
             ),
             ),
           );
+  }
+
+  Widget _buildSegmentItem(BuildContext context, String title, int view, GeneralProvider provider) {
+    bool isSelected = provider.mainScreenView == view;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          provider.setView(view);
+          if (view == FilterTypes.hizbs) {
+            context.read<SurahsProvider>().loadAllHizbSurahs(GeneralController().hizbList);
+          }
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.grey.shade200 : Colors.white,
+            border: Border(
+              right: view != FilterTypes.hizbs
+                  ? BorderSide(color: Colors.grey.shade300)
+                  : BorderSide.none,
+            ),
+          ),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.black87,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
