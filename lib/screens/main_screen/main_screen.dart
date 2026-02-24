@@ -232,7 +232,7 @@ class _MainScreenState extends State<MainScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
-            color: isSelected ? Colors.grey.shade200 : Colors.white,
+            color: isSelected ? AppColors.primaryPurple : AppColors.uncategorizedColor,
             border: Border(
               right: view != FilterTypes.hizbs
                   ? BorderSide(color: Colors.grey.shade300)
@@ -243,7 +243,7 @@ class _MainScreenState extends State<MainScreen> {
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: Colors.black87,
+              color: AppColors.whiteFontColor,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               fontSize: 14,
             ),

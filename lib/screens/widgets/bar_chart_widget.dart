@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../controllers/general_controller.dart';
@@ -82,7 +83,7 @@ class BarChartWidget extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: '${evaluation?.count} آية',
+                          text: '${evaluation?.count} ${'verse'.tr}' ,
                           style: const TextStyle(
                             color: Colors.blueGrey,
                             fontSize: 12,

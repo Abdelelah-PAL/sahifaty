@@ -49,7 +49,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
   int? _currentHizbQuarter;
   int? _minHizbQuarter;
   int? _maxHizbQuarter;
-  int? _lastDisplayedSurahId;
+  int? _initialHizbQuarter;
   final ScrollController _scrollController = ScrollController(keepScrollOffset: true);
 
   Color _onColor(Color bg) {
@@ -205,6 +205,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
           _maxHizbQuarter = quarters.last;
           _currentHizbQuarter = _minHizbQuarter;
         }
+        _initialHizbQuarter = _currentHizbQuarter;
       }
     }
 
@@ -235,7 +236,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
       await evaluationsProvider.getAllEvaluations();
     }
     await evaluationsProvider.getAllUserEvaluations(userId, ayatIds);
-    _lastDisplayedSurahId = null;
+
 
     setState(() {
       widget.ayat = ayat;
@@ -331,12 +332,12 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                     child: Directionality(
                       textDirection: TextDirection.ltr,
                       child: AppBar(
-                        title: Text(
-                          widget.filterTypeId == FilterTypes.hizbs
-                              ? "${"hizb".tr} ${widget.hizb}"
-                              : widget.surah.nameAr,
-                        ),
-                        centerTitle: true,
+                        // title: Text(
+                        //   widget.filterTypeId == FilterTypes.hizbs
+                        //       ? "${"hizb".tr} ${widget.hizb}"
+                        //       : widget.surah.nameAr,
+                        // ),
+                        // centerTitle: true,
                         leading: CustomBackButton(onPressed: () => Get.off(const MainScreen()),),
                         actions: [
                           Builder(
@@ -357,79 +358,89 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                   ),
                   drawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? const GlobalDrawer() : null,
                   endDrawer: (Get.locale?.languageCode ?? 'ar') == 'ar' ? null : const GlobalDrawer(),
-                  body: Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: SizeConfig.getProportionalHeight(5),
-                      horizontal: SizeConfig.getProportionalWidth(10),
+                  body: Container(
+                    margin: const EdgeInsets.all(8.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColors.blackFontColor,
+                        width: 8.0,
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        children: [
-                          ..._buildAyatWidgets(evaluationProvider, hasConnection, isDarkMode),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: SizeConfig.getProportionalHeight(5),
+                        horizontal: SizeConfig.getProportionalWidth(10),
+                      ),
+                      child: SingleChildScrollView(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            ..._buildAyatWidgets(evaluationProvider, hasConnection, isDarkMode),
 
-                          // ORIGINAL PAGINATION BUTTONS (UNCHANGED)
-                          if (_currentHizbQuarter != null)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20, bottom: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  if (_currentHizbQuarter! > _minHizbQuarter!)
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.primaryPurple,
-                                        foregroundColor: Colors.white,
-                                        shape: const CircleBorder(),
-                                        padding: const EdgeInsets.all(12),
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _currentHizbQuarter =
-                                              _currentHizbQuarter! - 1;
-                                        });
-                                        final userId = context
-                                            .read<UsersProvider>()
-                                            .selectedUser!
-                                            .id;
-                                        final evalProvider =
-                                            context.read<EvaluationsProvider>();
-                                        _loadAyat(userId, evalProvider);
-                                      },
-                                      child: const Icon(Icons.arrow_back_ios_new, size: 20),
-                                    )
-                                  else
-                                    const SizedBox(width: 48),
-                                  if (_currentHizbQuarter! < _maxHizbQuarter!)
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: AppColors.primaryPurple,
-                                        foregroundColor: Colors.white,
-                                        shape: const CircleBorder(),
-                                        padding: const EdgeInsets.all(12),
-                                      ),
-                                      onPressed: () {
-                                        setState(() {
-                                          _currentHizbQuarter =
-                                              _currentHizbQuarter! + 1;
-                                        });
-                                        final userId = context
-                                            .read<UsersProvider>()
-                                            .selectedUser!
-                                            .id;
-                                        final evalProvider =
-                                            context.read<EvaluationsProvider>();
-                                        _loadAyat(userId, evalProvider);
-                                      },
-                                      child: const Icon(Icons.arrow_forward_ios, size: 20),
-                                    )
-                                  else
-                                    const SizedBox(width: 48),
-                                ],
-                              ),
-                            )
-                        ],
+                            // ORIGINAL PAGINATION BUTTONS (UNCHANGED)
+                            if (_currentHizbQuarter != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 20, bottom: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    if (_currentHizbQuarter! > (_initialHizbQuarter ?? _minHizbQuarter!))
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.primaryPurple,
+                                          foregroundColor: Colors.white,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(12),
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _currentHizbQuarter =
+                                                _currentHizbQuarter! - 1;
+                                          });
+                                          final userId = context
+                                              .read<UsersProvider>()
+                                              .selectedUser!
+                                              .id;
+                                          final evalProvider =
+                                              context.read<EvaluationsProvider>();
+                                          _loadAyat(userId, evalProvider);
+                                        },
+                                        child: const Icon(Icons.arrow_back_ios_new, size: 20),
+                                      )
+                                    else
+                                      const SizedBox(width: 48),
+                                    if (_currentHizbQuarter! < _maxHizbQuarter!)
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.primaryPurple,
+                                          foregroundColor: Colors.white,
+                                          shape: const CircleBorder(),
+                                          padding: const EdgeInsets.all(12),
+                                        ),
+                                        onPressed: () {
+                                          setState(() {
+                                            _currentHizbQuarter =
+                                                _currentHizbQuarter! + 1;
+                                          });
+                                          final userId = context
+                                              .read<UsersProvider>()
+                                              .selectedUser!
+                                              .id;
+                                          final evalProvider =
+                                              context.read<EvaluationsProvider>();
+                                          _loadAyat(userId, evalProvider);
+                                        },
+                                        child: const Icon(Icons.arrow_forward_ios, size: 20),
+                                      )
+                                    else
+                                      const SizedBox(width: 48),
+                                  ],
+                                ),
+                              )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -464,9 +475,9 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
       final firstAyah = group.first;
 
       // Show surah title and Basmalah logic
-      final isNewSurah = firstAyah.surah.id != _lastDisplayedSurahId;
+      final isAtStartOfSurah = firstAyah.ayahNo == 1;
 
-      if (isNewSurah) {
+      if (isAtStartOfSurah) {
         widgets.add(
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -481,8 +492,6 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
             ),
           ),
         );
-
-        _lastDisplayedSurahId = firstAyah.surah.id;
 
         if (firstAyah.ayahNo == 1 &&
             firstAyah.surah.id != 1 &&

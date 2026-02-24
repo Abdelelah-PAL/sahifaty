@@ -16,10 +16,34 @@ class GeneralController {
     {'id': 67, 'color': AppColors.uncategorizedColor},
   ];
 
-  List<Map<String, dynamic>> get parts => List.generate(30, (index) => {
-    'id': index + 1,
-    'name': '${"juz_prefix".tr} ${index + 1}'
+  List<Map<String, dynamic>> get parts => List.generate(30, (index) {
+    final juzNumber = index + 1;
+    final surahRange = _getSurahRangeInJuz(juzNumber);
+    return {
+      'id': juzNumber,
+      'name': '${"juz_prefix".tr} $juzNumber\n$surahRange'
+    };
   });
+
+  String _getSurahRangeInJuz(int juzNumber) {
+    try {
+      Map<int, List<int>> surahs = quran.getSurahAndVersesFromJuz(juzNumber);
+      List<int> surahNumbers = surahs.keys.toList()..sort();
+
+      if (surahNumbers.isEmpty) return "";
+
+      bool isArabic = Get.locale?.languageCode == 'ar';
+      String separator = isArabic ? "، " : ", ";
+
+      List<String> surahNames = surahNumbers.map((s) => 
+        isArabic ? quran.getSurahNameArabic(s) : quran.getSurahName(s)
+      ).toList();
+
+      return "(${surahNames.join(separator)})";
+    } catch (e) {
+      return "";
+    }
+  }
 
   List<Map<String, dynamic>> get firstThird => parts.sublist(0, 10);
   List<Map<String, dynamic>> get secondThird => parts.sublist(10, 20);
