@@ -51,6 +51,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
   int? _maxHizbQuarter;
   int? _initialHizbQuarter;
   final ScrollController _scrollController = ScrollController(keepScrollOffset: true);
+  bool _isInitialLoad = true;
 
   Color _onColor(Color bg) {
     final b = ThemeData.estimateBrightnessForColor(bg);
@@ -214,10 +215,12 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
 
     // If navigating via Parts or Thirds filter, remove ayats from previous surahs in the same quarter
     // This ensures that if a quarter starts with Al-Fatihah but Al-Baqarah was selected, Al-Baqarah appears at the top.
-    if (widget.filterTypeId == FilterTypes.parts ||
-        widget.filterTypeId == FilterTypes.thirds) {
+    if (_isInitialLoad &&
+        (widget.filterTypeId == FilterTypes.parts ||
+            widget.filterTypeId == FilterTypes.thirds)) {
       ayat = ayat.where((a) => a.surah.id >= widget.surah.id).toList();
     }
+    _isInitialLoad = false;
 
     // ---------------------------------------------
     // FILTER AYAT BY JUZ/THIRD RANGE
@@ -482,7 +485,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Text(
-              '${"surah_prefix".tr} ${firstAyah.surah.nameAr}',
+              'سورة ${firstAyah.surah.nameAr}',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -501,9 +504,9 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 child: Text(
-                  'basmalah'.tr,
+                  'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 24,
                     height: 2,
                     color: isDarkMode ? Colors.white : AppColors.blackFontColor,
                     fontFamily: AppFonts.versesFont,
@@ -535,7 +538,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
               return TextSpan(
                 text: '${ayah.text} ',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 24,
                   height: 2,
                   color: color,
                   fontFamily: AppFonts.versesFont,
@@ -549,7 +552,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                   TextSpan(
                     text: '${gc.ayahMarker(ayah.ayahNo)} ',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 24,
                       height: 2,
                       color: color,
                       fontFamily: AppFonts.versesFont,
