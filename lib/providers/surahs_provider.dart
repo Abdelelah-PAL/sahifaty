@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:sahifaty/models/surah.dart';
 import 'package:sahifaty/services/surahs_services.dart';
 
-import '../controllers/surahs_controller.dart';
 
 class SurahsProvider with ChangeNotifier {
   List<Surah> surahsByJuz = [];

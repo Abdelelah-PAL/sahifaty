@@ -87,14 +87,11 @@ class AyatProvider with ChangeNotifier {
 
   Future<List<Ayat>> fetchAyatForContent(SchoolLevelContent content) async {
     try {
-      print("Fetching ayat for content: type=${content.type}, surahId=${content.surahId}, hizb=${content.hizb}, juz=${content.juz}");
-      
+
       final String jsonString = await rootBundle.loadString('assets/json/data.json');
       final Map<String, dynamic> jsonMap = json.decode(jsonString);
       final List<dynamic> allAyat = jsonMap['data'] ?? [];
-      print("Loaded ${allAyat.length} ayahs from data.json");
       if (allAyat.isNotEmpty) {
-        print("First ayah sample: ${allAyat.first}");
       }
       
       List<dynamic> filteredData = [];
@@ -116,11 +113,9 @@ class AyatProvider with ChangeNotifier {
         }).toList();
       }
       
-      print("Filtered ${filteredData.length} ayahs");
 
       return filteredData.map<Ayat>((ayah) => Ayat.fromJson(ayah)).toList();
     } catch (e) {
-      print("Error fetching content ayahs: $e");
       return [];
     }
   }

@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:sahifaty/models/auth_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:google_sign_in/google_sign_in.dart' as google_sign_in;
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../controllers/users_controller.dart';
 import '../core/constants/colors.dart';
 import '../models/user.dart';
 import '../services/users_services.dart';
-
 
 class UsersProvider with ChangeNotifier {
   static final UsersProvider _instance = UsersProvider._internal();
@@ -35,6 +33,9 @@ class UsersProvider with ChangeNotifier {
 
       // result can be User or String error
       if (result is AuthData) {
+        if (result.user != null) {
+            await saveUserToDevice(result.user!, password);
+        }
         return result;
       } else {
         // throw error to be caught in UI
@@ -54,6 +55,9 @@ class UsersProvider with ChangeNotifier {
       );
       // result can be User or String error
       if (result is AuthData) {
+         if (result.user != null) {
+            await saveUserToDevice(result.user!, password);
+        }
         return result;
       } else {
         throw result;
@@ -209,6 +213,59 @@ class UsersProvider with ChangeNotifier {
       rethrow;
     } finally {
       resetLoading();
+    }
+  }
+
+  // --- Stored Device Users Management ---
+
+  Future<void> saveUserToDevice(User user, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    
+    // Fetch existing users
+    final String? storedUsersStr = prefs.getString('stored_device_users');
+    List<dynamic> storedUsersList = [];
+    if (storedUsersStr != null) {
+      storedUsersList = json.decode(storedUsersStr);
+    }
+
+    // Check if user already exists
+    final int existingIndex = storedUsersList.indexWhere((element) => element['email'] == user.email);
+    
+    final Map<String, dynamic> userMap = user.toMap();
+    // Add password for auto-login from SelectUserScreen
+    userMap['password'] = password;
+
+    if (existingIndex != -1) {
+      // Update existing
+      storedUsersList[existingIndex] = userMap;
+    } else {
+      // Add new
+      storedUsersList.add(userMap);
+    }
+
+    await prefs.setString('stored_device_users', json.encode(storedUsersList));
+  }
+
+  Future<List<Map<String, dynamic>>> getStoredDeviceUsers() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? storedUsersStr = prefs.getString('stored_device_users');
+    if (storedUsersStr != null) {
+      List<dynamic> decodedList = json.decode(storedUsersStr);
+      return decodedList.cast<Map<String, dynamic>>().toList();
+    }
+    return [];
+  }
+
+  Future<void> removeUserFromDevice(String email) async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? storedUsersStr = prefs.getString('stored_device_users');
+    
+    if (storedUsersStr != null) {
+      List<dynamic> storedUsersList = json.decode(storedUsersStr);
+      storedUsersList.removeWhere((element) => element['email'] == email);
+      
+      // Save updated list back
+      await prefs.setString('stored_device_users', json.encode(storedUsersList));
     }
   }
 }

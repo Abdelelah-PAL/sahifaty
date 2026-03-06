@@ -17,7 +17,6 @@ import '../../core/utils/size_config.dart';
 import '../../models/school_level_content.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text.dart';
-import 'package:collection/collection.dart';
 
 class ContentItemCard extends StatefulWidget {
   final SchoolLevelContent content;

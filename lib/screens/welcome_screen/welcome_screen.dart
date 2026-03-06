@@ -9,9 +9,7 @@ import '../../controllers/evaluations_controller.dart';
 import '../../core/utils/size_config.dart';
 import '../../core/constants/colors.dart';
 import '../questions_screen/questions_screen.dart';
-import '../widgets/custom_back_button.dart';
 import '../widgets/custom_button.dart';
-import '../widgets/user_profile_badge.dart';
 import '../widgets/custom_text.dart';
 import '../widgets/no_pop_scope.dart';
 
@@ -37,7 +35,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     if (usersProvider.selectedUser != null) {
       await evaluationsProvider
-          .getQuranChartData(usersProvider.selectedUser!.id!);
+          .getQuranChartData(usersProvider.selectedUser!.id);
       await evaluationsProvider.getAllEvaluations();
 
     }

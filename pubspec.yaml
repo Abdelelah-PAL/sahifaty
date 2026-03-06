@@ -26,8 +26,7 @@ dependencies:
   flutter_facebook_auth: ^7.1.2
   flutter_svg: ^2.2.3
   url_launcher: ^6.3.2
-  wakelock_plus: ^1.2.11
-
+  wakelock_plus: ^1.1.4
 
 dev_dependencies:
   flutter_test:

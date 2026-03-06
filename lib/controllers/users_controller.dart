@@ -166,7 +166,7 @@ class UsersController {
   void logout(UsersProvider usersProvider) {
     usersProvider.logout();
 
-    Get.to(const LoginScreen(firstScreen: false));
+    Get.offAll(() => const LoginScreen(firstScreen: false));
   }
 
   void clearTextFields() {

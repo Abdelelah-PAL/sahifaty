@@ -145,7 +145,6 @@ class UsersServices with ChangeNotifier {
         return true;
       } else {
         final responseData = json.decode(response.body);
-        print(responseData);
         return responseData['message'] ?? 'Failed to delete account';
       }
     } catch (ex) {

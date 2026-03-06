@@ -24,12 +24,10 @@ class LocalizationService extends Translations {
 
     arKeys = Map<String, String>.from(json.decode(arString));
     enKeys = Map<String, String>.from(json.decode(enString));
-    print("Localization initialized. AR keys: ${arKeys.length}, EN keys: ${enKeys.length}");
   }
 
   @override
   Map<String, Map<String, String>> get keys {
-    print("GetX accessing keys. AR items: ${arKeys.length}, EN items: ${enKeys.length}");
     return {
       'ar': arKeys,
       'ar_AE': arKeys,
@@ -40,12 +38,8 @@ class LocalizationService extends Translations {
 
   Future<void> changeLocale(String lang) async {
     final locale = _getLocaleFromLanguage(lang);
-    print("Changing locale to: $locale");
-    print("Keys status - AR: ${arKeys.length}, EN: ${enKeys.length}");
-    print("Sample EN key 'language': ${enKeys['language']}");
     await Get.updateLocale(locale);
     await _saveLocale(lang);
-    print("Locale changed and saved.");
   }
 
   Locale _getLocaleFromLanguage(String lang) {

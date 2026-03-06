@@ -151,18 +151,6 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
     Overlay.of(context).insert(_menuEntry!);
   }
 
-  @override
-  void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-    _removeMenu();
-    WakelockPlus.disable();
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
   Future<void> _loadAyat(
       int userId, EvaluationsProvider evaluationsProvider) async {
     if (_currentHizbQuarter == null ||
@@ -254,6 +242,18 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
   }
 
   @override
+  void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    _removeMenu();
+    WakelockPlus.disable();
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([
@@ -262,7 +262,6 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    WakelockPlus.enable();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       WakelockPlus.enable();

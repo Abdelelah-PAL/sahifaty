@@ -79,7 +79,6 @@ class EvaluationsServices {
       http.Response response =
           await _sahifatyApi.post(url: 'user-evaluations/bulk', body: body);
 
-      print(response.body);
         return response;
     } catch (ex) {
       rethrow;

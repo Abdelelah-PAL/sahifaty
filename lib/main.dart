@@ -13,6 +13,7 @@ import 'providers/surahs_provider.dart';
 import 'providers/users_provider.dart';
 import 'screens/main_screen/main_screen.dart';
 import 'screens/authentication_screens/login_screen.dart';
+import 'screens/authentication_screens/select_user_screen.dart';
 import 'screens/sahifa_screen/sahifa_screen.dart';
 import 'services/localization_service.dart';
 
@@ -69,7 +70,6 @@ class MyApp extends StatelessWidget {
           }
 
           final hasConnection = snapshot.data ?? false;
-          final generalProvider = Provider.of<GeneralProvider>(context);
 
           return GetMaterialApp(
             debugShowCheckedModeBanner: false,
@@ -134,8 +134,18 @@ class _InitialScreenState extends State<InitialScreen> {
             .getQuranChartData(usersProvider.selectedUser!.id);
         Get.off(() => const SahifaScreen(firstScreen: true,));
       } catch (e) {
-        Get.off(() => const LoginScreen(firstScreen: true));
+        // Error getting data, fall back to stored users check
+        _routeToLoginOrSelectUser(usersProvider);
       }
+    } else {
+        _routeToLoginOrSelectUser(usersProvider);
+    }
+  }
+
+  Future<void> _routeToLoginOrSelectUser(UsersProvider usersProvider) async {
+    final storedUsers = await usersProvider.getStoredDeviceUsers();
+    if (storedUsers.isNotEmpty) {
+      Get.off(() => const SelectUserScreen());
     } else {
       Get.off(() => const LoginScreen(firstScreen: true));
     }

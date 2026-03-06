@@ -8,6 +8,7 @@ import '../../providers/school_provider.dart';
 import '../../providers/users_provider.dart';
 import '../questions_screen/questions_screen.dart';
 import '../settings_screen/settings_screen.dart';
+import '../authentication_screens/select_user_screen.dart';
 import 'custom_text.dart';
 
 class GlobalDrawer extends StatelessWidget {
@@ -66,6 +67,38 @@ class GlobalDrawer extends StatelessWidget {
                     ),
                     CustomText(
                       text: "quick_questions".tr,
+                      withBackground: false,
+                    ),
+                  ],
+                ),
+              ),
+              ListTile(
+                onTap: () async {
+                  final usersProvider = context.read<UsersProvider>();
+                  final storedUsers = await usersProvider.getStoredDeviceUsers();
+                  if (storedUsers.isNotEmpty) {
+                    Get.to(() => const SelectUserScreen());
+                  } else {
+                    Get.snackbar(
+                      "switch_user".tr,
+                      "no_users_to_display".tr, // fallback message
+                      backgroundColor: Colors.blue,
+                      colorText: Colors.white,
+                    );
+                  }
+                },
+                title: Row(
+                  textDirection: TextDirection.rtl,
+                  children: [
+                    const Icon(
+                      Icons.people,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: SizeConfig.getProportionalWidth(10),
+                    ),
+                    CustomText(
+                      text: "switch_user".tr,
                       withBackground: false,
                     ),
                   ],
