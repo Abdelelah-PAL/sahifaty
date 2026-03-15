@@ -2,7 +2,7 @@ import 'package:sahifaty/models/school_level.dart';
 
 class School {
   int? _id;
-  String schoolName;
+  Map <String, dynamic> schoolName;
   List<SchoolLevel> levels;
 
   School({

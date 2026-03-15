@@ -38,6 +38,7 @@ class EvaluationsServices {
   Future<Map<String, dynamic>> getQuranChartData(int userId) async {
     try {
       final res = await _sahifatyApi.get('user-evaluations/chart/$userId');
+      print(res.body);
 
       if (res.statusCode == 200) {
         // Decode the full JSON map

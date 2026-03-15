@@ -49,7 +49,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             centerTitle: true,
             title: CustomText(
               text:
-                  '${'level_assessment'.tr} ${GeneralController().getStringLevel(selectedIndex + 1)} (${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name!})',
+                  '${'level_assessment'.tr} ${GeneralController().getStringLevel(selectedIndex + 1)} (${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name!['ar']})',
               fontSize: 12,
               fontWeight: FontWeight.bold,
               withBackground: true,

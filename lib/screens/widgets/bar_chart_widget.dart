@@ -83,7 +83,7 @@ class BarChartWidget extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: '${evaluation?.count} ${'verses'.tr}' ,
+                          text: '${evaluation?.verseCount} ${'verses'.tr}' ,
                           style: const TextStyle(
                             color: Colors.blueGrey,
                             fontSize: 12,

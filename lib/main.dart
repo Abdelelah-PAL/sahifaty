@@ -145,7 +145,7 @@ class _InitialScreenState extends State<InitialScreen> {
   Future<void> _routeToLoginOrSelectUser(UsersProvider usersProvider) async {
     final storedUsers = await usersProvider.getStoredDeviceUsers();
     if (storedUsers.isNotEmpty) {
-      Get.off(() => const SelectUserScreen());
+      Get.off(() => const SelectUserScreen(firstScreen: true,));
     } else {
       Get.off(() => const LoginScreen(firstScreen: true));
     }

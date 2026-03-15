@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../../core/constants/colors.dart';
+import '../../core/utils/size_config.dart';
 import '../../providers/users_provider.dart';
 import 'login_screen.dart';
 import '../main_screen/main_screen.dart';
 
 class SelectUserScreen extends StatefulWidget {
-  const SelectUserScreen({super.key});
+  const SelectUserScreen({super.key, required this.firstScreen});
+  final bool firstScreen;
 
   @override
   State<SelectUserScreen> createState() => _SelectUserScreenState();
@@ -79,6 +81,9 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
+    }
+    if (widget.firstScreen) {
+      SizeConfig().init(context);
     }
 
     return Scaffold(

@@ -4,7 +4,7 @@ class SchoolLevel {
   String? _id;
   int? schoolId;
   String? schoolName;
-  String? name;
+  Map<String, dynamic>? name;
   List<SchoolLevelContent> content;
 
   SchoolLevel({

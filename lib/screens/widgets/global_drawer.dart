@@ -77,7 +77,7 @@ class GlobalDrawer extends StatelessWidget {
                   final usersProvider = context.read<UsersProvider>();
                   final storedUsers = await usersProvider.getStoredDeviceUsers();
                   if (storedUsers.isNotEmpty) {
-                    Get.to(() => const SelectUserScreen());
+                    Get.to(() => const SelectUserScreen(firstScreen: false,));
                   } else {
                     Get.snackbar(
                       "switch_user".tr,
