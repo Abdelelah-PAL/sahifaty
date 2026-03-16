@@ -47,7 +47,7 @@ class _DonutChartState extends State<DonutChart> {
           value: value,
           title: '\u200F${value.toStringAsFixed(1)}%\n'
               '\u200F${evaluationsController.getLocalizedName(evaluation.evaluationId)}\n'
-              '\u200F${"verse_count".trParams({'count': evaluation.count.toString()})}',
+              '\u200F${"verse_count".trParams({'count': evaluation.verseCount.toString()})}',
           radius: radius,
           titleStyle: TextStyle(
             fontSize: fontSize,

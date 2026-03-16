@@ -498,7 +498,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                                         ),
                                                         child: ListTile(
                                                           title: Text(
-                                                            evaluation.nameAr,
+                                                            evaluation.nameAr!,
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style:
@@ -721,7 +721,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                                         ),
                                                         child: ListTile(
                                                           title: Text(
-                                                            evaluation.nameAr,
+                                                            evaluation.nameAr!,
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style:

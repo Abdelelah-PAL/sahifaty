@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/evaluation.dart';
 import 'package:sahifaty/models/user_evaluation.dart';
@@ -38,7 +39,6 @@ class EvaluationsServices {
   Future<Map<String, dynamic>> getQuranChartData(int userId) async {
     try {
       final res = await _sahifatyApi.get('user-evaluations/chart/$userId');
-      print(res.body);
 
       if (res.statusCode == 200) {
         // Decode the full JSON map
@@ -70,7 +70,10 @@ class EvaluationsServices {
       } else {
         throw Exception('Failed to load evaluations');
       }
-    } catch (ex) {
+    } catch (ex, stackTrace) {
+      if (kDebugMode) {
+        print(stackTrace);
+      }
       rethrow;
     }
   }

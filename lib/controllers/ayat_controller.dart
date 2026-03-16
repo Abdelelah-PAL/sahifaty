@@ -115,9 +115,6 @@ class AyatController {
             final match = itemSurahId == surahId &&
             itemAyahNo >= startAyah &&
             itemAyahNo <= endAyah;
-            if (match) {
-               // print("Found match: Surah $itemSurahId, Ayah $itemAyahNo");
-            }
             return match;
         })
         .map((item) => Ayat.fromJson(item))

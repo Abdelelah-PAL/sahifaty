@@ -1,11 +1,11 @@
 class Evaluation {
   int? _id;
-  String nameAr;
+  String? nameAr;
   String code;
 
   Evaluation({
     int? id,
-    required this.nameAr,
+    this.nameAr,
     required this.code,
   }) : _id = id;
 
