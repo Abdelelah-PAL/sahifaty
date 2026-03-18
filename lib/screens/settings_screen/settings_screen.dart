@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:sahifaty/core/utils/size_config.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../core/constants/colors.dart';
@@ -21,11 +23,45 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   late TapGestureRecognizer _emailRecognizer;
+  List<dynamic> _languages = [
+    {"code": "ar", "name": "العربية"},
+    {"code": "en", "name": "English"}
+  ];
+  bool _isLoadingLanguages = true;
 
   @override
   void initState() {
     super.initState();
     _emailRecognizer = TapGestureRecognizer()..onTap = _launchEmail;
+    _fetchLanguages();
+  }
+
+  Future<void> _fetchLanguages() async {
+    try {
+      final response = await http.get(Uri.parse('https://sahifati.org/language-settings'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data['languages'] != null && mounted) {
+          setState(() {
+            _languages = data['languages'];
+            _isLoadingLanguages = false;
+          });
+        }
+      } else {
+        if (mounted) {
+          setState(() {
+            _isLoadingLanguages = false;
+          });
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching languages: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingLanguages = false;
+        });
+      }
+    }
   }
 
   @override
@@ -82,30 +118,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     "language".tr,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  trailing: DropdownButton<String>(
-                    value: (Get.locale?.languageCode ?? 'ar') == 'ar'
-                        ? 'Arabic'
-                        : 'English',
-                    underline: const SizedBox(),
-                    items: const [
-                      DropdownMenuItem(
-                        value: 'Arabic',
-                        child: Text("العربية"),
-                      ),
-                      DropdownMenuItem(
-                        value: 'English',
-                        child: Text("English"),
-                      ),
-                    ],
-                    onChanged: (String? val) async {
-                      if (val != null) {
-                        await LocalizationService().changeLocale(val);
-                        if (mounted) {
-                          setState(() {});
-                        }
-                      }
-                    },
-                  ),
+                  trailing: _isLoadingLanguages
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : DropdownButton<String>(
+                          value: _languages.any((l) => l['code'] == (Get.locale?.languageCode ?? 'ar')) 
+                              ? (Get.locale?.languageCode ?? 'ar') 
+                              : 'ar',
+                          underline: const SizedBox(),
+                          items: _languages.map<DropdownMenuItem<String>>((lang) {
+                            return DropdownMenuItem<String>(
+                              value: lang['code'],
+                              child: Text(lang['name']),
+                            );
+                          }).toList(),
+                          onChanged: (String? val) async {
+                            if (val != null) {
+                              await LocalizationService().changeLocaleByCode(val);
+                              if (mounted) {
+                                setState(() {});
+                              }
+                            }
+                          },
+                        ),
                 ),
                 const Divider(),
                 Consumer<GeneralProvider>(

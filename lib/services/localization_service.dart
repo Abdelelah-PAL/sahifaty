@@ -42,6 +42,13 @@ class LocalizationService extends Translations {
     await _saveLocale(lang);
   }
 
+  Future<void> changeLocaleByCode(String code) async {
+    final newLocale = Locale(code);
+    await Get.updateLocale(newLocale);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language_code', code);
+  }
+
   Locale _getLocaleFromLanguage(String lang) {
     for (int i = 0; i < languages.length; i++) {
       if (lang == languages[i]) return locales[i];
@@ -56,6 +63,12 @@ class LocalizationService extends Translations {
 
   static Future<Locale> getCurrentLocale() async {
       final prefs = await SharedPreferences.getInstance();
+      
+      final langCode = prefs.getString('language_code');
+      if (langCode != null && langCode.isNotEmpty) {
+        return Locale(langCode);
+      }
+
       final lang = prefs.getString('language') ?? 'Arabic';
       int index = languages.indexOf(lang);
       if(index == -1) return locale;
