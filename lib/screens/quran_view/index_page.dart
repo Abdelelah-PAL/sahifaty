@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/providers/language_provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:sahifaty/controllers/ayat_controller.dart';
 import 'package:sahifaty/controllers/evaluations_controller.dart';
@@ -63,7 +64,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
     _menuEntry = null;
   }
 
-  void _showOptionsAt( Offset globalPos, Ayat ayah, EvaluationsProvider evaluationsProvider) {
+  void _showOptionsAt( Offset globalPos, Ayat ayah, EvaluationsProvider evaluationsProvider, LanguageProvider languageProvider) {
     _removeMenu();
 
     final overlayBox =
@@ -130,7 +131,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                           color: color,
                           child: Center(
                             child: Text(
-                              EvaluationsController().getLocalizedName(evaluation.id),
+                              EvaluationsProvider().getName(evaluation.id, languageProvider),
                               style: TextStyle(
                                   color: _onColor(color),
                                   fontFamily: AppFonts.versesFont),
@@ -275,6 +276,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final evaluationProvider = Provider.of<EvaluationsProvider>(context);
+    final languageProvider = Provider.of<LanguageProvider>(context);
 
     if (evaluationProvider.isLoading) {
       return const NoPopScope(
@@ -334,12 +336,6 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                     child: Directionality(
                       textDirection: TextDirection.ltr,
                       child: AppBar(
-                        // title: Text(
-                        //   widget.filterTypeId == FilterTypes.hizbs
-                        //       ? "${"hizb".tr} ${widget.hizb}"
-                        //       : widget.surah.nameAr,
-                        // ),
-                        // centerTitle: true,
                         leading: CustomBackButton(onPressed: () => Get.off(const MainScreen()),),
                         actions: [
                           Builder(
@@ -379,7 +375,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                         padding: const EdgeInsets.all(16),
                         child: Column(
                           children: [
-                            ..._buildAyatWidgets(evaluationProvider, hasConnection, isDarkMode),
+                            ..._buildAyatWidgets(languageProvider, evaluationProvider, hasConnection, isDarkMode),
 
                             // ORIGINAL PAGINATION BUTTONS (UNCHANGED)
                             if (_currentHizbQuarter != null)
@@ -455,7 +451,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
   }
 
   List<Widget> _buildAyatWidgets(
-      EvaluationsProvider evaluationProvider, bool hasConnection, bool isDarkMode) {
+      LanguageProvider languageProvider, EvaluationsProvider evaluationProvider, bool hasConnection, bool isDarkMode) {
     List<Widget> widgets = [];
     if (widget.ayat.isEmpty) return widgets;
 
@@ -505,7 +501,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                 child: Text(
                   'بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ',
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 18,
                     height: 2,
                     color: isDarkMode ? Colors.white : AppColors.blackFontColor,
                     fontFamily: AppFonts.versesFont,
@@ -537,7 +533,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
               return TextSpan(
                 text: '${ayah.text} ',
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: 20,
                   height: 2,
                   color: color,
                   fontFamily: AppFonts.versesFont,
@@ -545,7 +541,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                 recognizer: hasConnection
                     ? (TapGestureRecognizer()
                       ..onTapDown = (details) => _showOptionsAt(
-                          details.globalPosition, ayah, evaluationProvider))
+                          details.globalPosition, ayah, evaluationProvider,languageProvider))
                     : null,
                 children: [
                   TextSpan(

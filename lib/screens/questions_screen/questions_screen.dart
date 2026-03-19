@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:sahifaty/providers/language_provider.dart';
 import '../../controllers/general_controller.dart';
 import '../../core/utils/size_config.dart';
 import '../../providers/evaluations_provider.dart';
@@ -37,6 +38,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
     SchoolProvider schoolProvider = Provider.of<SchoolProvider>(context);
     EvaluationsProvider evaluationsProvider =
         Provider.of<EvaluationsProvider>(context);
+    LanguageProvider languageProvider = Provider.of<LanguageProvider>(context);
     return NoPopScope(
       child: Scaffold(
         appBar: PreferredSize(
@@ -49,7 +51,7 @@ class _QuestionsScreenState extends State<QuestionsScreen> {
             centerTitle: true,
             title: CustomText(
               text:
-                  '${'level_assessment'.tr} ${GeneralController().getStringLevel(selectedIndex + 1)} (${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name!['ar']})',
+                  '${'level_assessment'.tr} ${GeneralController().getStringLevel(selectedIndex + 1)} (${schoolProvider.quickQuestionsSchool.levels[selectedIndex].name![languageProvider.langCode]})',
               fontSize: 12,
               fontWeight: FontWeight.bold,
               withBackground: true,

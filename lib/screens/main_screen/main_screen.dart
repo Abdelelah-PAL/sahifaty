@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_utils/src/extensions/internacionalization.dart';
 import 'package:provider/provider.dart';
 import 'package:sahifaty/controllers/filter_types.dart';
+import 'package:sahifaty/providers/language_provider.dart';
 import 'package:sahifaty/screens/sahifa_screen/sahifa_screen.dart';
 import 'package:sahifaty/screens/widgets/custom_hizbs_dropdown.dart';
 import '../../controllers/general_controller.dart';
@@ -62,6 +62,7 @@ class _MainScreenState extends State<MainScreen> {
     final usersProvider = Provider.of<UsersProvider>(context);
     final evaluationsProvider = Provider.of<EvaluationsProvider>(context);
     final surahsProvider = Provider.of<SurahsProvider>(context);
+    final languageProvider = Provider.of<LanguageProvider>(context);
 
     return evaluationsProvider.isLoading == true
         ? const Center(
@@ -126,11 +127,11 @@ class _MainScreenState extends State<MainScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(25),
                       border: Border.all(color: Colors.grey.shade300),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black,
                           blurRadius: 5,
-                          offset: const Offset(0, 2),
+                          offset: Offset(0, 2),
                         ),
                       ],
                     ),
@@ -163,7 +164,7 @@ class _MainScreenState extends State<MainScreen> {
 
                   if (!widget.comesFirst)
 
-                    BarChartWidget(evaluationsProvider: evaluationsProvider)
+                    BarChartWidget(evaluationsProvider: evaluationsProvider, languageProvider: languageProvider,)
                   else
                     SizedBox(height: SizeConfig.getProportionalHeight(250)),
 

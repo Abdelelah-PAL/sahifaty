@@ -1,6 +1,6 @@
 class ChartEvaluationData {
   int evaluationId;
-  String nameAr;
+  Map<String, String> name;
   String code;
   int? characterCount;
   int? verseCount;
@@ -8,16 +8,23 @@ class ChartEvaluationData {
 
   ChartEvaluationData(
       {required this.evaluationId,
-      required this.nameAr,
+      required this.name,
       required this.code,
       required this.characterCount,
       required this.verseCount,
       required this.percentage});
 
   factory ChartEvaluationData.fromJson(Map<String, dynamic> json) {
+    Map<String, String>? parsedName;
+    if (json['name'] != null) {
+      parsedName = Map<String, String>.from(json['name']);
+    } else if (json['nameAr'] != null) {
+      parsedName = {'ar': json['nameAr'], 'en': json['nameAr']};
+    }
+
     return ChartEvaluationData(
         evaluationId: json['evaluationId'],
-        nameAr: json['nameAr'],
+        name: parsedName!,
         code: json['code'],
         characterCount: json['characterCount'],
         verseCount: json['verseCount'],
@@ -27,7 +34,7 @@ class ChartEvaluationData {
   Map<String, dynamic> toMap() {
     return {
       'evaluationId': evaluationId,
-      'nameAr': nameAr,
+      'name': name,
       'code': code,
       'characterCount': characterCount,
       'verseCount': verseCount,
@@ -37,6 +44,6 @@ class ChartEvaluationData {
 
   @override
   String toString() {
-    return 'ChartData(id: $evaluationId, nameAr: $nameAr, code: $code, verseCount: $verseCount, characterCount: $characterCount, percentage: $percentage)';
+    return 'ChartData(id: $evaluationId, name: $name, code: $code, verseCount: $verseCount, characterCount: $characterCount, percentage: $percentage)';
   }
 }

@@ -10,6 +10,7 @@ import 'package:sahifaty/models/ayat.dart';
 import 'package:sahifaty/models/evaluation.dart';
 import 'package:sahifaty/models/surah.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
+import 'package:sahifaty/providers/language_provider.dart';
 import 'package:sahifaty/providers/users_provider.dart';
 import 'package:sahifaty/models/user_evaluation.dart';
 import '../../core/constants/colors.dart';
@@ -210,9 +211,9 @@ class _ContentItemCardState extends State<ContentItemCard> {
     }
   }
 
-  Future<void> _showIndividualEvaluation(BuildContext context) async {
+  Future<void> _showIndividualEvaluation(BuildContext context, LanguageProvider languageProvider) async {
     if (widget.content.type == 'juz' && widget.content.juz != null) {
-      _showJuzBreakdown(context, widget.content.juz!);
+      _showJuzBreakdown(context, widget.content.juz!, languageProvider);
       return;
     }
 
@@ -400,7 +401,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
     }
   }
 
-  Future<void> _showJuzBreakdown(BuildContext context, int juz) async {
+  Future<void> _showJuzBreakdown(BuildContext context, int juz, LanguageProvider languageProvider) async {
     final surahsController = SurahsController();
     final evaluationsProvider = context.read<EvaluationsProvider>();
 
@@ -498,7 +499,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                                         ),
                                                         child: ListTile(
                                                           title: Text(
-                                                            evaluation.nameAr!,
+                                                            evaluation.name[languageProvider.langCode]!,
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style:
@@ -573,7 +574,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                         ),
                                         onTap: () {
                                           _showJuzSurahAyahs(
-                                              context, surah, juz);
+                                              context, surah, juz, languageProvider);
                                         },
                                       ),
                                     );
@@ -592,8 +593,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
     }
   }
 
-  Future<void> _showJuzSurahAyahs(
-      BuildContext context, Surah surah, int juz) async {
+  Future<void> _showJuzSurahAyahs(BuildContext context, Surah surah, int juz, LanguageProvider languageProvider) async {
     final evaluationsProvider = context.read<EvaluationsProvider>();
     final ayatController = AyatController();
 
@@ -721,7 +721,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                                         ),
                                                         child: ListTile(
                                                           title: Text(
-                                                            evaluation.nameAr!,
+                                                            evaluation.name[languageProvider.langCode]!,
                                                             textAlign: TextAlign
                                                                 .center,
                                                             style:
@@ -793,10 +793,12 @@ class _ContentItemCardState extends State<ContentItemCard> {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = context.read<LanguageProvider>();
+
     return GestureDetector(
         onTap: () {
           if (widget.content.type == 'juz' && widget.content.juz != null) {
-            _showJuzBreakdown(context, widget.content.juz!);
+            _showJuzBreakdown(context, widget.content.juz!, languageProvider);
           }
         },
         child: Container(
@@ -850,7 +852,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                 width: SizeConfig.getProportionalHeight(5)),
                             CustomButton(
                               onPressed: () =>
-                                  _showIndividualEvaluation(context),
+                                  _showIndividualEvaluation(context, languageProvider),
                               text: "by_ayah".tr,
                               width: 90,
                               height: 35,
@@ -861,7 +863,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
               ] else ...[
                 SizedBox(height: SizeConfig.getProportionalHeight(15)),
                 CustomButton(
-                  onPressed: () => _showIndividualEvaluation(context),
+                  onPressed: () => _showIndividualEvaluation(context, languageProvider),
                   text: "verses_evaluation".tr,
                   width: 150,
                   height: 35,

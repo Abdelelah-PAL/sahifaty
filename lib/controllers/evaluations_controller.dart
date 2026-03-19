@@ -16,10 +16,7 @@ class EvaluationsController {
   static final EvaluationsController _instance =
       EvaluationsController._internal();
 
-  String getLocalizedName(int? id) {
-    if (id == null) return '';
-    return 'eval_$id'.tr;
-  }
+
 
   factory EvaluationsController() => _instance;
 

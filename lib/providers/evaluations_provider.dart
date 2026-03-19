@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:sahifaty/models/evaluation.dart';
 import 'package:sahifaty/models/user_evaluation.dart';
+import 'package:sahifaty/providers/language_provider.dart';
 import 'package:sahifaty/services/evaluations_services.dart';
 
 import '../models/chart_evaluation_data.dart';
@@ -20,6 +22,7 @@ class EvaluationsProvider with ChangeNotifier {
     resetLoading();
     return evaluations;
   }
+
 
   Future<http.Response> evaluateAyah(Map<String, dynamic> body) async {
     try {
@@ -89,4 +92,20 @@ class EvaluationsProvider with ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+
+  String getName(int? id, LanguageProvider languageProvider) {
+    isLoading = true;
+    try {
+      if (id == null) return '';
+
+      final evaluation =
+      evaluations.firstWhereOrNull((e) => e.id == id);
+
+      return evaluation?.name[languageProvider.langCode] ?? '';
+    } finally {
+      isLoading = false;
+    }
+  }
+
 }

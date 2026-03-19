@@ -117,8 +117,7 @@ class _CustomPartsDropdownState extends State<CustomPartsDropdown>
                                   vertical: 10, horizontal: 12),
                               child: Align(
                                 alignment: Alignment.centerRight,
-                                child: Text(
-                                  Get.locale?.languageCode == 'ar' ? quran.getSurahNameArabic(surah.id) : quran.getSurahName(surah.id),
+                                child: Text(quran.getSurahNameArabic(surah.id),
                                   style: const TextStyle(
                                       fontSize: 14, color: Colors.black87),
                                 ),

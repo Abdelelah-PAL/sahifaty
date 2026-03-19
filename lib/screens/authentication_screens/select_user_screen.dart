@@ -101,7 +101,7 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
             children: [
               Text(
                 'choose_account_continue'.tr, // Choose an account to continue
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: AppColors.blackFontColor,
@@ -119,12 +119,12 @@ class _SelectUserScreenState extends State<SelectUserScreen> {
                       elevation: 2,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
-                        side: BorderSide(color: AppColors.uncategorizedColor.withOpacity(0.2)),
+                        side: const BorderSide(color: AppColors.uncategorizedColor),
                       ),
                       child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: AppColors.uncategorizedColor.withOpacity(0.1),
-                          child: const Icon(Icons.person, color: AppColors.primaryPurple),
+                        leading: const CircleAvatar(
+                          backgroundColor: AppColors.uncategorizedColor,
+                          child: Icon(Icons.person, color: AppColors.primaryPurple),
                         ),
                         title: Text(
                           user['fullName'] ?? 'مستخدم', // User

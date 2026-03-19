@@ -36,7 +36,7 @@ class GeneralController {
       String separator = isArabic ? "، " : ", ";
 
       List<String> surahNames = surahNumbers.map((s) => 
-        isArabic ? quran.getSurahNameArabic(s) : quran.getSurahName(s)
+        quran.getSurahNameArabic(s)
       ).toList();
 
       return "(${surahNames.join(separator)})";
@@ -56,7 +56,7 @@ class GeneralController {
 
   List<Map<String, dynamic>> get quranSurahs => List.generate(114, (index) => {
     'id': index + 1,
-    'name': Get.locale?.languageCode == 'ar' ? quran.getSurahNameArabic(index + 1) : quran.getSurahName(index + 1)
+    'name':  quran.getSurahNameArabic(index + 1)
   });
 
 
@@ -135,7 +135,7 @@ class GeneralController {
 
   String getSurahNameByNumber(int number) {
     if (number < 1 || number > 114) return 'surah_not_found'.tr; // Need key or hardcode? 'Not Found'
-    return Get.locale?.languageCode == 'ar' ? quran.getSurahNameArabic(number) : quran.getSurahName(number);
+    return quran.getSurahNameArabic(number);
   }
 
   String getSurahNameArabic(int number) {

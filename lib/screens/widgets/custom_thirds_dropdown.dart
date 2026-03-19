@@ -35,7 +35,6 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
   final LayerLink _layerLink = LayerLink();
   OverlayEntry? _overlayEntry;
   OverlayEntry? _sideOverlayEntry;
-  int? _tappedIndex;
 
   late AnimationController _controller;
 
@@ -242,7 +241,6 @@ class _CustomThirdsDropdownState extends State<CustomThirdsDropdown>
   void _removeSideOverlay() {
     _sideOverlayEntry?.remove();
     _sideOverlayEntry = null;
-    _tappedIndex = null;
   }
 
   void _removeOverlay() {

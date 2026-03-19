@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sahifaty/providers/evaluations_provider.dart';
+import 'package:sahifaty/providers/language_provider.dart';
 import '../../controllers/evaluations_controller.dart';
 import '../../controllers/general_controller.dart';
 
@@ -9,9 +10,11 @@ class DonutChart extends StatefulWidget {
   const DonutChart({
     super.key,
     required this.evaluationsProvider,
+    required this.languageProvider,
   });
 
   final EvaluationsProvider evaluationsProvider;
+  final LanguageProvider languageProvider;
 
   @override
   State<DonutChart> createState() => _DonutChartState();
@@ -46,8 +49,10 @@ class _DonutChartState extends State<DonutChart> {
           color: color,
           value: value,
           title: '\u200F${value.toStringAsFixed(1)}%\n'
-              '\u200F${evaluationsController.getLocalizedName(evaluation.evaluationId)}\n'
-              '\u200F${"verse_count".trParams({'count': evaluation.verseCount.toString()})}',
+              '\u200F${widget.evaluationsProvider.getName(evaluation.evaluationId, widget.languageProvider)}\n'
+              '\u200F${"verse_count".trParams({
+                'count': evaluation.verseCount.toString()
+              })}',
           radius: radius,
           titleStyle: TextStyle(
             fontSize: fontSize,
@@ -57,7 +62,8 @@ class _DonutChartState extends State<DonutChart> {
           ),
           badgeWidget: isTouched
               ? _Badge(
-                  evaluationsController.getLocalizedName(evaluation.evaluationId),
+                  widget.evaluationsProvider.getName(
+                      evaluation.evaluationId, widget.languageProvider),
                   size: 40,
                   borderColor: color,
                 )
@@ -101,7 +107,8 @@ class _DonutChartState extends State<DonutChart> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("${sections[touchedIndex].value.toStringAsFixed(1)}%",
+              Text(
+                "${sections[touchedIndex].value.toStringAsFixed(1)}%",
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -110,10 +117,14 @@ class _DonutChartState extends State<DonutChart> {
               ),
               if (touchedIndex != -1)
                 Text(
-                  evaluationsController.getLocalizedName(sectionEvaluationIds[touchedIndex])
+                  widget.evaluationsProvider
+                          .getName(sectionEvaluationIds[touchedIndex],
+                              widget.languageProvider)
                           .isEmpty
-                          ? ""
-                          : evaluationsController.getLocalizedName(sectionEvaluationIds[touchedIndex]),
+                      ? ""
+                      : widget.evaluationsProvider.getName(
+                          sectionEvaluationIds[touchedIndex],
+                          widget.languageProvider),
                   style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
             ],

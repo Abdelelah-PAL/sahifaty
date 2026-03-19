@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalizationService extends Translations {
-  static final locale = Locale('ar', 'AE');
-  static final fallbackLocale = Locale('ar', 'AE');
+  static const locale = Locale('ar', 'AE');
+  static const fallbackLocale = Locale('ar', 'AE');
 
   static final languages = ['Arabic', 'English'];
   static final locales = [
