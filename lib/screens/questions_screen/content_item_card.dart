@@ -127,7 +127,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
     return ayahs;
   }
 
-  Future<void> _evaluateUnit(BuildContext context) async {
+  Future<void> _evaluateUnit(BuildContext context, LanguageProvider languageProvider) async {
     final evaluationsProvider = context.read<EvaluationsProvider>();
 
     // Show dialog to select evaluation
@@ -152,7 +152,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                 ),
                 child: ListTile(
                   title: Text(
-                    'eval_${evaluation.id}'.tr,
+                    '${evaluation.name[languageProvider.langCode]}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       color: Colors.white,
@@ -328,8 +328,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                                                       ),
                                                       child: ListTile(
                                                         title: Text(
-                                                          'eval_${evaluation.id}'
-                                                              .tr,
+                                                          '${evaluation.name[languageProvider.langCode]}',
                                                           textAlign:
                                                               TextAlign.center,
                                                           style:
@@ -843,7 +842,7 @@ class _ContentItemCardState extends State<ContentItemCard> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             CustomButton(
-                              onPressed: () => _evaluateUnit(context),
+                              onPressed: () => _evaluateUnit(context, languageProvider),
                               text: "full".tr,
                               width: 90,
                               height: 35,

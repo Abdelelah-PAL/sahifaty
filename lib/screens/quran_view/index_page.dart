@@ -131,7 +131,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
                           color: color,
                           child: Center(
                             child: Text(
-                              EvaluationsProvider().getName(evaluation.id, languageProvider),
+                                '${evaluation.name[languageProvider.langCode]}',
                               style: TextStyle(
                                   color: _onColor(color),
                                   fontFamily: AppFonts.versesFont),
@@ -450,8 +450,7 @@ class _IndexPageState extends State<IndexPage> with WidgetsBindingObserver {
         });
   }
 
-  List<Widget> _buildAyatWidgets(
-      LanguageProvider languageProvider, EvaluationsProvider evaluationProvider, bool hasConnection, bool isDarkMode) {
+  List<Widget> _buildAyatWidgets(LanguageProvider languageProvider, EvaluationsProvider evaluationProvider, bool hasConnection, bool isDarkMode) {
     List<Widget> widgets = [];
     if (widget.ayat.isEmpty) return widgets;
 
